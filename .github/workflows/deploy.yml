@@ -37,7 +37,6 @@ jobs:
             ```
             ${{ github.event.head_commit.message }}
             ```
+            **🔗 GitHub Link:** <${{ github.event.head_commit.url }}>
 
-            **🔗 GitHub Link:** [View Commit](${{ github.event.head_commit.url }})
-
-            **🔗 Deploy Link:** Coming Soon
+            **🔗 Deploy Link:** <Coming Soon>
