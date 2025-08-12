@@ -19,7 +19,7 @@ jobs:
             echo "name=${{ github.actor }}" >> $GITHUB_OUTPUT
           fi
 
-          timestamp=$(date -d "${{ github.event.head_commit.timestamp }}" +"%m월 %d일 %H:%M")
+          timestamp=$(TZ="Asia/Seoul" date -d "${{ github.event.head_commit.timestamp }}" +"%m월 %d일 %H:%M")
           echo "formatted-time=$timestamp" >> $GITHUB_OUTPUT
 
       - name: Send Discord notification
