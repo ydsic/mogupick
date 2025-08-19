@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: '모구픽 | 모든 구독 상품은 여기로!',
-  description: '모구픽!',
+  description: '모구픽!!',
 };
 
 export default function RootLayout({
