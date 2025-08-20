@@ -1,62 +1,47 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
-import NaverProvider from 'next-auth/providers/naver';
 
-const authOptions: NextAuthOptions = {
+// 객체 구조 분해
+const {
+  GOOGLE_CLIENT_ID: googleClientId,
+  GOOGLE_CLIENT_SECRET: googleClientSecret,
+  KAKAO_CLIENT_ID: kakaoClientId,
+  KAKAO_CLIENT_SECRET: kakaoClientSecret,
+  NEXT_PUBLIC_API_URL: nextAuthSecret,
+} = process.env;
+
+// null/empty 안전 체크
+const isValidString = (value: string | undefined): value is string =>
+  value !== null && value !== undefined && value.trim() !== '';
+
+if (!isValidString(googleClientId) || !isValidString(googleClientSecret)) {
+  throw new Error('Google OAuth 환경 변수가 없습니다.');
+}
+
+if (!isValidString(kakaoClientId) || !isValidString(kakaoClientSecret)) {
+  throw new Error('Kakao OAuth 환경 변수가 없습니다.');
+}
+
+if (!isValidString(nextAuthSecret)) {
+  throw new Error('NEXT_PUBLIC_API_URL 환경 변수가 없습니다.');
+}
+
+const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
     }),
     KakaoProvider({
-      clientId: process.env.KAKAO_CLIENT_ID ?? '',
-      clientSecret: process.env.KAKAO_CLIENT_SECRET ?? '',
-      authorization: {
-        params: { scope: 'profile_nickname profile_image' },
-      },
-    }),
-    NaverProvider({
-      clientId: process.env.NAVER_CLIENT_ID ?? '',
-      clientSecret: process.env.NAVER_CLIENT_SECRET ?? '',
-      authorization: { params: { scope: 'name email profile_image' } },
+      clientId: kakaoClientId,
+      clientSecret: kakaoClientSecret,
     }),
   ],
-
-  callbacks: {
-    async jwt({ token, user, account }) {
-      if (account !== null) {
-        token.accessToken = account.access_token;
-        token.provider = account.provider;
-      }
-
-      if (user !== null) {
-        token.id = user.id ?? '';
-        token.name = user.name ?? '';
-        // token.email = user.email ?? "";
-        token.image = user.image ?? '';
-      }
-
-      return token;
-    },
-
-    async session({ session, token }) {
-      if (session.user !== null) {
-        session.user.id = (token.id as string) ?? '';
-        session.user.provider = (token.provider as string) ?? '';
-        session.user.name = (token.name as string) ?? '';
-        // session.user.email = (token.email as string) ?? "";
-        session.user.image = (token.image as string) ?? '';
-      }
-
-      session.accessToken = (token.accessToken as string) ?? '';
-      return session;
-    },
+  secret: nextAuthSecret,
+  pages: {
+    signIn: '/login', // 로그인 UI 직접 만들 경우
   },
-
-  secret: process.env.NEXTAUTH_SECRET ?? '',
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };
