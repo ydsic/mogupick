@@ -41,4 +41,4 @@ jobs:
 
             **🔗 Prototype Link:** https://mogupick-prototype.vercel.app
 
-            **🔗 링크:** [커밋 보기](${{ github.event.head_commit.url }})
+            **🔗 Update Link:** https://www.notion.so/goormkdx/Prototype-255c0ff4ce31805facf6c8fbfe7ddc12
