@@ -28,3 +28,10 @@ body {
 button {
   cursor: pointer;
 }
+
+li,
+ol,
+dl,
+ul {
+  list-style: none;
+}
