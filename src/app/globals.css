@@ -24,3 +24,14 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+button {
+  cursor: pointer;
+}
+
+li,
+ol,
+dl,
+ul {
+  list-style: none;
+}
