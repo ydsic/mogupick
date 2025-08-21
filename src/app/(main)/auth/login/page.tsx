@@ -7,7 +7,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 export default function SocialPage() {
   const { data: session } = useSession();
 
-  console.log('session', session);
+  console.warn('session', session);
 
   if (session?.user !== null && session?.user !== undefined) {
     return (
