@@ -7,6 +7,8 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 export default function SocialPage() {
   const { data: session } = useSession();
 
+  console.warn('session', session);
+
   if (session?.user !== null && session?.user !== undefined) {
     return (
       <div>
@@ -32,7 +34,6 @@ export default function SocialPage() {
   return (
     <div className="flex h-dvh flex-col items-center justify-center gap-2">
       <button onClick={() => void signIn('kakao')}>카카오로 시작하기</button>
-      <button onClick={() => void signIn('naver')}>네이버로 시작하기</button>
       <button onClick={() => void signIn('google')}>구글로 시작하기</button>
     </div>
   );
