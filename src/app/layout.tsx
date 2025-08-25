@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import SessionProviderClient from './provider/SessionProviderClient';
@@ -18,23 +18,24 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: '모구픽 | 세상의 모든 구독을 한 곳에',
   description: '세상의 모든 구독을 한 곳에, 모구픽',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
-  themeColor: '#000000', // 다크 모드에 맞춘 검정색
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: '모바일 앱',
+    title: '모구픽',
   },
   formatDetection: {
     telephone: false,
     email: false,
     address: false,
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#000000', // 다크 모드에 맞춘 검정색
 };
 
 export default function RootLayout({
