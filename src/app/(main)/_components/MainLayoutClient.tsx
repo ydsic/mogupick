@@ -10,13 +10,13 @@ interface MainLayoutClientProps {
   children: ReactNode;
 }
 
-const MAIN_ROUTES = ['/', '/streamer', '/pick', '/subscribe', '/mypage'];
+const MAIN_ROUTES = ['/', '/categories', '/pick', '/subscribe', '/mypage'];
 export default function MainLayoutClient({ children }: MainLayoutClientProps) {
   const pathname = usePathname();
 
   // 메인 라우트의 직계 경로인 경우에만 헤더와 푸터를 표시
   const showHeaderFooter = MAIN_ROUTES.indexOf(pathname) !== -1;
-  const onlyFooter = pathname.includes('/streamer/');
+  const onlyFooter = pathname.includes('/categories/');
 
   return (
     <>
