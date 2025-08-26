@@ -1,15 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import logo from '../../../../../public/next.svg';
-
 export default function Header() {
   return (
     <header className="fixed top-0 right-0 left-0 z-50 bg-yellow-50 md:left-1/2 md:w-[500px] md:-translate-x-1/2">
       <div className="flex h-14 items-center justify-between px-4">
         <div className="flex flex-1 items-center gap-4 text-base font-bold">
           <Link href="/">
-            <Image src={logo} alt="logo" width={64} height={64} />
+            <Image src="/next.svg" alt="logo" width={64} height={64} />
           </Link>
           <div className="flex-1">
             <Link href="/search">
