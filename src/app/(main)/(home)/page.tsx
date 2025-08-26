@@ -1,4 +1,5 @@
 import SearchBar from '@/components/SearchBar';
+
 import Header from './_components/Header';
 
 export default function Page() {

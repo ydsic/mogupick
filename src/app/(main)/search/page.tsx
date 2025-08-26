@@ -1,16 +1,16 @@
 interface Props {
-  searchParams: {
+  searchParams: Promise<{
     q?: string;
-  };
+  }>;
 }
 
-export default function SearchPage({ searchParams }: Props) {
-  const query = searchParams.q;
+export default async function SearchPage({ searchParams }: Props) {
+  const { q } = await searchParams;
 
   return (
     <div>
       search page 검색페이지
-      <span>두둥타 - 닥 !</span>
+      <span>두둥타 - 닥 !{q}</span>
     </div>
   );
 }
