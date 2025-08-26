@@ -69,15 +69,15 @@ textarea {
   padding-right: env(safe-area-inset-right);
 }
 
-/* 모바일에서 버튼 크기 최적화 */
-button,
-.btn {
-  min-height: 44px;
-  min-width: 44px;
-}
-
 /* 스크롤바 숨기기 (모바일에서) */
 @media (max-width: 768px) {
+  /* 모바일에서 버튼 크기 최적화 */
+  button,
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
   ::-webkit-scrollbar {
     display: none;
   }
