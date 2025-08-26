@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+
 import QuoteIcon from '@/assets/icons/common/bi_quote-32px.svg';
 import CategoryIcon from '@/assets/icons/common/category-24px.svg';
 import CloseIcon from '@/assets/icons/common/close-16px.svg';
@@ -16,11 +20,35 @@ import UserIcon from '@/assets/icons/common/user-24px.svg';
 import RankDownIcon from '@/assets/icons/rank/rank-down-12px.svg';
 import RankStableIcon from '@/assets/icons/rank/rank-stable-12px.svg';
 import RankUpIcon from '@/assets/icons/rank/rank-up-12px.svg';
+import { Chips, ChipsList } from '@/components/ui/Chips';
+
+const categories = [
+  '신선식품',
+  '정육·수산물',
+  '유제품·음료',
+  '간편식',
+  '간식',
+  '건강식품',
+  '생활잡화',
+  '위생용품',
+  '반려동물',
+  '육아용품',
+];
 
 export default function About() {
+  const [selected, setSelected] = useState<string | null>(categories[0]);
+
   return (
     <div className="min-h-screen p-8">
       <h1 className="mb-8 text-4xl font-bold">테스트용 페이지</h1>
+
+      <ChipsList>
+        {categories.map((cat) => (
+          <Chips key={cat} selected={selected === cat} onClick={() => setSelected(cat)}>
+            {cat}
+          </Chips>
+        ))}
+      </ChipsList>
 
       <div className="m-10 space-y-8 bg-gray-700 p-5">
         <section>
