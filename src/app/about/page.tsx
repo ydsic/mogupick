@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import QuoteIcon from '@/assets/icons/common/bi_quote-32px.svg';
 import CategoryIcon from '@/assets/icons/common/category-24px.svg';
 import CloseIcon from '@/assets/icons/common/close-16px.svg';
@@ -19,7 +21,6 @@ import RankDownIcon from '@/assets/icons/rank/rank-down-12px.svg';
 import RankStableIcon from '@/assets/icons/rank/rank-stable-12px.svg';
 import RankUpIcon from '@/assets/icons/rank/rank-up-12px.svg';
 import { Chips, ChipsList } from '@/components/ui/Chips';
-import { useState } from 'react';
 
 const categories = [
   '신선식품',
