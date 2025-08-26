@@ -23,7 +23,7 @@ export default function Footer() {
           <span>찜</span>
         </Link>
         <Link
-          href="/subscribe"
+          href="/subscribe/list"
           className="hover:text-primary flex flex-col items-center text-xs font-medium transition"
         >
           <span>구독</span>
