@@ -10,7 +10,7 @@ interface MainLayoutClientProps {
   children: ReactNode;
 }
 
-const MAIN_ROUTES = ['/', '/categories', '/pick', '/subscribe', '/mypage'];
+const MAIN_ROUTES = ['/', '/categories', '/pick', '/subscribe/list', '/mypage'];
 export default function MainLayoutClient({ children }: MainLayoutClientProps) {
   const pathname = usePathname();
 
