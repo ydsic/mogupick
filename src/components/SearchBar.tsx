@@ -10,7 +10,7 @@ export default function SearchBar() {
           <div className="w-full rounded-full bg-[#f7f7f7] px-4 py-3 text-sm font-normal text-[#7E8082]">
             매번 사는 그 상품, 구독으로 받기
           </div>
-          <div className="absolute top-2 right-4">
+          <div className="absolute top-2.5 right-5">
             <SearchIcon />
           </div>
         </div>
