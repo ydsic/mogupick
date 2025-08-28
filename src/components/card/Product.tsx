@@ -1,3 +1,5 @@
+'use client';
+
 import clsx from 'clsx';
 import Link from 'next/link';
 
@@ -6,6 +8,12 @@ import { Product } from '@/types/product';
 
 import RatingStarIcon from '@/assets/icons/common/rating-star-14px.svg';
 import ReviewIcon from '@/assets/icons/common/review-14px.svg';
+import HeartIcon from '@/assets/icons/common/heart-24px.svg';
+import LikeIcon from '@/assets/icons/common/like-24px.svg';
+import { useState } from 'react';
+
+// <HeartIcon className="h-8 w-8 fill-red-500" />
+// <LikeIcon className="h-8 w-8 fill-pink-500" />
 
 /**
  * product-card
@@ -14,6 +22,8 @@ type ProductCardProps = {
   size?: 's' | 'm' | 'l';
   className?: string;
   p: Product;
+  showHeart?: boolean; // 하트 노출 여부
+  onHeartClick?: (p: Product) => void; // 클릭 이벤트
 };
 
 const cardVariants = {
@@ -40,13 +50,32 @@ const cardVariants = {
   },
 };
 
-function ProductCard({ size = 'm', className, p }: ProductCardProps) {
+function ProductCard({
+  size = 'm',
+  className,
+  p,
+  showHeart = false,
+  onHeartClick,
+}: ProductCardProps) {
   const variant = cardVariants[size];
 
   return (
     <Link href={String(p.id)} className={cn('flex flex-col rounded-lg bg-white', className)}>
       {/* 이미지 영역 */}
-      <div className={cn('mb-2 w-full rounded-sm bg-gray-200', variant.image)} />
+      <div className={cn('relative mb-2 w-full rounded-sm bg-gray-200', variant.image)}>
+        {showHeart && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault(); // 링크 이동 막음
+              onHeartClick?.(p);
+            }}
+            className="absolute right-4 bottom-3 z-10"
+          >
+            {p.isLiked ? <HeartIcon /> : <LikeIcon />}
+          </button>
+        )}
+      </div>
 
       {/* 정보 영역 */}
       <div className={cn('flex flex-col gap-1', variant.wrapper)}>
@@ -72,6 +101,8 @@ interface ProductCardListProps {
   size?: 's' | 'm' | 'l';
   layout?: 'grid' | 'list' | 'horizontal';
   cols?: 2 | 3 | 4;
+  limit?: number;
+  showHeart?: boolean; // 하트 노출 여부 이벤트
 }
 
 function ProductCardList({
@@ -79,18 +110,37 @@ function ProductCardList({
   size = 'm',
   layout = 'grid',
   cols = 2,
+  limit,
+  showHeart = false,
 }: ProductCardListProps) {
+  const [localProducts, setLocalProducts] = useState(products);
+
   const gridCols = {
     2: 'grid-cols-2',
     3: 'grid-cols-3',
     4: 'grid-cols-4',
   }[cols];
 
+  const visibleProducts = limit ? localProducts.slice(0, limit) : localProducts;
+
+  const handleHeartClick = (product: Product) => {
+    setLocalProducts((prev) =>
+      prev.map((p) => (p.id === product.id ? { ...p, isLiked: !p.isLiked } : p)),
+    );
+  };
+
   if (layout === 'list') {
     return (
       <div className="flex flex-col gap-4">
-        {products.map((p) => (
-          <ProductCard key={p.id} {...p} p={p} size={size} />
+        {visibleProducts.map((p) => (
+          <ProductCard
+            key={p.id}
+            {...p}
+            p={p}
+            size={size}
+            showHeart={showHeart}
+            onHeartClick={handleHeartClick}
+          />
         ))}
       </div>
     );
@@ -99,12 +149,14 @@ function ProductCardList({
   if (layout === 'horizontal') {
     return (
       <div className="flex gap-4 overflow-x-auto py-2">
-        {products.map((p) => (
+        {visibleProducts.map((p) => (
           <ProductCard
             key={p.id}
             {...p}
             p={p}
             size={size}
+            showHeart={showHeart}
+            onHeartClick={handleHeartClick}
             className="min-w-[150px] flex-shrink-0"
           />
         ))}
@@ -114,8 +166,15 @@ function ProductCardList({
 
   return (
     <div className={clsx('grid gap-4', gridCols)}>
-      {products.map((p) => (
-        <ProductCard key={p.id} {...p} p={p} size={size} />
+      {visibleProducts.map((p) => (
+        <ProductCard
+          key={p.id}
+          {...p}
+          p={p}
+          size={size}
+          showHeart={showHeart}
+          onHeartClick={handleHeartClick}
+        />
       ))}
     </div>
   );
