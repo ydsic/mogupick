@@ -19,7 +19,9 @@ import RankUpIcon from '@/assets/icons/rank/rank-up-12px.svg';
 import { ChipsList } from '@/components/ui/Chips';
 import { ProductCardList } from '@/components/card/Product';
 import { categories } from '@/constants/categories';
-import { products } from '../(main)/(home)/page';
+import { ReviewCardList } from '@/components/card/Review';
+import { dummyReviews, products } from '../(main)/(home)/_components/HomePage';
+import Title from '@/components/ui/Title';
 
 export default function About() {
   return (
@@ -28,15 +30,22 @@ export default function About() {
 
       <div className="flex min-h-dvh items-center justify-center bg-gray-100">
         <div className="relative w-full overflow-hidden bg-white px-4 md:w-[500px]">
+          <div>
+            <ProductCardList products={products} showHeart={true} limit={4} />
+          </div>
+          <div>
+            <Title text="내 또래의 베스트 리뷰 PICK" />
+            <ReviewCardList layout="horizontal" reviews={dummyReviews} />
+          </div>
+
+          <div>
+            <Title text="지금 주목받는 상품" />
+            <ChipsList categories={categories} />
+          </div>
           <br />
           <br />
           <div>
             <div>
-              <h2>Chips Test</h2>
-              <ChipsList categories={categories} />
-              <br />
-              <br />
-
               <h2>ProductCard Test</h2>
               <ProductCardList products={products} layout="grid" cols={3} size="s" />
               <br />
@@ -44,6 +53,10 @@ export default function About() {
               <br />
               <ProductCardList products={products} layout="grid" cols={2} size="l" />
             </div>
+
+            <br />
+
+            <ReviewCardList layout="horizontal" reviews={dummyReviews} />
           </div>
 
           <br />
