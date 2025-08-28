@@ -65,7 +65,7 @@ interface ReviewCardListProps {
 function ReviewCardList({ reviews, layout = 'grid' }: ReviewCardListProps) {
   if (layout === 'horizontal') {
     return (
-      <div className="scrollbar-hide flex gap-4 overflow-x-auto py-5">
+      <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4">
         {reviews.map((r) => (
           <ReviewCard key={r.id} r={r} className="min-w-[250px] flex-shrink-0" />
         ))}

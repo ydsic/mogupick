@@ -18,41 +18,8 @@ import RankStableIcon from '@/assets/icons/rank/rank-stable-12px.svg';
 import RankUpIcon from '@/assets/icons/rank/rank-up-12px.svg';
 import { ChipsList } from '@/components/ui/Chips';
 import { ProductCardList } from '@/components/card/Product';
-
-export const categories = [
-  { id: 1, text: '신선식품', slug: 'fresh-food' },
-  { id: 2, text: '정육·수산물', slug: 'meat-seafood' },
-  { id: 3, text: '유제품·음료', slug: 'dairy-beverage' },
-  { id: 4, text: '간편식', slug: 'ready-meal' },
-  { id: 5, text: '간식', slug: 'snack' },
-  { id: 6, text: '건강식품', slug: 'health-food' },
-  { id: 7, text: '생활잡화', slug: 'daily-goods' },
-  { id: 8, text: '위생용품', slug: 'hygiene' },
-  { id: 9, text: '반려동물', slug: 'pets' },
-  { id: 10, text: '육아용품', slug: 'baby' },
-];
-
-export const products = [
-  { id: 1, store: '쿠팡', title: '무선 이어폰', price: 59000, rating: 4.5, reviewCount: 120 },
-  { id: 2, store: 'G마켓', title: '블루투스 스피커', price: 32000, rating: 4.2, reviewCount: 85 },
-  { id: 3, store: '11번가', title: '스마트워치', price: 129000, rating: 4.7, reviewCount: 210 },
-  { id: 4, store: '옥션', title: '노트북 쿨링패드', price: 18000, rating: 4.1, reviewCount: 40 },
-  { id: 5, store: '쿠팡', title: '게이밍 마우스', price: 45000, rating: 4.6, reviewCount: 95 },
-  {
-    id: 6,
-    store: 'G마켓',
-    title: '휴대용 보조배터리',
-    price: 25000,
-    rating: 4.3,
-    reviewCount: 60,
-  },
-  { id: 7, store: '11번가', title: '무선 키보드', price: 39000, rating: 4.4, reviewCount: 77 },
-  { id: 8, store: '쿠팡', title: 'LED 스탠드', price: 22000, rating: 4.2, reviewCount: 34 },
-  { id: 9, store: '옥션', title: '스마트폰 삼각대', price: 15000, rating: 4.0, reviewCount: 25 },
-  { id: 10, store: 'G마켓', title: '헤드셋', price: 67000, rating: 4.5, reviewCount: 110 },
-  { id: 11, store: '11번가', title: 'USB-C 허브', price: 28000, rating: 4.3, reviewCount: 48 },
-  { id: 12, store: '쿠팡', title: '무선 충전기', price: 33000, rating: 4.4, reviewCount: 72 },
-];
+import { categories } from '@/constants/categories';
+import { products } from '../(main)/(home)/page';
 
 export default function About() {
   return (
