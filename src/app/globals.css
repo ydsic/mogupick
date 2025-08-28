@@ -64,19 +64,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-
-    --color-background: #0a0a0a;
-    --color-surface: #1c1c1c;
-    --color-text-primary: #ededed;
-    --color-text-secondary: #9aa0a6;
-    --color-text-disabled: #5f6368;
-  }
-}
 
 body {
   background: var(--background);
