@@ -18,12 +18,15 @@ export default function MainLayoutClient({ children }: MainLayoutClientProps) {
   const showHeaderFooter = MAIN_ROUTES.indexOf(pathname) !== -1;
   const onlyFooter = pathname.includes('/categories/');
 
+  const HIDE_FOOTER_ROUTES = ['/categories/', '/footer숨길경로추가']; // 숨길 경로를 배열로 관리
+  const hideFooter = HIDE_FOOTER_ROUTES.some((route) => pathname.startsWith(route));
+
   return (
     <>
       <main className={`${showHeaderFooter ? 'pt-14 pb-14 md:pb-10' : ''} h-full overflow-y-auto`}>
         {children}
       </main>
-      {(showHeaderFooter || onlyFooter) && <Footer />}
+      {!hideFooter && (showHeaderFooter || onlyFooter) && <Footer />}
     </>
   );
 }
