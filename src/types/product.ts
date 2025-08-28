@@ -5,4 +5,5 @@ export interface Product {
   price: number;
   rating: number;
   reviewCount: number;
+  isLiked?: boolean;
 }
