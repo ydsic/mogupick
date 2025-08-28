@@ -1,12 +1,16 @@
-import { type ReactNode } from 'react';
+'use client';
+
+import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
+import { Category } from '@/types/category';
 
 interface ChipsProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   selected?: boolean;
+  text: string;
 }
 
-function Chips({ className, children, selected = false, ...props }: ChipsProps) {
+function Chips({ className, text, selected = false, ...props }: ChipsProps) {
   return (
     <span
       type="button"
@@ -19,46 +23,32 @@ function Chips({ className, children, selected = false, ...props }: ChipsProps) 
       )}
       {...props}
     >
-      {children}
+      {text}
     </span>
   );
 }
 
-interface ChipsListProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
+interface ChipsListProps {
+  className?: string;
+  categories: Category[];
 }
 
-function ChipsList({ className, children, ...props }: ChipsListProps) {
+function ChipsList({ className, categories }: ChipsListProps) {
+  const [selectedId, setSelectedId] = useState(categories[0]?.id);
   return (
     <div
       className={cn('flex w-full justify-start gap-1 overflow-x-auto whitespace-nowrap', className)}
-      {...props}
     >
-      {children}
+      {categories.map((c) => (
+        <Chips
+          key={c.id}
+          text={c.text}
+          selected={selectedId === c.id}
+          onClick={() => setSelectedId(c.id)}
+        />
+      ))}
     </div>
   );
 }
 
 export { Chips, ChipsList };
-
-/** 사용법 */
-// const categories = [
-//   '신선식품',
-//   '정육·수산물',
-//   '유제품·음료',
-//   '간편식',
-//   '간식',
-//   '건강식품',
-//   '생활잡화',
-//   '위생용품',
-//   '반려동물',
-//   '육아용품',
-// ];
-// const [selected, setSelected] = useState<string | null>(null);
-// <ChipsList>
-//   {categories.map((cat) => (
-//     <Chips key={cat} selected={selected === cat} onClick={() => setSelected(cat)}>
-//       {cat}
-//     </Chips>
-//   ))}
-// </ChipsList>;

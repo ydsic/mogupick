@@ -1,7 +1,3 @@
-'use client';
-
-import { useState } from 'react';
-
 import QuoteIcon from '@/assets/icons/common/bi_quote-32px.svg';
 import CategoryIcon from '@/assets/icons/common/category-24px.svg';
 import CloseIcon from '@/assets/icons/common/close-16px.svg';
@@ -20,23 +16,23 @@ import UserIcon from '@/assets/icons/common/user-24px.svg';
 import RankDownIcon from '@/assets/icons/rank/rank-down-12px.svg';
 import RankStableIcon from '@/assets/icons/rank/rank-stable-12px.svg';
 import RankUpIcon from '@/assets/icons/rank/rank-up-12px.svg';
-import { Chips, ChipsList } from '@/components/ui/Chips';
+import { ChipsList } from '@/components/ui/Chips';
 import { ProductCardList } from '@/components/card/Product';
 
-const categories = [
-  '신선식품',
-  '정육·수산물',
-  '유제품·음료',
-  '간편식',
-  '간식',
-  '건강식품',
-  '생활잡화',
-  '위생용품',
-  '반려동물',
-  '육아용품',
+export const categories = [
+  { id: 1, text: '신선식품', slug: 'fresh-food' },
+  { id: 2, text: '정육·수산물', slug: 'meat-seafood' },
+  { id: 3, text: '유제품·음료', slug: 'dairy-beverage' },
+  { id: 4, text: '간편식', slug: 'ready-meal' },
+  { id: 5, text: '간식', slug: 'snack' },
+  { id: 6, text: '건강식품', slug: 'health-food' },
+  { id: 7, text: '생활잡화', slug: 'daily-goods' },
+  { id: 8, text: '위생용품', slug: 'hygiene' },
+  { id: 9, text: '반려동물', slug: 'pets' },
+  { id: 10, text: '육아용품', slug: 'baby' },
 ];
 
-const products = [
+export const products = [
   { id: 1, store: '쿠팡', title: '무선 이어폰', price: 59000, rating: 4.5, reviewCount: 120 },
   { id: 2, store: 'G마켓', title: '블루투스 스피커', price: 32000, rating: 4.2, reviewCount: 85 },
   { id: 3, store: '11번가', title: '스마트워치', price: 129000, rating: 4.7, reviewCount: 210 },
@@ -59,8 +55,6 @@ const products = [
 ];
 
 export default function About() {
-  const [selected, setSelected] = useState<string | null>(categories[0]);
-
   return (
     <div>
       <h1 className="mb-8 text-4xl font-bold">테스트용 페이지</h1>
@@ -72,13 +66,7 @@ export default function About() {
           <div>
             <div>
               <h2>Chips Test</h2>
-              <ChipsList>
-                {categories.map((cat) => (
-                  <Chips key={cat} selected={selected === cat} onClick={() => setSelected(cat)}>
-                    {cat}
-                  </Chips>
-                ))}
-              </ChipsList>
+              <ChipsList categories={categories} />
               <br />
               <br />
 
