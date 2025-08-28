@@ -69,21 +69,18 @@ textarea {
   padding-right: env(safe-area-inset-right);
 }
 
-/* 스크롤바 숨기기 (모바일에서) */
-@media (max-width: 768px) {
-  /* 모바일에서 버튼 크기 최적화 */
-  button,
-  .btn {
-    min-height: 44px;
-    min-width: 44px;
-  }
+/* 스크롤바 숨기기 (모든 브라우저) */
+/* Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
 
-  ::-webkit-scrollbar {
-    display: none;
-  }
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
 
-  * {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+/* IE/Edge */
+body {
+  -ms-overflow-style: none;
 }
