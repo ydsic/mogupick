@@ -53,6 +53,7 @@ npm run start         # 프로덕션 실행
 npm run lint          # ESLint 검사
 npm run format        # Prettier 포맷팅
 npm run format:check  # 포맷팅 검사
+npm run clean         # 캐시 삭제 후, npm i
 ```
 
 ## 🔧 Code Quality Tools
