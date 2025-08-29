@@ -8,6 +8,7 @@ import { ReviewCardList } from '@/components/card/Review';
 import { RankingList } from '@/components/card/Ranking';
 import { CategoryList } from '@/components/card/Category';
 import BannerSlider from '@/components/card/BannerSlider';
+import Button from '@/components/ui/Button';
 
 export const dummyReviews = [
   {
@@ -82,12 +83,22 @@ export default function HomePage() {
         <div>
           <Title text="최근 본 상품과 유사한 상품" adver={true} />
           <ProductCardList products={products} limit={4} />
+          <div className="flex items-center justify-center">
+            <Button variant="outline" color="black">
+              상품 더보기
+            </Button>
+          </div>
         </div>
 
         <div>
           <Title text="꾸준히 사랑받는 상품" />
           <ChipsList categories={categories} />
           <ProductCardList products={products} cols={3} size="s" />
+          <div className="flex items-center justify-center">
+            <Button variant="outline" color="black">
+              상품 더보기
+            </Button>
+          </div>
         </div>
         <div>
           <Title text="내 또래의 베스트 리뷰 PICK" />
