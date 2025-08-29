@@ -36,7 +36,7 @@ const cardVariants = {
   },
   m: {
     wrapper: 'p-2',
-    image: 'aspect-[5/6]',
+    image: 'aspect-[1/1]',
     title: 'text-base font-medium text-black',
     price: 'text-base font-bold text-black',
     meta: 'text-sm gap-1',
@@ -60,7 +60,7 @@ function ProductCard({
   const variant = cardVariants[size];
 
   return (
-    <Link href={String(p.id)} className={cn('flex flex-col rounded-lg bg-white', className)}>
+    <Link href={String(p.id)} className={cn('flex flex-col rounded-sm bg-white', className)}>
       {/* 이미지 영역 */}
       <div className={cn('relative mb-2 w-full rounded-sm bg-gray-200', variant.image)}>
         {showHeart && (
@@ -131,7 +131,7 @@ function ProductCardList({
 
   if (layout === 'list') {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 py-2">
         {visibleProducts.map((p) => (
           <ProductCard
             key={p.id}
@@ -165,7 +165,7 @@ function ProductCardList({
   }
 
   return (
-    <div className={clsx('grid gap-4', gridCols)}>
+    <div className={clsx('grid gap-4 py-2', gridCols)}>
       {visibleProducts.map((p) => (
         <ProductCard
           key={p.id}
