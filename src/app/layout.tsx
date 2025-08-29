@@ -35,7 +35,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#000000', // 다크 모드에 맞춘 검정색
 };
 
 export default function RootLayout({
