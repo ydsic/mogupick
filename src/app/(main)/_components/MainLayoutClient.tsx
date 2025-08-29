@@ -23,7 +23,7 @@ export default function MainLayoutClient({ children }: MainLayoutClientProps) {
 
   return (
     <>
-      <main className={`${showHeaderFooter ? 'pt-14 pb-14 md:pb-10' : ''} h-full overflow-y-auto`}>
+      <main className={`${showHeaderFooter ? 'pt-14 pb-14 md:pb-18' : ''} h-full overflow-y-auto`}>
         {children}
       </main>
       {!hideFooter && (showHeaderFooter || onlyFooter) && <Footer />}

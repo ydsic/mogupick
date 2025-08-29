@@ -21,7 +21,7 @@ interface ReviewCardProps {
 
 function ReviewCard({ r, className }: ReviewCardProps) {
   return (
-    <div className={cn('flex flex-col rounded-xl shadow-md', className)}>
+    <div className={cn('flex flex-col rounded-xl shadow-[var(--shadow-md)]', className)}>
       {/* Header */}
       <div className="flex items-center gap-3 p-4">
         <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">

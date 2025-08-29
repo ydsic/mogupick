@@ -17,8 +17,8 @@ function Chips({ className, text, selected = false, ...props }: ChipsProps) {
       className={cn(
         'cursor-pointer rounded-full border px-3 py-1.5 text-sm transition-colors',
         selected
-          ? 'border-black bg-black text-white'
-          : 'border-gray-700 bg-transparent text-gray-700',
+          ? 'border-[var(--color-background)] bg-[var(--foreground)] text-[var(--color-surface)]'
+          : 'border-[var(--color-text-secondary)] bg-transparent',
         className,
       )}
       {...props}
