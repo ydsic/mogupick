@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} touch-manipulation antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} touch-manipulation bg-white antialiased`}
         style={{
           WebkitTouchCallout: 'none',
           WebkitUserSelect: 'none',
