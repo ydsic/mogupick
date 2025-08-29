@@ -3,13 +3,22 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Header from '../../(home)/_components/Header';
+import { useParams, notFound } from 'next/navigation';
 import ReviewIcon from '@/assets/icons/review.svg';
 import LikeIcon from '@/assets/icons/like.svg';
 import FilterIcon from '@/assets/icons/filter.svg';
 import DownIcon from '@/assets/icons/down.svg';
 import StarIcon from '@/assets/icons/star.svg';
+import { categoryMap } from '@/constants/categories';
 
 export default function CategoryPage() {
+  const params = useParams();
+  const categoryName = typeof params.categoryName === 'string' ? params.categoryName : '';
+
+  if (!categoryMap[categoryName]) {
+    notFound();
+  }
+
   type Category = '전체' | '과일' | '채소' | '쌀/잡곡';
   type Product = {
     id: string;
@@ -172,7 +181,7 @@ export default function CategoryPage() {
 
   return (
     <div className="min-h-dvh bg-white text-neutral-900">
-      <Header />
+      <Header categoryName={categoryName} />
       <CategoryTabs value={category} onChange={setCategory} />
       <Toolbar total={filtered.length} />
       <main className="mb-15">

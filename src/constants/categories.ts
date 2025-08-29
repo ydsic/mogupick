@@ -10,3 +10,5 @@ export const categories = [
   { id: 9, text: '반려동물', slug: 'pets' },
   { id: 10, text: '육아용품', slug: 'baby' },
 ];
+
+export const categoryMap = Object.fromEntries(categories.map((c) => [c.slug, c.text]));
