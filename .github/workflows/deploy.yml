@@ -1,0 +1,44 @@
+name: Discord Notification on Push
+
+on:
+  push:
+    branches: [prototype]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set developer name
+        id: dev-name
+        run: |
+          if [ "${{ github.actor }}" = "ydsic" ]; then
+            echo "name=이예도" >> $GITHUB_OUTPUT
+          elif [ "${{ github.actor }}" = "eillen-yang" ]; then
+            echo "name=양아름" >> $GITHUB_OUTPUT
+          else
+            echo "name=${{ github.actor }}" >> $GITHUB_OUTPUT
+          fi
+
+          timestamp=$(TZ='Asia/Seoul' date -d "${{ github.event.head_commit.timestamp }}" +"%m월 %d일 %H:%M")
+          echo "formatted-time=${timestamp} (KST)" >> $GITHUB_OUTPUT
+
+      - name: Send Discord notification
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            ## 🎉 사이트가 업데이트 되었어요! PM, PD분들은 테스트 해보시고 말씀해주세요!
+
+            **👤 Developer:** `${{ steps.dev-name.outputs.name }}`
+            **⏰ Time:** `${{ steps.dev-name.outputs.formatted-time }}`
+
+            **💭 Commit Message:**
+            ```
+            ${{ github.event.head_commit.message }}
+            ```
+            **🔗 GitHub Link:** <${{ github.event.head_commit.url }}>
+
+            **🔗 Prototype Link:** https://mogupick-prototype.vercel.app
+
+            **🔗 Update Link:** https://www.notion.so/goormkdx/Prototype-255c0ff4ce31805facf6c8fbfe7ddc12
