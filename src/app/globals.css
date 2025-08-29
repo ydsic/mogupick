@@ -64,25 +64,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-
-    --color-background: #0a0a0a;
-    --color-surface: #1c1c1c;
-    --color-text-primary: #ededed;
-    --color-text-secondary: #9aa0a6;
-    --color-text-disabled: #5f6368;
-
-    /* shadow */
-    --shadow-sm: 0 1px 2px rgba(255, 255, 255, 0.05);
-    --shadow-md: 0 4px 6px rgba(255, 255, 255, 0.1);
-    --shadow-lg: 0 10px 15px rgba(255, 255, 255, 0.15);
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
