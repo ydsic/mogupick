@@ -5,6 +5,9 @@ import { ProductCardList } from '@/components/card/Product';
 import { categories } from '@/constants/categories';
 import { ChipsList } from '@/components/ui/Chips';
 import { ReviewCardList } from '@/components/card/Review';
+import { RankingList } from '@/components/card/Ranking';
+import { CategoryList } from '@/components/card/Category';
+import BannerSlider from '@/components/card/BannerSlider';
 
 export const dummyReviews = [
   {
@@ -71,8 +74,10 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       <Header />
-      <div className="min-h-0 flex-1 space-y-10">
+      <div className="min-h-0 flex-1 space-y-7">
         <SearchBar />
+        <BannerSlider />
+        <CategoryList categories={categories} />
 
         <div>
           <Title text="최근 본 상품과 유사한 상품" adver={true} />
@@ -92,6 +97,7 @@ export default function HomePage() {
         <div>
           <Title text="지금 주목받는 상품" />
           <ChipsList categories={categories} />
+          <RankingList ranking={products} limit={5} />
         </div>
       </div>
     </div>
