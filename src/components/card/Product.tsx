@@ -8,8 +8,8 @@ import { Product } from '@/types/product';
 
 import RatingStarIcon from '@/assets/icons/common/rating-star-14px.svg';
 import ReviewIcon from '@/assets/icons/common/review-14px.svg';
-import HeartIcon from '@/assets/icons/common/heart-24px.svg';
-import LikeIcon from '@/assets/icons/common/like-24px.svg';
+import HeartIcon from '@/assets/icons/common/heart-active-24px.svg';
+import LikeIcon from '@/assets/icons/common/empty-like-24px.svg';
 import { useLikedStore } from '@/store/useLikedStore';
 
 /**
