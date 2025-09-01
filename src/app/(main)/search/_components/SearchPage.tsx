@@ -21,7 +21,7 @@ export default function SearchPage({ initialQuery }: Props) {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-4">
       <SearchHeader value={query} onChange={setQuery} />
 
       <div className="mt-6 flex flex-col gap-10">

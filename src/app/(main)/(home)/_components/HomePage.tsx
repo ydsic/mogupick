@@ -73,7 +73,7 @@ export const products = [
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-4">
       <Header />
       <div className="min-h-0 flex-1 space-y-7">
         <SearchBar />

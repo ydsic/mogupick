@@ -5,6 +5,8 @@ import Image from 'next/image';
 import mogupickLogo from '@/assets/icons/mogupick.png';
 import { usePathname, useRouter } from 'next/navigation';
 import { categoryMap } from '@/constants/categories';
+import CartIcon from '@/assets/icons/common/shoppingcart-32px.svg';
+import NotificationIcon from '@/assets/icons/common/notification-32px.svg';
 
 interface HeaderProps {
   categoryName?: string;
@@ -15,7 +17,7 @@ export default function Header({ categoryName }: HeaderProps) {
   const router = useRouter();
 
   const headerTagStyle =
-    'fixed top-0 right-0 left-0 z-50 md:left-1/2 md:w-[500px] md:-translate-x-1/2';
+    'fixed top-0 right-0 left-0 z-50 md:left-1/2 md:w-[500px] md:-translate-x-1/2 bg-white';
   const divTagStyle = 'relative flex h-14 items-center justify-between px-4';
 
   const displayName = categoryMap[categoryName ?? ''] ?? '카테고리 설명';
@@ -25,11 +27,15 @@ export default function Header({ categoryName }: HeaderProps) {
       <header className={`${headerTagStyle}`}>
         <div className={`${divTagStyle}`}>
           <Link href="/" className="flex flex-1 items-center gap-4 text-base font-bold">
-            <Image src={mogupickLogo} alt="Mogupick Logo" className="h-8 w-20" />
+            <Image src={mogupickLogo} alt="Mogupick Logo" width={100} height={50} />
           </Link>
           <div className="flex gap-2 py-1 pl-2">
-            <Link href="/bell">알림</Link>
-            <Link href="/cart">장바구니</Link>
+            <Link href="/bell">
+              <NotificationIcon />
+            </Link>
+            <Link href="/cart">
+              <CartIcon />
+            </Link>
           </div>
         </div>
       </header>
