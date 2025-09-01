@@ -31,7 +31,7 @@ export default function About() {
       <div className="flex min-h-dvh items-center justify-center bg-gray-100">
         <div className="relative w-full overflow-hidden bg-white px-4 md:w-[500px]">
           <div>
-            <ProductCardList products={products} showHeart={true} limit={4} />
+            <ProductCardList path={`products`} products={products} showHeart={true} limit={4} />
           </div>
           <div>
             <Title text="내 또래의 베스트 리뷰 PICK" />
@@ -47,11 +47,23 @@ export default function About() {
           <div>
             <div>
               <h2>ProductCard Test</h2>
-              <ProductCardList products={products} layout="grid" cols={3} size="s" />
+              <ProductCardList
+                path={`/products`}
+                products={products}
+                layout="grid"
+                cols={3}
+                size="s"
+              />
               <br />
-              <ProductCardList products={products} layout="horizontal" />
+              <ProductCardList path={`/products`} products={products} layout="horizontal" />
               <br />
-              <ProductCardList products={products} layout="grid" cols={2} size="l" />
+              <ProductCardList
+                path={`/products`}
+                products={products}
+                layout="grid"
+                cols={2}
+                size="l"
+              />
             </div>
 
             <br />

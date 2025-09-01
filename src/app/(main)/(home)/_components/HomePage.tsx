@@ -82,23 +82,40 @@ export default function HomePage() {
 
         <div>
           <Title text="최근 본 상품과 유사한 상품" adver={true} />
-          <ProductCardList products={products} limit={4} />
-          <div className="flex items-center justify-center">
-            <Button variant="outline" color="black">
-              상품 더보기
-            </Button>
-          </div>
+          <ProductCardList
+            path={`/products`}
+            products={products}
+            limit={4}
+            query={{ from: 'home', section: 'recent' }}
+          />
+
+          {products.length >= 4 && (
+            <div className="flex items-center justify-center">
+              <Button variant="outline" color="black">
+                상품 더보기
+              </Button>
+            </div>
+          )}
         </div>
 
         <div>
           <Title text="꾸준히 사랑받는 상품" />
           <ChipsList categories={categories} />
-          <ProductCardList products={products} cols={3} size="s" />
-          <div className="flex items-center justify-center">
-            <Button variant="outline" color="black">
-              상품 더보기
-            </Button>
-          </div>
+          <ProductCardList
+            path={`/products`}
+            products={products}
+            cols={3}
+            size="s"
+            limit={6}
+            query={{ from: 'home', section: 'popular' }}
+          />
+          {products.length >= 4 && (
+            <div className="flex items-center justify-center">
+              <Button variant="outline" color="black">
+                상품 더보기
+              </Button>
+            </div>
+          )}
         </div>
         <div>
           <Title text="내 또래의 베스트 리뷰 PICK" />
