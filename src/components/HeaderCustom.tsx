@@ -81,9 +81,9 @@ export default function HeaderCustom({
             </button>
           )}
           {showBell && (
-            <button onClick={onClose}>
+            <Link href="/alert">
               <BellIcon />
-            </button>
+            </Link>
           )}
           {showCart && (
             <Link href="/cart">
