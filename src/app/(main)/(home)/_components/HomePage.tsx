@@ -9,6 +9,7 @@ import { CategoryList } from '@/components/card/Category';
 import BannerSlider from '@/components/card/BannerSlider';
 import Button from '@/components/ui/Button';
 import HeaderCustom from '@/components/HeaderCustom';
+import { getSession } from 'next-auth/react';
 
 export const dummyReviews = [
   {
@@ -71,7 +72,10 @@ export const products = [
   { id: 12, store: '쿠팡', title: '무선 충전기', price: 33000, rating: 4.4, reviewCount: 72 },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  // 로그인 여부에 따라 화면 분기처리 ㄱ
+  // const session = await getSession()
+
   return (
     <div className="flex flex-col px-4">
       <HeaderCustom showLogo showBell showCart />

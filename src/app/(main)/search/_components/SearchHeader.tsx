@@ -57,11 +57,11 @@ export default function SearchHeader({ value = '', onChange }: SearchHeaderProps
           onChange={handleChange}
           value={inputValue}
         />
-        {/* {inputValue && ( */}
-        <button type="button" onClick={clearInput}>
-          <CloseIcon />
-        </button>
-        {/* )} */}
+        {inputValue && (
+          <button type="button" onClick={clearInput}>
+            <CloseIcon />
+          </button>
+        )}
         <button type="submit" className="hidden"></button>
       </form>
       <CartIcon />
