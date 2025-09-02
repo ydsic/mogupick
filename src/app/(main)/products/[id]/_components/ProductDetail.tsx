@@ -1,6 +1,6 @@
+'use client';
+
 import HeaderCustom from '@/components/HeaderCustom';
-import LikeIcon from '@/assets/icons/common/icon-24-like.svg';
-import ShareIcon from '@/assets/icons/common/icon-24-Share.svg';
 import NextIcon from '@/assets/icons/common/next-24px.svg';
 import Title from '@/components/ui/Title';
 import ReviewsMiniSlide from './ReviewsMiniSlide';
@@ -12,6 +12,9 @@ import RatingStar from './RatingStar';
 import DownIcon from '@/assets/icons/common/down-16px.svg';
 import { ProductCardList } from '@/components/card/Product';
 import { products } from '@/app/(main)/(home)/_components/HomePage';
+import ProductDescription from './ProductDescription';
+import ProductInfo from './ProductInfo';
+import React, { useRef } from 'react';
 
 interface ProductDetailProps {
   reviews: Review[];
@@ -19,76 +22,49 @@ interface ProductDetailProps {
 }
 
 export default function ProductDetail({ reviews, product }: ProductDetailProps) {
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
+    if (ref.current) {
+      ref.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <HeaderCustom showBack showHome showSearch showCart />
       <div className="pt-15 pb-30">
-        <div className="aspect-[1/1] bg-gray-200" />
-
-        <div>
-          <div className="flex items-start justify-between border-b border-gray-200 px-4 py-4">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center">
-                <span className="text-sm font-medium">{product.store}</span>
-                <NextIcon />
-              </div>
-              <p className="text-base font-semibold">{product.title}</p>
-              <div className="text-2xl font-bold">
-                <span>{product.price.toLocaleString()}</span>원
-              </div>
-              <div className="flex items-center gap-4 text-sm">
-                <div className="flex items-center">
-                  <RatingStar rating={product.rating} />
-                  <span>{product.rating}</span>
-                </div>
-                <Link href={`/products/${product.id}/reviews`} className="underline">
-                  리뷰 {product.reviewCount}
-                </Link>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <button>
-                <LikeIcon />
-              </button>
-              <button>
-                <ShareIcon />
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-start gap-8 border-b border-gray-200 p-4 text-sm">
-            <span>배송</span>
-            <div>
-              <p>당일출발 11:00 마감 | 평균 2일 이내 도착 확률 80%</p>
-              <p>지금 결제 시 8.28(목) 발송 예정</p>
-              <p>무료배송</p>
-            </div>
-          </div>
-        </div>
+        <ProductInfo product={product} />
 
         <div className="p-4">
           <Title text="장기구독 사용자의 리뷰" />
           <ul className="flex gap-2 overflow-x-auto">
             {reviews.map((review: Review) => (
-              <ReviewsMiniSlide review={review} key={review.id} />
+              <ReviewsMiniSlide
+                review={review}
+                key={review.id}
+                onClickReview={() => scrollToSection(reviewRef)}
+              />
             ))}
           </ul>
         </div>
 
-        <div className="py-10">상품정보 & 리뷰</div>
+        {/* 상품설명 탭 (리뷰) */}
+        <ProductDescription
+          ref={descriptionRef}
+          onClickDescription={() => scrollToSection(descriptionRef)}
+          onClickReview={() => scrollToSection(reviewRef)}
+        />
 
-        <div className="px-4">
+        <div className="px-4" ref={reviewRef}>
           <Title text="리뷰" />
           {/* 리뷰 이미지 미리보기 */}
           <div className="mt-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1 text-sm text-gray-600">
-                <RatingStar rating={product.rating} />
-                <strong className="ml-1 text-base text-black">{product.rating}</strong>
-                <span className="ml-1 text-sm text-gray-500">({product.reviewCount})</span>
-              </div>
-              <Link href={`/products/${product.id}/reviews`}>
-                <NextIcon className="text-gray-400" />
-              </Link>
+            <div className="flex items-center gap-1 text-sm text-gray-600">
+              <RatingStar rating={product.rating} />
+              <strong className="ml-1 text-base text-black">{product.rating}</strong>
+              <span className="ml-1 text-sm text-gray-500">({product.reviewCount})</span>
             </div>
 
             <div className="mt-3 grid grid-cols-3 gap-1">
