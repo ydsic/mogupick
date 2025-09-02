@@ -1,40 +1,42 @@
-'use client';
-
 import Image from 'next/image';
+import mogupickLogo from '@/assets/icons/mogupick.png';
 
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
+import LoginForm from './_components/Loginform';
+import HeaderCustom from '@/components/HeaderCustom';
+import { redirect } from 'next/navigation';
 
-export default function SocialPage() {
-  const { data: session } = useSession();
+export default async function Page() {
+  const session = await getServerSession();
 
-  console.warn('session', session);
-
-  if (session?.user !== null && session?.user !== undefined) {
-    return (
-      <div>
-        <p>만료: {session.expires}</p>
-        <p>AccessToken: {session.accessToken}</p>
-        <p>이름: {session.user.name ?? '알 수 없음'}</p>
-        <p>프로바이더: {session.user.provider ?? '알 수 없음'}</p>
-        <p>
-          프로필 이미지:{' '}
-          {session.user.image !== null &&
-          session.user.image !== undefined &&
-          session.user.image !== '' ? (
-            <Image src={session.user.image} alt="profile" width={80} height={80} />
-          ) : (
-            '없음'
-          )}
-        </p>
-        <button onClick={() => void signOut()}>로그아웃</button>
-      </div>
-    );
+  if (session) {
+    redirect('/');
   }
 
   return (
-    <div className="flex h-dvh flex-col items-center justify-center gap-2">
-      <button onClick={() => void signIn('kakao')}>카카오로 시작하기</button>
-      <button onClick={() => void signIn('google')}>구글로 시작하기</button>
+    <div className="flex h-full flex-col items-center justify-start gap-2">
+      <HeaderCustom showBack showHome />
+      <div className="my-14 flex min-h-0 w-full flex-1 flex-col px-4">
+        {/* 상단 브랜딩 영역 */}
+        <div className="mt-6 flex flex-col gap-3">
+          <h2 className="text-2xl font-extrabold">
+            구독으로 채우는
+            <br /> 나의 새로운 일상!
+          </h2>
+
+          <Image src={mogupickLogo} alt="Mogupick Logo" className="h-10 w-32" />
+          <p className="text-base text-gray-500">서비스 이용을 위해 로그인/회원가입을 해주세요.</p>
+        </div>
+
+        {/* 로그인 폼 */}
+        <LoginForm />
+
+        <div className="mt-16 flex justify-center gap-3 text-xs font-medium underline">
+          <span>계정 찾기</span>
+          <span>비밀번호 변경</span>
+          <span>문의하기</span>
+        </div>
+      </div>
     </div>
   );
 }

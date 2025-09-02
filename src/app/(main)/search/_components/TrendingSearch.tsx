@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import RankDownIcon from '@/assets/icons/rank/rank-down-12px.svg';
@@ -9,7 +8,7 @@ import RankUpIcon from '@/assets/icons/rank/rank-up-12px.svg';
 const mockTrending = [
   '아이폰 16',
   '갤럭시 Z 폴드',
-  '플스5',
+  '무선',
   '에어팟 맥스',
   '노트북',
   '아이폰',
