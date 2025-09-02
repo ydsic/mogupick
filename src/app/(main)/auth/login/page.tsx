@@ -18,13 +18,13 @@ export default async function Page() {
       <HeaderCustom showBack showHome />
       <div className="my-14 flex min-h-0 w-full flex-1 flex-col px-4">
         {/* 상단 브랜딩 영역 */}
-        <div className="mt-6">
+        <div className="mt-6 flex flex-col gap-3">
           <h2 className="text-2xl font-extrabold">
             구독으로 채우는
             <br /> 나의 새로운 일상!
           </h2>
 
-          <Image src={mogupickLogo} alt="Mogupick Logo" className="h-20 w-32" />
+          <Image src={mogupickLogo} alt="Mogupick Logo" className="h-10 w-32" />
           <p className="text-base text-gray-500">서비스 이용을 위해 로그인/회원가입을 해주세요.</p>
         </div>
 
