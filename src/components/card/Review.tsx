@@ -46,7 +46,7 @@ function ReviewCard({ r, className }: ReviewCardProps) {
             <span>{r.rating}</span>
           </div>
           <div className="flex items-center gap-1">
-            /<ReviewIcon />
+            <ReviewIcon />
             <span>{r.reviewCount}</span>
           </div>
         </div>

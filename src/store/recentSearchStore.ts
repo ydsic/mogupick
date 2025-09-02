@@ -3,7 +3,7 @@ import { create } from 'zustand';
 interface RecentSearchState {
   recent: string[];
   setRecent: (items: string[]) => void;
-  addKeyword: (keywoord: string) => void;
+  addKeyword: (keyword: string) => void;
   removeKeyword: (keyword: string) => void;
   clearAll: () => void;
 }
