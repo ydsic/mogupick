@@ -1,5 +1,4 @@
 import SearchBar from '@/components/SearchBar';
-import Header from './Header';
 import Title from '@/components/ui/Title';
 import { ProductCardList } from '@/components/card/Product';
 import { categories } from '@/constants/categories';
@@ -9,6 +8,7 @@ import { RankingList } from '@/components/card/Ranking';
 import { CategoryList } from '@/components/card/Category';
 import BannerSlider from '@/components/card/BannerSlider';
 import Button from '@/components/ui/Button';
+import HeaderCustom from '@/components/HeaderCustom';
 
 export const dummyReviews = [
   {
@@ -74,7 +74,7 @@ export const products = [
 export default function HomePage() {
   return (
     <div className="flex flex-col px-4">
-      <Header />
+      <HeaderCustom title="홈" showBack />
       <div className="min-h-0 flex-1 space-y-7">
         <SearchBar />
         <BannerSlider />

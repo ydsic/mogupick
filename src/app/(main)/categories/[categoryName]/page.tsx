@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import Header from '../../(home)/_components/Header';
 import { useParams, notFound } from 'next/navigation';
 import FilterIcon from '@/assets/icons/filter.svg';
 import DownIcon from '@/assets/icons/down.svg';
 import { categoryMap } from '@/constants/categories';
 import { ProductCardList } from '@/components/card/Product';
 import { Product } from '@/types/product';
+import HeaderCustom from '@/components/HeaderCustom';
 
 export default function CategoryPage() {
   const params = useParams();
@@ -140,7 +140,7 @@ export default function CategoryPage() {
 
   return (
     <div className="min-h-dvh bg-white text-neutral-900">
-      <Header categoryName={categoryName} />
+      <HeaderCustom title={categoryMap[categoryName]} showBack showHome showSearch showCart />
       <CategoryTabs value={category} onChange={setCategory} />
       <Toolbar total={filtered.length} />
       <main className="mb-15">
