@@ -1,12 +1,5 @@
-import HeaderCustom from '@/components/HeaderCustom';
+import { use } from 'react';
 import { products } from '../../(home)/_components/HomePage';
-
-import LikeIcon from '@/assets/icons/common/icon-24-like.svg';
-import ShareIcon from '@/assets/icons/common/icon-24-Share.svg';
-import RatingStarIcon from '@/assets/icons/common/icon-16-star-fill.svg';
-import NextIcon from '@/assets/icons/common/next-24px.svg';
-import Title from '@/components/ui/Title';
-import ReviewsMiniSlide from './_components/ReviewsMiniSlide';
 import ProductDetail from './_components/ProductDetail';
 
 export interface Review {
@@ -52,9 +45,15 @@ const reviews: Review[] = [
     date: '2주일 전',
   },
 ];
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: PageProps) {
   const { id } = await params;
+
+  console.log('id', id);
+
   const product = products.find((p) => p.id === Number(id));
 
   if (!product) {

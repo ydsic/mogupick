@@ -1,9 +1,13 @@
 import SearchPage from './_components/SearchPage';
 
 interface Props {
-  searchParams: {
+  params: {
     q?: string;
   };
+}
+
+interface PageProps {
+  searchParams: Promise<{ q: string }>;
 }
 
 // search
@@ -17,6 +21,10 @@ interface Props {
 //  ┃ ┗ page.tsx                  // SSR, searchParams로 분기
 //  ┗ page.tsx                  // SSR, searchParams로 분기
 
-export default function Page({ searchParams }: Props) {
-  return <SearchPage initialQuery={searchParams.q} />;
+export default async function Page({ searchParams }: PageProps) {
+  const { q } = await searchParams;
+
+  console.log('q', q);
+
+  return <SearchPage initialQuery={q} />;
 }
