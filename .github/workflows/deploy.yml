@@ -21,6 +21,8 @@ jobs:
 
           timestamp=$(TZ='Asia/Seoul' date -d "${{ github.event.head_commit.timestamp }}" +"%m월 %d일 %H:%M")
           echo "formatted-time=${timestamp} (KST)" >> $GITHUB_OUTPUT
+          commit_title=$(echo "${{ github.event.head_commit.message }}" | head -n1)
+          echo "commit-title=${commit_title}" >> $GITHUB_OUTPUT
 
       - name: Send Discord notification
         uses: Ilshidur/action-discord@master
@@ -29,13 +31,14 @@ jobs:
         with:
           args: |
             ## 🎉 사이트가 업데이트 되었어요! PM, PD분들은 테스트 해보시고 말씀해주세요!
-
-            **👤 Developer:** `${{ steps.dev-name.outputs.name }}`
+            
+            **👤 Deployer:** `${{ steps.dev-name.outputs.name }}`
             **⏰ Time:** `${{ steps.dev-name.outputs.formatted-time }}`
 
-            **💭 Commit Message:**
+            **💭 Commit Message(Title):**
             ```
-            ${{ github.event.head_commit.message }}
+            ${{ steps.dev-name.outputs.commit-title }}
+
             ```
             **🔗 GitHub Link:** <${{ github.event.head_commit.url }}>
 

@@ -3,8 +3,8 @@ import CategoryIcon from '@/assets/icons/common/category-24px.svg';
 import CloseIcon from '@/assets/icons/common/close-16px.svg';
 import DownIcon from '@/assets/icons/common/down-16px.svg';
 import FillterIcon from '@/assets/icons/common/fillter-16px.svg';
-import HandIcon from '@/assets/icons/common/hand-24px.svg';
-import HeartIcon from '@/assets/icons/common/heart-24px.svg';
+import HandIcon from '@/assets/icons/common/hand-active-24px.svg';
+import HeartIcon from '@/assets/icons/common/heart-active-24px.svg';
 import HomeIcon from '@/assets/icons/common/home-24px.svg';
 import InfoIcon from '@/assets/icons/common/info-14px.svg';
 import LikeIcon from '@/assets/icons/common/like-24px.svg';
@@ -31,7 +31,7 @@ export default function About() {
       <div className="flex min-h-dvh items-center justify-center bg-gray-100">
         <div className="relative w-full overflow-hidden bg-white px-4 md:w-[500px]">
           <div>
-            <ProductCardList products={products} showHeart={true} limit={4} />
+            <ProductCardList path={`products`} products={products} showHeart={true} limit={4} />
           </div>
           <div>
             <Title text="내 또래의 베스트 리뷰 PICK" />
@@ -47,11 +47,23 @@ export default function About() {
           <div>
             <div>
               <h2>ProductCard Test</h2>
-              <ProductCardList products={products} layout="grid" cols={3} size="s" />
+              <ProductCardList
+                path={`/products`}
+                products={products}
+                layout="grid"
+                cols={3}
+                size="s"
+              />
               <br />
-              <ProductCardList products={products} layout="horizontal" />
+              <ProductCardList path={`/products`} products={products} layout="horizontal" />
               <br />
-              <ProductCardList products={products} layout="grid" cols={2} size="l" />
+              <ProductCardList
+                path={`/products`}
+                products={products}
+                layout="grid"
+                cols={2}
+                size="l"
+              />
             </div>
 
             <br />
@@ -92,7 +104,8 @@ export default function About() {
               <div className="flex flex-col items-center gap-3">
                 <p className="mb-2">24px 아이콘들</p>
                 <CategoryIcon className="h-8 w-8 fill-blue-500" />
-                <HandIcon className="h-8 w-8 fill-green-500" />
+
+                {/* <HandIcon className="h-8 w-8 fill-green-500" /> */}
                 <HeartIcon className="h-8 w-8 fill-red-500" />
                 <HomeIcon className="h-8 w-8 fill-orange-500" />
                 <LikeIcon className="h-8 w-8 fill-pink-500" />

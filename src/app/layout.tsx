@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
-import SessionProviderClient from './provider/SessionProviderClient';
+import SessionProviderClient from './_provider/SessionProviderClient';
 
 import './globals.css';
 

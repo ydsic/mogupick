@@ -1,5 +1,4 @@
 import SearchBar from '@/components/SearchBar';
-import Header from './Header';
 import Title from '@/components/ui/Title';
 import { ProductCardList } from '@/components/card/Product';
 import { categories } from '@/constants/categories';
@@ -9,6 +8,7 @@ import { RankingList } from '@/components/card/Ranking';
 import { CategoryList } from '@/components/card/Category';
 import BannerSlider from '@/components/card/BannerSlider';
 import Button from '@/components/ui/Button';
+import HeaderCustom from '@/components/HeaderCustom';
 
 export const dummyReviews = [
   {
@@ -73,8 +73,8 @@ export const products = [
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col">
-      <Header />
+    <div className="flex flex-col px-4">
+      <HeaderCustom showLogo showBell showCart />
       <div className="min-h-0 flex-1 space-y-7">
         <SearchBar />
         <BannerSlider />
@@ -82,23 +82,40 @@ export default function HomePage() {
 
         <div>
           <Title text="최근 본 상품과 유사한 상품" adver={true} />
-          <ProductCardList products={products} limit={4} />
-          <div className="flex items-center justify-center">
-            <Button variant="outline" color="black">
-              상품 더보기
-            </Button>
-          </div>
+          <ProductCardList
+            path={`/products`}
+            products={products}
+            limit={4}
+            query={{ from: 'home', section: 'recent' }}
+          />
+
+          {products.length >= 4 && (
+            <div className="flex items-center justify-center">
+              <Button variant="outline" color="black">
+                상품 더보기
+              </Button>
+            </div>
+          )}
         </div>
 
         <div>
           <Title text="꾸준히 사랑받는 상품" />
           <ChipsList categories={categories} />
-          <ProductCardList products={products} cols={3} size="s" />
-          <div className="flex items-center justify-center">
-            <Button variant="outline" color="black">
-              상품 더보기
-            </Button>
-          </div>
+          <ProductCardList
+            path={`/products`}
+            products={products}
+            cols={3}
+            size="s"
+            limit={6}
+            query={{ from: 'home', section: 'popular' }}
+          />
+          {products.length >= 4 && (
+            <div className="flex items-center justify-center">
+              <Button variant="outline" color="black">
+                상품 더보기
+              </Button>
+            </div>
+          )}
         </div>
         <div>
           <Title text="내 또래의 베스트 리뷰 PICK" />
