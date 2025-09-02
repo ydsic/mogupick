@@ -104,7 +104,7 @@ export default function About() {
               <div className="flex flex-col items-center gap-3">
                 <p className="mb-2">24px 아이콘들</p>
                 <CategoryIcon className="h-8 w-8 fill-blue-500" />
-                <HandIcon className="h-8 w-8 fill-green-500" />
+                {/* <HandIcon className="h-8 w-8 fill-green-500" /> */}
                 <HeartIcon className="h-8 w-8 fill-red-500" />
                 <HomeIcon className="h-8 w-8 fill-orange-500" />
                 <LikeIcon className="h-8 w-8 fill-pink-500" />
