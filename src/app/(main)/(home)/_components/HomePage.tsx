@@ -7,9 +7,10 @@ import { ReviewCardList } from '@/components/card/Review';
 import { RankingList } from '@/components/card/Ranking';
 import { CategoryList } from '@/components/card/Category';
 import BannerSlider from '@/components/card/BannerSlider';
-import Button from '@/components/ui/Button';
 import HeaderCustom from '@/components/HeaderCustom';
 import { getSession } from 'next-auth/react';
+import Link from 'next/link';
+import NextIcon from '@/assets/icons/common/next-24px.svg';
 
 export const dummyReviews = [
   {
@@ -79,7 +80,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col px-4">
       <HeaderCustom showLogo showBell showCart />
-      <div className="min-h-0 flex-1 space-y-7">
+      <div className="min-h-0 flex-1 space-y-10">
         <SearchBar />
         <BannerSlider />
         <CategoryList categories={categories} />
@@ -94,10 +95,10 @@ export default async function HomePage() {
           />
 
           {products.length >= 4 && (
-            <div className="flex items-center justify-center">
-              <Button variant="outline" color="black">
-                상품 더보기
-              </Button>
+            <div className="flex justify-center">
+              <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center">
+                <Link href={`/products?section=recent`}>상품 더보기</Link> <NextIcon />
+              </div>
             </div>
           )}
         </div>
@@ -114,10 +115,11 @@ export default async function HomePage() {
             query={{ from: 'home', section: 'popular' }}
           />
           {products.length >= 4 && (
-            <div className="flex items-center justify-center">
-              <Button variant="outline" color="black">
-                상품 더보기
-              </Button>
+            <div className="flex justify-center">
+              <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center">
+                <Link href={`/products?section=popular`}>상품 더보기</Link>
+                <NextIcon />
+              </div>
             </div>
           )}
         </div>
