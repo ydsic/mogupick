@@ -1,6 +1,8 @@
 'use client';
 
+
 import { useState } from 'react';
+
 import clsx from 'clsx';
 import Link from 'next/link';
 
@@ -9,9 +11,11 @@ import { Product } from '@/types/product';
 
 import RatingStarIcon from '@/assets/icons/common/rating-star-14px.svg';
 import ReviewIcon from '@/assets/icons/common/review-14px.svg';
+
 import HeartIcon from '@/assets/icons/common/heart-active-24px.svg';
 import LikeIcon from '@/assets/icons/common/empty-like-24px.svg';
 import { useLikedStore } from '@/store/useLikedStore';
+
 
 /**
  * product-card
@@ -20,10 +24,12 @@ type ProductCardProps = {
   size?: 's' | 'm' | 'l';
   className?: string;
   p: Product;
+
   path: string; // 기본 path
   query?: Record<string, string>; // 추가 query
   showHeart?: boolean; // 하트 노출 여부
   showCartButton?: boolean; // 장바구니 버튼 노출 여부
+
   onHeartClick?: (p: Product) => void; // 클릭 이벤트
 };
 
@@ -140,6 +146,7 @@ interface ProductCardListProps {
   showHeart?: boolean; // 하트 노출 여부 이벤트
   showCartButton?: boolean; // 장바구니 버튼 노출 여부
   query?: Record<string, string>; // ProductCard에 전달
+
 }
 
 function ProductCardList({
@@ -153,11 +160,13 @@ function ProductCardList({
   showCartButton = false,
   query,
 }: ProductCardListProps) {
+
   const gridCols = {
     2: 'grid-cols-2',
     3: 'grid-cols-3',
     4: 'grid-cols-4',
   }[cols];
+
 
   const visibleProducts = limit ? products.slice(0, limit) : products;
 
