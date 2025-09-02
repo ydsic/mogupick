@@ -18,7 +18,6 @@ export default function CategoryPage() {
   }
 
   type Category = '전체' | '과일' | '채소' | '쌀/잡곡';
-
   const CATEGORIES: Category[] = ['전체', '과일', '채소', '쌀/잡곡'];
 
   const MOCK_PRODUCTS: Product[] = [
@@ -78,6 +77,7 @@ export default function CategoryPage() {
     value: Category;
     onChange: (c: Category) => void;
   }) => (
+
     <nav aria-label="카테고리" className="mt-15 border-b-1 border-[#86C53A]">
       <div className="flex gap-6 px-4">
         {CATEGORIES.map((c) => {
@@ -134,12 +134,15 @@ export default function CategoryPage() {
 
   const [category, setCategory] = useState<Category>('전체');
   const filtered = useMemo(() => {
+
     if (category === '전체') return MOCK_PRODUCTS_WITH_CATEGORY;
     return MOCK_PRODUCTS_WITH_CATEGORY.filter((p) => p.category === category);
+
   }, [category]);
 
   return (
     <div className="min-h-dvh bg-white text-neutral-900">
+
       <HeaderCustom title={categoryMap[categoryName]} showBack showHome showSearch showCart />
       <CategoryTabs value={category} onChange={setCategory} />
       <Toolbar total={filtered.length} />

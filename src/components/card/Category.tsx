@@ -7,6 +7,7 @@ interface CategoryProps {
 
 function Category({ c }: CategoryProps) {
   return (
+
     <Link href={`/categories/${c.slug}`} className="text-center">
       <div className="aspect-[1/1] w-full rounded-sm bg-gray-200" />
       <span className="text-xs">{c.text}</span>
