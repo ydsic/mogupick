@@ -2,14 +2,15 @@ import SearchHeader from '../_components/SearchHeader';
 import SearchResultPage from '../_components/SearchResultPage';
 
 interface Props {
-  searchParams: {
-    q?: string;
-  };
+  searchParams: Promise<{
+    q?: string | string[];
+  }>;
 }
 
-export default function Page({ searchParams }: Props) {
-  const query = searchParams.q ?? '';
-  if (!query) {
+export default async function Page({ searchParams }: Props) {
+  const { q } = await searchParams;
+  const queries = q ? (Array.isArray(q) ? q : [q]) : [];
+  if (!queries) {
     return (
       <div className="p-4">
         <h2 className="text-lg font-bold">검색어가 없습니다.</h2>
@@ -22,7 +23,7 @@ export default function Page({ searchParams }: Props) {
     <div className="flex flex-col px-4">
       <SearchHeader />
 
-      <SearchResultPage query={query} />
+      <SearchResultPage query={queries} />
     </div>
   );
 }
