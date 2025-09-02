@@ -42,7 +42,7 @@ export default function Footer() {
   const pathname = usePathname();
 
   // Footer를 숨길 페이지들
-  const hiddenPages = ['/cart'];
+  const hiddenPages = ['/cart', '/alert'];
 
   if (hiddenPages.includes(pathname)) {
     return null;
