@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import HeaderCustom from '@/components/HeaderCustom';
-import RatingStarIcon from '@/assets/icons/common/rating-star-14px.svg';
-import ReviewIcon from '@/assets/icons/common/review-14px.svg';
+import { ProductCardList } from '@/components/card/Product';
 import CloseIcon from '@/assets/icons/common/close-24px.svg';
-import CheckBoxIcon from '@/assets/icons/common/checkbox.svg';
-import CheckedIcon from '@/assets/icons/common/checkbox-checked.svg';
+import CheckBoxIcon from '@/assets/icons/cart/checkbox.svg';
+import CheckedIcon from '@/assets/icons/cart/checkbox-checked.svg';
+import AddItemIcon from '@/assets/icons/cart/add.svg';
+import MinusItemIcon from '@/assets/icons/cart/minus.svg';
 
 interface CartItem {
   id: number;
@@ -19,7 +20,6 @@ interface CartItem {
   brand: string;
 }
 
-// 추천 상품 데이터
 const recommendedProducts = [
   { id: 1, store: 'Store', title: 'Product', price: 10000, rating: 4.8, reviewCount: 500 },
   { id: 2, store: 'Store', title: 'Product', price: 10000, rating: 4.8, reviewCount: 500 },
@@ -86,7 +86,6 @@ export default function CartPage() {
     setCartItems((items) => items.filter((item) => !item.selected));
   };
 
-  // 브랜드별 그룹화
   const groupedItems = cartItems.reduce(
     (groups, item) => {
       if (!groups[item.brand]) {
@@ -133,7 +132,6 @@ export default function CartPage() {
         <div className="flex flex-col gap-8 px-4 py-8">
           {Object.entries(groupedItems).map(([brand, items], brandIndex) => (
             <div key={brand} className="flex flex-col gap-3">
-              {/* 브랜드 제목 및 구분선 */}
               <div className="flex flex-col gap-2">
                 {brandIndex > 0 && <div className="-mx-4 h-0.5 bg-gray-200"></div>}
                 <div className="text-base font-medium">{brand}</div>
@@ -144,7 +142,6 @@ export default function CartPage() {
               <div className="flex flex-col gap-3">
                 {items.map((item) => (
                   <div key={item.id} className="flex flex-col gap-3">
-                    {/* 체크박스와 삭제 버튼 */}
                     <div className="flex items-start justify-between">
                       <button onClick={() => handleItemSelect(item.id)}>
                         {item.selected ? (
@@ -175,7 +172,7 @@ export default function CartPage() {
                               onClick={() => handleQuantityChange(item.id, -1)}
                               className="flex h-8 w-8 items-center justify-center rounded-l-lg border-r border-gray-100"
                             >
-                              <div className="h-px w-2.5 bg-black"></div>
+                              <MinusItemIcon className="h-4 w-4" />
                             </button>
                             <div className="flex h-8 w-8 items-center justify-center">
                               <span className="text-xs font-medium">{item.quantity}</span>
@@ -184,7 +181,7 @@ export default function CartPage() {
                               onClick={() => handleQuantityChange(item.id, 1)}
                               className="flex h-8 w-8 items-center justify-center rounded-r-lg border-l border-gray-100"
                             >
-                              <div className="h-2.5 w-2.5 bg-black"></div>
+                              <AddItemIcon className="h-4 w-4" />
                             </button>
                           </div>
                           <div className="text-lg font-semibold">
@@ -227,27 +224,16 @@ export default function CartPage() {
         {/* 추천 상품 */}
         <div className="flex flex-col gap-3 px-4 py-6">
           <div className="text-lg font-semibold">이런 상품은 어때요?</div>
-          <div className="grid grid-cols-3 gap-4">
-            {recommendedProducts.map((product) => (
-              <div key={product.id} className="flex flex-col gap-1 opacity-80">
-                <div className="h-32 w-28 rounded bg-gray-300"></div>
-                <div className="flex flex-col gap-1">
-                  <div className="text-xs text-black">{product.store}</div>
-                  <div className="text-sm font-medium">{product.title}</div>
-                  <div className="text-base font-semibold">{product.price.toLocaleString()}원</div>
-                  <div className="flex gap-2">
-                    <div className="flex items-center gap-0.5">
-                      <RatingStarIcon className="h-4 w-4" />
-                      <span className="text-xs">{product.rating}</span>
-                    </div>
-                    <div className="flex items-center gap-0.5">
-                      <ReviewIcon className="h-4 w-4" />
-                      <span className="text-xs">{product.reviewCount}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="mb-25">
+            <ProductCardList
+              products={recommendedProducts}
+              path="/products"
+              size="s"
+              layout="grid"
+              cols={3}
+              showHeart={false}
+              showCartButton={false}
+            />
           </div>
         </div>
       </div>
