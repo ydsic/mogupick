@@ -74,7 +74,7 @@ export const products = [
 export default function HomePage() {
   return (
     <div className="flex flex-col px-4">
-      <HeaderCustom title="홈" showBack />
+      <HeaderCustom showLogo showBell showCart />
       <div className="min-h-0 flex-1 space-y-7">
         <SearchBar />
         <BannerSlider />
