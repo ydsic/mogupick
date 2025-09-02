@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 
@@ -22,6 +23,7 @@ type ProductCardProps = {
   path: string; // 기본 path
   query?: Record<string, string>; // 추가 query
   showHeart?: boolean; // 하트 노출 여부
+  showCartButton?: boolean; // 장바구니 버튼 노출 여부
   onHeartClick?: (p: Product) => void; // 클릭 이벤트
 };
 
@@ -56,10 +58,12 @@ function ProductCard({
   p,
   query,
   showHeart = false,
+  showCartButton = false,
 }: ProductCardProps) {
   const variant = cardVariants[size];
   const toggleLike = useLikedStore((state) => state.toggle);
   const isLiked = useLikedStore((state) => state.isLiked(p.id));
+  const [isHovered, setIsHovered] = useState(false);
 
   const queryString = query
     ? '?' +
@@ -69,39 +73,57 @@ function ProductCard({
     : '';
 
   return (
-    <Link
-      href={`${path}/${p.id}${queryString}`}
-      className={cn('flex flex-col rounded-sm bg-white', className)}
+    <div
+      className={cn('mb-3 flex flex-col rounded-sm bg-white', className)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 이미지 영역 */}
-      <div className={cn('relative mb-2 w-full rounded-sm bg-gray-200', variant.image)}>
-        {showHeart && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault(); // 링크 이동 막음
-              toggleLike(p.id);
-            }}
-            className="absolute right-4 bottom-3 z-10"
-          >
-            {isLiked ? <HeartIcon /> : <LikeIcon />}
-          </button>
-        )}
-      </div>
-
-      {/* 정보 영역 */}
-      <div className={cn('flex flex-col gap-1', variant.wrapper)}>
-        <span className="text-xs text-gray-500">{p.store}</span>
-        <span className={variant.title}>{p.title}</span>
-        <span className={variant.price}>{p.price.toLocaleString()}원</span>
-        <div className={cn('flex items-center text-gray-500', variant.meta)}>
-          <RatingStarIcon />
-          <span>{p.rating}</span>
-          /<ReviewIcon />
-          <span>{p.reviewCount}</span>
+      <Link href={`${path}/${p.id}${queryString}`}>
+        {/* 이미지 영역 */}
+        <div className={cn('relative mb-2 w-full rounded-sm bg-gray-200', variant.image)}>
+          {showHeart && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault(); // 링크 이동 막음
+                toggleLike(p.id);
+              }}
+              className="absolute right-4 bottom-3 z-10"
+            >
+              {isLiked ? <HeartIcon /> : <LikeIcon />}
+            </button>
+          )}
         </div>
-      </div>
-    </Link>
+
+        {/* 정보 영역 */}
+        <div className={cn('flex flex-col gap-1', variant.wrapper)}>
+          <span className="text-xs text-gray-500">{p.store}</span>
+          <span className={variant.title}>{p.title}</span>
+          <span className={variant.price}>{p.price.toLocaleString()}원</span>
+          <div className={cn('flex items-center text-gray-500', variant.meta)}>
+            <RatingStarIcon />
+            <span>{p.rating}</span>
+            <ReviewIcon />
+            <span>{p.reviewCount}</span>
+          </div>
+        </div>
+      </Link>
+
+      {/* 장바구니 담기 버튼 */}
+      {showCartButton && (
+        <div className={`transition-all duration-200`}>
+          <button
+            className="inline-flex h-10 w-full items-center justify-center gap-1 rounded border border-stone-300 bg-white px-4"
+            onClick={(e) => {
+              e.preventDefault();
+              console.log('장바구니에 추가:', p.title);
+            }}
+          >
+            <div className="text-base leading-normal font-normal text-gray-800">장바구니 담기</div>
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -116,6 +138,7 @@ interface ProductCardListProps {
   cols?: 2 | 3 | 4;
   limit?: number;
   showHeart?: boolean; // 하트 노출 여부 이벤트
+  showCartButton?: boolean; // 장바구니 버튼 노출 여부
   query?: Record<string, string>; // ProductCard에 전달
 }
 
@@ -127,6 +150,7 @@ function ProductCardList({
   cols = 2,
   limit,
   showHeart = false,
+  showCartButton = false,
   query,
 }: ProductCardListProps) {
   const gridCols = {
@@ -148,6 +172,7 @@ function ProductCardList({
             query={query}
             size={size}
             showHeart={showHeart}
+            showCartButton={showCartButton}
           />
         ))}
       </div>
@@ -165,6 +190,7 @@ function ProductCardList({
             query={query}
             size={size}
             showHeart={showHeart}
+            showCartButton={showCartButton}
             className="min-w-[150px] flex-shrink-0"
           />
         ))}
@@ -175,7 +201,15 @@ function ProductCardList({
   return (
     <div className={clsx('grid gap-4 py-2', gridCols)}>
       {visibleProducts.map((p) => (
-        <ProductCard key={p.id} p={p} path={path} query={query} size={size} showHeart={showHeart} />
+        <ProductCard
+          key={p.id}
+          p={p}
+          path={path}
+          query={query}
+          size={size}
+          showHeart={showHeart}
+          showCartButton={showCartButton}
+        />
       ))}
     </div>
   );
