@@ -4,12 +4,13 @@ import { products } from '../(home)/_components/HomePage';
 import { sectionTitles } from '@/constants/sectionTitles';
 
 interface Props {
-  searchParams: { section?: string };
+  searchParams: Promise<{ section?: string }>;
 }
 
-export default function Page({ searchParams }: Props) {
-  const section = (searchParams.section as keyof typeof sectionTitles) || 'recent';
-  const title = sectionTitles[section];
+export default async function Page({ searchParams }: Props) {
+  const { section } = await searchParams;
+  const key = (section as keyof typeof sectionTitles) || 'recent';
+  const title = sectionTitles[key];
 
   return (
     <div>
