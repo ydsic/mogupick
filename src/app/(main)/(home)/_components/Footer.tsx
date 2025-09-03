@@ -60,7 +60,7 @@ export default function Footer() {
         />
         <FooterLink href="/pick" label="찜" Icon={HeartIcon} ActiveIcon={HeartActiveIcon} />
         <FooterLink
-          href="/subscribe/list"
+          href="/subscribe"
           label="구독"
           Icon={SubscriptionIcon}
           ActiveIcon={SubscriptionActiveIcon}
