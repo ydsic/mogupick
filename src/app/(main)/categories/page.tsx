@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function CategoriesPage() {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center pb-4">
       <HeaderCustom title="카테고리" showSearch showCart />
       <div className="grid w-full grid-cols-2 gap-2 px-4">
         {categories.map((cat) => (

@@ -15,26 +15,6 @@ export default function SearchResultPage({ query }: { query?: string | string[] 
     ? products.filter((p) => p.title.toLowerCase().includes(q.toLowerCase().trim()))
     : [];
 
-  // const sorted = useMemo(() => {
-  //   const arr = [...filtered];
-  //   switch (sort) {
-  //     case 'recommend':
-  //       return arr.sort((a, b) => (b.recommendScore || 0) - (a.recommendScore || 0));
-  //     case 'new':
-  //       return arr.sort(
-  //         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  //       );
-  //     case 'popular':
-  //       return arr.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-  //     case 'review':
-  //       return arr.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
-  //     case 'priceLow':
-  //       return arr.sort((a, b) => (a.price || 0) - (b.price || 0));
-  //     default:
-  //       return arr;
-  //   }
-  // }, [filtered, sort]);
-
   return (
     <div>
       {filtered.length > 0 && (

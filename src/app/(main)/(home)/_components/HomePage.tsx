@@ -78,9 +78,9 @@ export default async function HomePage() {
   // const session = await getSession()
 
   return (
-    <div className="flex flex-col px-4">
+    <div className="flex flex-col px-4 pb-6">
       <HeaderCustom showLogo showBell showCart />
-      <div className="min-h-0 flex-1 space-y-10">
+      <div className="min-h-0 flex-1 space-y-8">
         <SearchBar />
         <BannerSlider />
         <CategoryList categories={categories} />
@@ -116,7 +116,7 @@ export default async function HomePage() {
           />
           {products.length >= 4 && (
             <div className="flex justify-center">
-              <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center">
+              <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center text-base">
                 <Link href={`/products?section=popular`}>상품 더보기</Link>
                 <NextIcon />
               </div>
