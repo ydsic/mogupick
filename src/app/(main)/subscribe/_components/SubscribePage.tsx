@@ -44,12 +44,10 @@ export default function SubscribePage() {
             { key: 'calendar', label: '구독캘린더' },
           ]}
         />
-        {activeTab === 'list' && <StatusFilter value={statusFilter} onChange={setStatusFilter} />}
-        <CategoryFilter selectedCategory={selectedCategory} onSelect={setSelectedCategory} />
 
         <div>
           {activeTab === 'list' ? (
-            <SubscribeList />
+            <SubscribeList value={statusFilter} onChange={setStatusFilter} />
           ) : (
             <SubscribeCalendar
               selectedCategory={selectedCategory}
