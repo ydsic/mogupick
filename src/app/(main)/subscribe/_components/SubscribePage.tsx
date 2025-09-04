@@ -21,7 +21,7 @@ const events = [
 
 export default function SubscribePage() {
   const [activeTab, setActiveTab] = useState<'list' | 'calendar'>('list');
-  const [statusFilter, setStatusFilter] = useState<'ongoing' | 'paused' | 'canceled'>('ongoing');
+  const [statusFilter, setStatusFilter] = useState<'ongoing' | 'canceled'>('ongoing');
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined);

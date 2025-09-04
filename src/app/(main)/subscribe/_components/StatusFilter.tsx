@@ -1,8 +1,8 @@
 'use client';
 
 export interface StatusFilterProps {
-  value: 'ongoing' | 'paused' | 'canceled';
-  onChange: (value: 'ongoing' | 'paused' | 'canceled') => void;
+  value: 'ongoing' | 'canceled';
+  onChange: (value: 'ongoing' | 'canceled') => void;
 }
 
 export default function StatusFilter({ value, onChange }: StatusFilterProps) {
