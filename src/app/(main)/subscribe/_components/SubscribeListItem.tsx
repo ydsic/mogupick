@@ -15,10 +15,13 @@ export default function SubscribeListItem() {
           <div className="text-lg font-bold text-black">
             <strong>10,000</strong>원
           </div>
-          <div className="flex items-center gap-2 bg-green-50 p-2 text-green-700">
-            <SubscribeIcon className="fill-current text-green-700" />
-            <div>
-              <span>1달</span>에 <span>한번</span> 구독
+          <div>
+            <span className="text-sm text-gray-400">[결제 예정] 10월 5일</span>
+            <div className="flex items-center gap-2 bg-green-50 p-2 text-green-700">
+              <SubscribeIcon className="fill-current text-green-700" />
+              <div>
+                <span>1달</span>에 <span>한번</span> 구독
+              </div>
             </div>
           </div>
         </div>
