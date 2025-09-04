@@ -8,10 +8,27 @@ const {
   GOOGLE_CLIENT_SECRET: googleClientSecret,
   KAKAO_CLIENT_ID: kakaoClientId,
   KAKAO_CLIENT_SECRET: kakaoClientSecret,
-  NEXT_PUBLIC_API_URL: nextAuthSecret,
+  NEXTAUTH_URLS: nextAuthUrlsRaw,
 } = process.env;
 
-// null/empty 안전 체크
+// 여러 도메인 지원: 쉼표로 구분된 환경변수에서 현재 호스트와 일치하는 값 선택
+const getCurrentDomain = () => {
+  if (!nextAuthUrlsRaw) return undefined;
+  const urls = nextAuthUrlsRaw
+    .split(',')
+    .map((u) => u.trim())
+    .filter(Boolean);
+  if (typeof window !== 'undefined') {
+    const current = window.location.origin;
+    return urls.find((url) => current.startsWith(url)) || urls[0];
+  } else if (process.env.VERCEL_URL) {
+    return urls.find((url) => url.includes(process.env.VERCEL_URL!)) || urls[0];
+  }
+
+  return urls[0];
+};
+const nextAuthSecret = getCurrentDomain();
+
 const isValidString = (value: string | undefined): value is string =>
   value !== null && value !== undefined && value.trim() !== '';
 
@@ -24,7 +41,7 @@ if (!isValidString(kakaoClientId) || !isValidString(kakaoClientSecret)) {
 }
 
 if (!isValidString(nextAuthSecret)) {
-  throw new Error('NEXT_PUBLIC_API_URL 환경 변수가 없습니다.');
+  throw new Error('NEXTAUTH_URLS 환경 변수가 없습니다.');
 }
 
 const handler = NextAuth({
