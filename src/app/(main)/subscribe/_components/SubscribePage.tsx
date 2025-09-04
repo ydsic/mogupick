@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Tabs from './Tabs';
+import Tabs from '../../../../components/Tabs';
 import CategoryFilter from './CategoryFilter';
 import SubscribeList from './SubscribeList';
 import SubscribeCalendar from './SubscribeCalendar';
@@ -36,8 +36,14 @@ export default function SubscribePage() {
     <div>
       <HeaderCustom title="구독" showSearch showCart />
       <div className="py-14">
-        <Tabs activeTab={activeTab} onChange={setActiveTab} />
-
+        <Tabs
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          tabs={[
+            { key: 'list', label: '구독리스트' },
+            { key: 'calendar', label: '구독캘린더' },
+          ]}
+        />
         {activeTab === 'list' && <StatusFilter value={statusFilter} onChange={setStatusFilter} />}
         <CategoryFilter selectedCategory={selectedCategory} onSelect={setSelectedCategory} />
 

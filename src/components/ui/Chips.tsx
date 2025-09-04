@@ -31,15 +31,19 @@ function Chips({ className, text, selected = false, ...props }: ChipsProps) {
 interface ChipsListProps {
   className?: string;
   categories: Category[];
+  showAll: boolean;
 }
 
-function ChipsList({ className, categories }: ChipsListProps) {
-  const [selectedId, setSelectedId] = useState(categories[0]?.id);
+function ChipsList({ className, categories, showAll }: ChipsListProps) {
+  const mergedCategories = showAll
+    ? [{ id: 0, text: '전체', slug: 'all' }, ...categories]
+    : categories;
+  const [selectedId, setSelectedId] = useState(mergedCategories[0]?.id);
   return (
     <div
       className={cn('flex w-full justify-start gap-1 overflow-x-auto whitespace-nowrap', className)}
     >
-      {categories.map((c) => (
+      {mergedCategories.map((c) => (
         <Chips
           key={c.id}
           text={c.text}
