@@ -31,7 +31,7 @@ function Chips({ className, text, selected = false, ...props }: ChipsProps) {
 interface ChipsListProps {
   className?: string;
   categories: Category[];
-  showAll: boolean;
+  showAll?: boolean;
 }
 
 function ChipsList({ className, categories, showAll }: ChipsListProps) {
