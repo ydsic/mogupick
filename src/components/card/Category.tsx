@@ -7,7 +7,6 @@ interface CategoryProps {
 
 function Category({ c }: CategoryProps) {
   return (
-
     <Link href={`/categories/${c.slug}`} className="text-center">
       <div className="aspect-[1/1] w-full rounded-sm bg-gray-200" />
       <span className="text-xs">{c.text}</span>
@@ -21,7 +20,7 @@ interface CategoryListProps {
 
 function CategoryList({ categories }: CategoryListProps) {
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-5 gap-3">
       {categories.map((c) => (
         <Category key={c.id} c={c} />
       ))}
