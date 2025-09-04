@@ -1,5 +1,3 @@
-import { ChipsList } from '@/components/ui/Chips';
-import { categories } from '@/constants/categories';
 import { products } from '../../(home)/_components/HomePage';
 import { ProductCardList } from '@/components/card/Product';
 
