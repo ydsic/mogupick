@@ -76,9 +76,9 @@ export default function HeaderCustom({
             </Link>
           )}
           {showSearch && (
-            <button>
+            <Link href="/search">
               <SearchIcon />
-            </button>
+            </Link>
           )}
           {showBell && (
             <Link href="/alert">
