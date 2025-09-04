@@ -39,6 +39,15 @@ function FooterLink({ href, label, Icon, ActiveIcon }: FooterLinkProps) {
 }
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Footer를 숨길 페이지들
+  const hiddenPages = ['/cart', '/alert', '/payments', '/payments/success'];
+
+  if (hiddenPages.includes(pathname)) {
+    return null;
+  }
+
   return (
     <footer className="fixed right-0 bottom-0 left-0 z-50 bg-white md:left-1/2 md:w-[500px] md:-translate-x-1/2">
       <nav className="flex h-15 items-center justify-around py-2.5">
@@ -51,7 +60,7 @@ export default function Footer() {
         />
         <FooterLink href="/pick" label="찜" Icon={HeartIcon} ActiveIcon={HeartActiveIcon} />
         <FooterLink
-          href="/subscribe/list"
+          href="/subscribe"
           label="구독"
           Icon={SubscriptionIcon}
           ActiveIcon={SubscriptionActiveIcon}

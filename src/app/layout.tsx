@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import SessionProviderClient from './_provider/SessionProviderClient';
 
 import './globals.css';
+import { Suspense } from 'react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -52,7 +53,9 @@ export default function RootLayout({
           WebkitTapHighlightColor: 'transparent',
         }}
       >
-        <SessionProviderClient>{children}</SessionProviderClient>
+        <Suspense fallback={<div>Loading...</div>}>
+          <SessionProviderClient>{children}</SessionProviderClient>
+        </Suspense>
       </body>
     </html>
   );

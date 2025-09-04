@@ -11,6 +11,7 @@ import SearchIcon from '@/assets/icons/common/search-32px.svg';
 import CartIcon from '@/assets/icons/common/shoppingcart-32px.svg';
 import CloseIcon from '@/assets/icons/common/close-32px.svg';
 import BellIcon from '@/assets/icons/common/bell.svg';
+import SettingIcon from '@/assets/icons/alert/setting.svg';
 import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
@@ -22,6 +23,8 @@ interface HeaderProps {
   showClose?: boolean;
   showBell?: boolean;
   showLogo?: boolean;
+  showSetting?: boolean;
+  bgYellow?: boolean;
   onClose?: () => void;
   rightCustom?: ReactNode; // 커스텀 우측 요소
 }
@@ -35,13 +38,19 @@ export default function HeaderCustom({
   showCart = false,
   showClose = false,
   showBell = false,
+  showSetting = false,
+  bgYellow = false,
   onClose,
   rightCustom,
 }: HeaderProps) {
   const router = useRouter();
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 bg-white md:left-1/2 md:w-[500px] md:-translate-x-1/2">
+    <header
+      className={`fixed top-0 right-0 left-0 z-50 md:left-1/2 md:w-[500px] md:-translate-x-1/2 ${
+        bgYellow ? 'bg-[#F9C927]' : 'bg-white'
+      }`}
+    >
       <div className="relative flex h-14 items-center justify-between px-4">
         {/* 왼쪽 */}
         <div className="flex items-center gap-2">
@@ -67,14 +76,14 @@ export default function HeaderCustom({
             </Link>
           )}
           {showSearch && (
-            <button>
+            <Link href="/search">
               <SearchIcon />
-            </button>
+            </Link>
           )}
           {showBell && (
-            <button onClick={onClose}>
+            <Link href="/alert">
               <BellIcon />
-            </button>
+            </Link>
           )}
           {showCart && (
             <Link href="/cart">
@@ -84,6 +93,11 @@ export default function HeaderCustom({
           {showClose && (
             <button onClick={onClose}>
               <CloseIcon />
+            </button>
+          )}
+          {showSetting && (
+            <button onClick={onClose}>
+              <SettingIcon />
             </button>
           )}
           {rightCustom}

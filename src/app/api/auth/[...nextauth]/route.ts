@@ -1,47 +1,38 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
 
-// 객체 구조 분해
-const {
-  GOOGLE_CLIENT_ID: googleClientId,
-  GOOGLE_CLIENT_SECRET: googleClientSecret,
-  KAKAO_CLIENT_ID: kakaoClientId,
-  KAKAO_CLIENT_SECRET: kakaoClientSecret,
-  NEXT_PUBLIC_API_URL: nextAuthSecret,
-} = process.env;
+export const runtime = 'nodejs';
 
-// null/empty 안전 체크
-const isValidString = (value: string | undefined): value is string =>
-  value !== null && value !== undefined && value.trim() !== '';
-
-if (!isValidString(googleClientId) || !isValidString(googleClientSecret)) {
-  throw new Error('Google OAuth 환경 변수가 없습니다.');
+function reqEnv(name: string) {
+  const v = process.env[name];
+  if (!v || v.trim() === '') throw new Error(`[ENV] Missing: ${name}`);
+  return v;
 }
 
-if (!isValidString(kakaoClientId) || !isValidString(kakaoClientSecret)) {
-  throw new Error('Kakao OAuth 환경 변수가 없습니다.');
-}
+const GOOGLE_CLIENT_ID = reqEnv('GOOGLE_CLIENT_ID');
+const GOOGLE_CLIENT_SECRET = reqEnv('GOOGLE_CLIENT_SECRET');
+const KAKAO_CLIENT_ID = reqEnv('KAKAO_CLIENT_ID');
+const KAKAO_CLIENT_SECRET = reqEnv('KAKAO_CLIENT_SECRET');
+const NEXTAUTH_SECRET = reqEnv('NEXTAUTH_SECRET');
 
-if (!isValidString(nextAuthSecret)) {
-  throw new Error('NEXT_PUBLIC_API_URL 환경 변수가 없습니다.');
-}
-
-const handler = NextAuth({
+const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: googleClientId,
-      clientSecret: googleClientSecret,
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
     }),
     KakaoProvider({
-      clientId: kakaoClientId,
-      clientSecret: kakaoClientSecret,
+      clientId: KAKAO_CLIENT_ID,
+      clientSecret: KAKAO_CLIENT_SECRET,
     }),
   ],
-  secret: nextAuthSecret,
-  pages: {
-    signIn: '/login', // 로그인 UI 직접 만들 경우
-  },
-});
+  secret: NEXTAUTH_SECRET,
 
+  pages: {
+    signIn: '/login',
+  },
+};
+
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

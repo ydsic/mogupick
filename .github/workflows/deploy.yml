@@ -31,7 +31,7 @@ jobs:
         with:
           args: |
             ## 🎉 사이트가 업데이트 되었어요! PM, PD분들은 테스트 해보시고 말씀해주세요!
-            
+
             **👤 Deployer:** `${{ steps.dev-name.outputs.name }}`
             **⏰ Time:** `${{ steps.dev-name.outputs.formatted-time }}`
 
@@ -44,4 +44,4 @@ jobs:
 
             **🔗 Prototype Link:** https://mogupick-prototype.vercel.app
 
-            **🔗 Update Link:** https://www.notion.so/goormkdx/Prototype-255c0ff4ce31805facf6c8fbfe7ddc12
+            **🔗 Update Note:** https://www.notion.so/goormkdx/Prototype-255c0ff4ce31805facf6c8fbfe7ddc12

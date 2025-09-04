@@ -5,6 +5,18 @@
   --background: #ffffff;
   --foreground: #171717;
 
+  /* --- Green Color Palette --- */
+  --color-green-50: #f4fbec;
+  --color-green-100: #def3c4;
+  --color-green-200: #cdeea7;
+  --color-green-300: #b7e67f;
+  --color-green-400: #a9e166;
+  --color-green-500: #93d940;
+  --color-green-600: #86c53a;
+  --color-green-700: #689a2d;
+  --color-green-800: #517723;
+  --color-green-900: #3e5b1b;
+
   /* --- Colors (role-based) --- */
   --color-primary: #f9c927;
   --color-secondary: #93d940;
@@ -17,6 +29,42 @@
   --color-success: #93d940;
   --color-warning: #eeae00;
   --color-info: #3e5b1b;
+
+  /* --- Green palette --- */
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+  --green-200: #bbf7d0;
+  --green-300: #86efac;
+  --green-400: #4ade80;
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+  --green-800: #166534;
+  --green-900: #14532d;
+  --green-950: #052e16;
+
+  /* --- Yellow palette --- */
+  --yellow-50: #fefae9;
+  --yellow-100: #fdeebc;
+  --yellow-200: #fce69c;
+  --yellow-300: #fbdb6e;
+  --yellow-400: #fad452;
+  --yellow-500: #f9c927;
+  --yellow-600: #eeae00;
+  --yellow-700: #d98d00;
+  --yellow-800: #8e5d00;
+  --yellow-900: #644000;
+
+  /* --- Grey palette --- */
+  --grey-100: #f9f9f9;
+  --grey-200: #ececec;
+  --grey-300: #dedede;
+  --grey-400: #c8c8c8;
+  --grey-500: #a7a7a7;
+  --grey-600: #898989;
+  --grey-700: #696969;
+  --grey-800: #3e3e3e;
+  --grey-900: #1f1f1f;
 
   /* --- Radius --- */
   --radius-none: 0px;
@@ -55,13 +103,6 @@
 
   /* Focus outline */
   --focus-outline: 2px solid var(--color-text-primary);
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 body {
