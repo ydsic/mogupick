@@ -24,7 +24,7 @@ export default async function Page() {
             <br /> 나의 새로운 일상!
           </h2>
 
-          <Image src={mogupickLogo} alt="Mogupick Logo" className="h-10 w-32" />
+          <Image src={mogupickLogo} alt="Mogupick Logo" className="w-32" />
           <p className="text-base text-gray-500">서비스 이용을 위해 로그인/회원가입을 해주세요.</p>
         </div>
 
