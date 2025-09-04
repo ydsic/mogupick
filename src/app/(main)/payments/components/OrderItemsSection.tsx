@@ -24,6 +24,10 @@ export default function OrderItemsSection() {
               <span className="text-base font-semibold">9월 3일(수)</span>
             </div>
             <div className="flex justify-between">
+              <span className="text-base font-medium">배송 희망일</span>
+              <span className="text-base font-semibold">9월 5일(금)</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-base font-medium">배송주기</span>
               <span className="text-base font-semibold">1달에 한 번</span>
             </div>
