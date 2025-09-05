@@ -12,6 +12,7 @@
     "clean": "rm -rf .next node_modules && rm -f package-lock.json yarn.lock pnpm-lock.yaml"
   },
   "dependencies": {
+    "@nwleedev/use-calendar": "^0.2.0",
     "clsx": "^2.1.1",
     "next": "15.4.6",
     "next-auth": "^4.24.11",

@@ -10,18 +10,67 @@ import StatusFilter from './StatusFilter';
 
 // 샘플 구독 데이터
 const events = [
-  { date: new Date(2025, 7, 1), title: '샐러드', category: 'fresh', price: 10000 },
-  { date: new Date(2025, 7, 1), title: '신선기름', category: 'dairy', price: 10000 },
-  { date: new Date(2025, 7, 4), title: '오메가3', category: 'health', price: 10000 },
-  { date: new Date(2025, 7, 6), title: '도시락', category: 'snack', price: 10000 },
-  { date: new Date(2025, 7, 15), title: '샐러드', category: 'fresh', price: 10000 },
-  { date: new Date(2025, 7, 20), title: '도시락', category: 'snack', price: 10000 },
-  { date: new Date(2025, 7, 30), title: '견사료', category: 'pet', price: 10000 },
+  {
+    id: 1,
+    date: new Date(2025, 9, 1),
+    title: '샐러드',
+    category: 'fresh',
+    price: 10000,
+    color: 'bg-green-50',
+  },
+  {
+    id: 2,
+    date: new Date(2025, 9, 2),
+    title: '신선기름',
+    category: 'dairy',
+    price: 10000,
+    color: 'bg-blue-50',
+  },
+  {
+    id: 3,
+    date: new Date(2025, 9, 4),
+    title: '오메가3',
+    category: 'health',
+    price: 10000,
+    color: 'bg-yellow-50',
+  },
+  {
+    id: 4,
+    date: new Date(2025, 9, 6),
+    title: '도시락',
+    category: 'snack',
+    price: 10000,
+    color: 'bg-pink-50',
+  },
+  {
+    id: 5,
+    date: new Date(2025, 9, 15),
+    title: '샐러드',
+    category: 'fresh',
+    price: 10000,
+    color: 'bg-green-50',
+  },
+  {
+    id: 6,
+    date: new Date(2025, 9, 20),
+    title: '도시락',
+    category: 'snack',
+    price: 10000,
+    color: 'bg-pink-50',
+  },
+  {
+    id: 7,
+    date: new Date(2025, 9, 30),
+    title: '견사료',
+    category: 'pet',
+    price: 10000,
+    color: 'bg-red-50',
+  },
 ];
 
 export default function SubscribePage() {
   const [activeTab, setActiveTab] = useState<'list' | 'calendar'>('list');
-  const [statusFilter, setStatusFilter] = useState<'ongoing' | 'paused' | 'canceled'>('ongoing');
+  const [statusFilter, setStatusFilter] = useState<'ongoing' | 'canceled'>('ongoing');
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined);
@@ -47,7 +96,7 @@ export default function SubscribePage() {
 
         <div>
           {activeTab === 'list' ? (
-            <SubscribeList />
+            <SubscribeList value={statusFilter} onChange={setStatusFilter} />
           ) : (
             <SubscribeCalendar
               selectedCategory={selectedCategory}
