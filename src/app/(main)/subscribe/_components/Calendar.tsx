@@ -131,24 +131,24 @@ const getClassNames = (date: Date, day: Date, selectedDate: Date) => {
     DateLibs.isDateEqual(day, selectedDate)
   ) {
     return {
-      div: 'flex justify-center items-start h-20',
+      div: 'flex justify-center items-center h-20',
       span: 'text-white rounded-full bg-black px-1 w-8 h-8 leading-8',
     };
   }
   if (day.getDay() === 0) {
     return {
-      div: 'flex justify-center items-start h-20',
+      div: 'flex justify-center items-center h-20',
       span: 'text-red-500',
     };
   }
   if (day.getDay() === 6) {
     return {
-      div: 'flex justify-center items-start h-20',
+      div: 'flex justify-center items-center h-20',
       span: 'text-blue-600',
     };
   }
   return {
-    div: 'flex justify-center items-start h-20',
+    div: 'flex justify-center items-center h-20',
     span: 'text-gray-700',
   };
 };
