@@ -9,9 +9,16 @@ import { ProductCardList } from '@/components/card/Product';
 import { Product } from '@/types/product';
 import HeaderCustom from '@/components/HeaderCustom';
 
+import { SortSheet } from '@/components/Filter';
+
 export default function CategoryPage() {
   const params = useParams();
   const categoryName = typeof params.categoryName === 'string' ? params.categoryName : '';
+
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sort, setSort] = useState<'recommended' | 'new' | 'popular' | 'review' | 'priceLow'>(
+    'recommended',
+  );
 
   if (!categoryMap[categoryName]) {
     notFound();
@@ -77,7 +84,6 @@ export default function CategoryPage() {
     value: Category;
     onChange: (c: Category) => void;
   }) => (
-
     <nav aria-label="카테고리" className="mt-15 border-b-1 border-[#86C53A]">
       <div className="flex gap-6 px-4">
         {CATEGORIES.map((c) => {
@@ -105,9 +111,12 @@ export default function CategoryPage() {
         <button
           className="inline-flex h-8 items-center gap-1 rounded-full border border-neutral-200 px-3 py-2 text-xs text-neutral-900"
           aria-label="정렬"
+          onClick={() => setSheetOpen(true)}
         >
           리스트 순 <DownIcon />
         </button>
+
+        <SortSheet open={sheetOpen} onOpenChange={setSheetOpen} value={sort} onChange={setSort} />
         <button
           className="inline-flex h-8 items-center gap-1 rounded-full border border-neutral-200 px-3 py-2 text-xs text-neutral-900"
           aria-label="필터"
@@ -134,15 +143,12 @@ export default function CategoryPage() {
 
   const [category, setCategory] = useState<Category>('전체');
   const filtered = useMemo(() => {
-
     if (category === '전체') return MOCK_PRODUCTS_WITH_CATEGORY;
     return MOCK_PRODUCTS_WITH_CATEGORY.filter((p) => p.category === category);
-
   }, [category]);
 
   return (
     <div className="min-h-dvh bg-white text-neutral-900">
-
       <HeaderCustom title={categoryMap[categoryName]} showBack showHome showSearch showCart />
       <CategoryTabs value={category} onChange={setCategory} />
       <Toolbar total={filtered.length} />
