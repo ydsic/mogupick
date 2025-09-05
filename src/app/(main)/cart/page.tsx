@@ -156,38 +156,45 @@ export default function CartPage() {
                     </div>
 
                     {/* 상품 정보 */}
-                    <div className="flex gap-3">
-                      <div className="h-24 w-24 rounded bg-gray-300"></div>
-                      <div className="flex flex-1 flex-col gap-3">
-                        <div className="flex flex-col gap-1">
-                          <div className="text-base font-semibold">{item.title}</div>
-                          <div className="text-sm font-medium text-green-700">
-                            {item.subscriptionType}
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          {/* 수량 조절 */}
-                          <div className="flex h-8 rounded-lg bg-gray-100">
-                            <button
-                              onClick={() => handleQuantityChange(item.id, -1)}
-                              className="flex h-8 w-8 items-center justify-center rounded-l-lg border-r border-gray-100"
-                            >
-                              <MinusItemIcon className="h-4 w-4" />
-                            </button>
-                            <div className="flex h-8 w-8 items-center justify-center">
-                              <span className="text-xs font-medium">{item.quantity}</span>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex gap-3">
+                        <div className="h-24 w-24 rounded bg-gray-300"></div>
+                        <div className="flex flex-1 flex-col gap-3">
+                          <div className="flex flex-col gap-1">
+                            <div className="text-base font-semibold">{item.title}</div>
+                            <div className="text-sm font-medium text-green-700">
+                              {item.subscriptionType}
                             </div>
-                            <button
-                              onClick={() => handleQuantityChange(item.id, 1)}
-                              className="flex h-8 w-8 items-center justify-center rounded-r-lg border-l border-gray-100"
-                            >
-                              <AddItemIcon className="h-4 w-4" />
-                            </button>
                           </div>
-                          <div className="text-lg font-semibold">
-                            {(item.price * item.quantity).toLocaleString()}원
+                          <div className="flex items-center justify-between">
+                            {/* 수량 조절 */}
+                            <div className="flex h-8 rounded-lg bg-gray-100">
+                              <button
+                                onClick={() => handleQuantityChange(item.id, -1)}
+                                className="flex h-8 w-8 items-center justify-center rounded-l-lg border-r border-gray-100"
+                              >
+                                <MinusItemIcon className="h-4 w-4" />
+                              </button>
+                              <div className="flex h-8 w-8 items-center justify-center">
+                                <span className="text-xs font-medium">{item.quantity}</span>
+                              </div>
+                              <button
+                                onClick={() => handleQuantityChange(item.id, 1)}
+                                className="flex h-8 w-8 items-center justify-center rounded-r-lg border-l border-gray-100"
+                              >
+                                <AddItemIcon className="h-4 w-4" />
+                              </button>
+                            </div>
+                            <div className="text-lg font-semibold">
+                              {(item.price * item.quantity).toLocaleString()}원
+                            </div>
                           </div>
                         </div>
+                      </div>
+                      <div>
+                        <button className="w-full rounded border border-gray-100 bg-white p-3">
+                          구독 옵션 변경
+                        </button>
                       </div>
                     </div>
                   </div>
