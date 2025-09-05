@@ -21,7 +21,7 @@ function TotalRating({ value }: { value: number }) {
   return (
     <div className="flex items-center" aria-label={`별점 ${value}점 / 5점`}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <BigStarIcon key={i} fill="#F9C927" />
+        <BigStarIcon key={i} className="fill-current text-[#F9C927]" />
       ))}
     </div>
   );
