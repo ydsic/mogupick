@@ -1,5 +1,4 @@
 import HeaderCustom from '@/components/HeaderCustom';
-
 import DeliveryIcon from '@/assets/icons/common/delivery-24px.svg';
 import InfoIcon from '@/assets/icons/common/info-14px.svg';
 import DownIcon from '@/assets/icons/down.svg';
