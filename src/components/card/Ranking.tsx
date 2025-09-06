@@ -37,7 +37,7 @@ function RankingList({ ranking, limit }: RankingListProps) {
   const visibleRanking = limit ? ranking.slice(0, limit) : ranking;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mt-2 flex flex-col gap-4">
       {visibleRanking.map((r, idx) => (
         <Ranking key={r.id} r={r} limit={idx + 1} />
       ))}
