@@ -1,6 +1,7 @@
 'use client';
 
-import Calendar from './Calendar';
+import Calendar from '@/components/calendar/Calendar';
+import { CalendarEvent } from '@/components/calendar/types';
 
 export interface Event {
   id: number;
@@ -35,17 +36,33 @@ export default function SubscribeCalendar({
     );
 
   const selectedEvents = selectedDay ? eventsForDay(selectedDay) : [];
-  const today = new Date();
 
   return (
     <div className="min-h-dvh bg-gray-100 p-4 shadow-md">
       <div className="flex w-full flex-col items-center rounded-sm bg-white p-4">
         <div className="w-full">
           <Calendar
-            selectedCategory={selectedCategory}
-            selectedDay={selectedDay}
-            onDaySelect={onDaySelect}
+            mode="events"
             events={events}
+            selectedDate={selectedDay}
+            onDateSelect={onDaySelect}
+            renderEvent={(event) => (
+              <span
+                key={event.id}
+                className={`rounded px-1 text-xs ${event.color ?? 'bg-gray-200'}`}
+              >
+                {event.title}
+              </span>
+            )}
+            dayClassName={(day, selected) => {
+              if (day.toDateString() === new Date().toDateString()) {
+                return 'bg-yellow-200 black rounded-full w-8 h-8 flex items-center justify-center';
+              }
+              if (day.getTime() === selected.getTime()) {
+                return 'bg-black text-white rounded-full w-8 h-8 flex items-center justify-center';
+              }
+              return 'text-gray-700';
+            }}
           />
         </div>
         <div className="flex w-full justify-between border-t border-gray-200 px-4 pt-4">
@@ -69,61 +86,14 @@ export default function SubscribeCalendar({
           ) : (
             <ul className="mt-2 space-y-2">
               {selectedEvents.map((item, idx) => (
-                <>
-                  <li key={idx} className="flex items-center gap-4 rounded-sm bg-white px-4 py-2">
-                    <p className="text-xs text-gray-500">
-                      8월 1일
-                      {item.date.toLocaleDateString()}
-                    </p>
-                    <div className={`h-8 w-1 rounded-xs bg-[#86c53a]`} />
-                    <div>
-                      <p className="mb-0.5 text-sm font-medium">
-                        구독 타이틀 영역
-                        {item.title}
-                      </p>
-                      <p className="text-base font-semibold">
-                        10,000
-                        {item.price.toLocaleString()}원
-                      </p>
-                    </div>
-                  </li>
-
-                  <li key={idx} className="flex items-center gap-4 rounded-sm bg-white px-4 py-2">
-                    <p className="text-xs text-gray-500">
-                      8월 1일
-                      {item.date.toLocaleDateString()}
-                    </p>
-                    <div className={`h-8 w-1 rounded-xs bg-[#42A5F6]`} />
-                    <div>
-                      <p className="mb-0.5 text-sm font-medium">
-                        구독 타이틀 영역
-                        {item.title}
-                      </p>
-                      <p className="text-base font-semibold">
-                        10,000
-                        {item.price.toLocaleString()}원
-                      </p>
-                    </div>
-                  </li>
-
-                  <li key={idx} className="flex items-center gap-4 rounded-sm bg-white px-4 py-2">
-                    <p className="text-xs text-gray-500">
-                      8월 1일
-                      {item.date.toLocaleDateString()}
-                    </p>
-                    <div className={`h-8 w-1 rounded-xs bg-[#FFA827]`} />
-                    <div>
-                      <p className="mb-0.5 text-sm font-medium">
-                        구독 타이틀 영역
-                        {item.title}
-                      </p>
-                      <p className="text-base font-semibold">
-                        10,000
-                        {item.price.toLocaleString()}원
-                      </p>
-                    </div>
-                  </li>
-                </>
+                <li key={item.id} className="flex items-center gap-4 rounded-sm bg-white px-4 py-2">
+                  <p className="text-xs text-gray-500">{item.date.toLocaleDateString()}</p>
+                  <div className={`h-8 w-1 rounded-xs ${item.color}`} />
+                  <div>
+                    <p className="mb-0.5 text-sm font-medium">{item.title}</p>
+                    <p className="text-base font-semibold">{item.price.toLocaleString()}원</p>
+                  </div>
+                </li>
               ))}
             </ul>
           )}
