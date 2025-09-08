@@ -1,17 +1,18 @@
 import Image from 'next/image';
 import mogupickLogo from '@/assets/icons/mogupick.png';
 
-import { getServerSession } from 'next-auth';
 import LoginForm from './_components/Loginform';
 import HeaderCustom from '@/components/HeaderCustom';
 import { redirect } from 'next/navigation';
+import { getSession } from 'next-auth/react';
 
 export default async function Page() {
-  const session = await getServerSession();
+  const session = await getSession();
+  console.log('session', session);
 
-  if (session) {
-    redirect('/');
-  }
+  // if (session) {
+  //   redirect('/');
+  // }
 
   return (
     <div className="flex h-full flex-col items-center justify-start gap-2">
