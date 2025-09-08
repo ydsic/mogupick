@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import HeaderCustom from '@/components/HeaderCustom';
 import ReviewIcon from '@/assets/icons/mypage/review.svg';
 import AddressIcon from '@/assets/icons/mypage/gps.svg';
@@ -29,12 +30,12 @@ export default function MyPagePage() {
     { title: '공지사항', href: '/notice' },
     { title: '1:1 문의', href: '/inquiry' },
     { title: '자주 묻는 질문', href: '/faq' },
-    { title: '로그아웃', onClick: () => console.log('로그아웃') },
+    { title: '로그아웃', onClick: handleLogout },
   ];
 
-  const handleLogout = () => {
+  function handleLogout() {
     console.log('로그아웃 처리');
-  };
+  }
 
   return (
     <div className="bg-white">
@@ -52,10 +53,10 @@ export default function MyPagePage() {
                 <ArrowIcon />
               </div>
               <div className="flex w-50 items-center gap-3">
-                <div className="flex items-center gap-1">
+                <Link href="/review" className="flex items-center gap-1">
                   <ReviewIcon />
                   <span className="text-xs font-medium text-gray-600">리뷰관리</span>
-                </div>
+                </Link>
                 <div className="h-3 w-px bg-gray-300"></div>
                 <div className="flex items-center gap-1">
                   <AddressIcon />
@@ -109,13 +110,23 @@ export default function MyPagePage() {
             <span className="text-sm font-medium text-gray-600">고객 지원</span>
             <div className="flex flex-col gap-7">
               {customerSupportItems.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={item.onClick || (() => console.log(`${item.title} 클릭`))}
-                  className="text-left text-base font-medium text-black"
-                >
-                  {item.title}
-                </button>
+                item.href ? (
+                  <Link
+                    key={index}
+                    href={item.href}
+                    className="text-left text-base font-medium text-black"
+                  >
+                    {item.title}
+                  </Link>
+                ) : (
+                  <button
+                    key={index}
+                    onClick={item.onClick}
+                    className="text-left text-base font-medium text-black"
+                  >
+                    {item.title}
+                  </button>
+                )
               ))}
             </div>
           </div>

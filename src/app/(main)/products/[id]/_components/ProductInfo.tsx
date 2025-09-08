@@ -30,7 +30,9 @@ export default function ProductInfo({ product }: Props) {
                 <RatingStar rating={product.rating} />
                 <span>{product.rating}</span>
               </div>
-              <span className="underline">리뷰 {product.reviewCount}</span>
+              <Link href={`/products/${product.id}/reviews`} className="underline">
+                리뷰 {product.reviewCount}
+              </Link>
             </div>
           </div>
           <div className="flex items-start gap-3">

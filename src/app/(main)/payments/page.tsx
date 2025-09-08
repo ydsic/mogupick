@@ -11,6 +11,7 @@ import PaymentMethodSection from './components/PaymentMethodSection';
 import AgreementsSection from './components/AgreementsSection';
 import FooterSubmitBar from './components/FooterSubmitBar';
 import type { Phone } from './types';
+import { useRouter } from 'next/navigation';
 
 declare global {
   interface Window {
@@ -19,6 +20,7 @@ declare global {
 }
 
 export default function PaymentsPage() {
+  const router = useRouter();
   const [shippingName, setShippingName] = useState('');
   const [receiver, setReceiver] = useState('');
   const [postcode, setPostcode] = useState('');
@@ -57,7 +59,8 @@ export default function PaymentsPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    console.log('결제 진행');
+    // 결제 처리 성공 가정 후 성공 페이지로 이동
+    router.push('/payments/success');
   };
 
   return (

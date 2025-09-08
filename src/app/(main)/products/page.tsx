@@ -20,7 +20,7 @@ export default async function Page({ searchParams }: Props) {
           총<span>{products.length}</span>개
         </div>
         <div>
-          <ProductCardList products={products} path="products" showHeart showCartButton />
+          <ProductCardList products={products} path="/products" showHeart showCartButton />
         </div>
       </div>
     </div>
