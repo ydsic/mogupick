@@ -20,7 +20,8 @@ export default function ReviewStep2({
   onSubmit,
 }: Props) {
   return (
-    <div className="flex min-h-dvh flex-col items-center px-4 pt-14 pb-18">
+    // submit한 후, 해당 구독상품의 리뷰 페이지로 이동
+    <form className="flex min-h-dvh flex-col items-center px-4 pt-14 pb-18">
       <div className="flex w-full flex-1 flex-col items-center justify-center">
         <ImageUploader images={images} addImage={addImage} removeImage={removeImage} />
         <textarea
@@ -31,11 +32,11 @@ export default function ReviewStep2({
         />
       </div>
       <button
-        onClick={onSubmit}
+        type="submit"
         className={`w-full rounded py-4 ${content.trim() === '' ? 'bg-gray-300' : 'bg-black text-white'}`}
       >
         완료
       </button>
-    </div>
+    </form>
   );
 }

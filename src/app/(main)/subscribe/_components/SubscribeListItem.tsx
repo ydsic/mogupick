@@ -27,7 +27,7 @@ export default function SubscribeListItem() {
         </div>
       </div>
       <div className="flex gap-1 text-center text-gray-800">
-        <Link href="/review/edit" className="flex-1 rounded-xs border border-gray-300 py-2">
+        <Link href="/review" className="flex-1 rounded-xs border border-gray-300 py-2">
           리뷰작성
         </Link>
         <Link href="/subscribe/:id" className="flex-1 rounded-xs border border-gray-300 py-2">

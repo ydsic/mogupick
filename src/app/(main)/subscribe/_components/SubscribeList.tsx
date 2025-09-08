@@ -3,7 +3,7 @@ import SubscribeListItem from './SubscribeListItem';
 
 export default function SubscribeList({ value, onChange }: StatusFilterProps) {
   return (
-    <div className="min-h-[73dvh] bg-gray-100 p-4">
+    <div className="bg-gray-100 p-4">
       <div className="mb-1 flex items-end justify-between text-gray-500">
         <div className="mb-2 text-sm font-medium">
           총 <span>6</span>개

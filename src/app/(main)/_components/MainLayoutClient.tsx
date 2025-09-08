@@ -18,7 +18,7 @@ export default function MainLayoutClient({ children }: MainLayoutClientProps) {
 
   // 확인용
   useEffect(() => {
-    console.log('client session', session);
+    console.log('client session', session ? '로그인 됌' : '로그인 필요');
   }, [session]);
 
   useEffect(() => {
@@ -37,7 +37,6 @@ export default function MainLayoutClient({ children }: MainLayoutClientProps) {
 
   return (
     <>
-      <div>{session ? '로그인 됌' : '로그인 필요'}</div>
       <main
         ref={mainRef}
         className={`${showHeader ? 'pt-14 pb-14 md:pb-18' : ''} h-full overflow-y-auto`}
