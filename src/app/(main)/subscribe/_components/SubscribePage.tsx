@@ -94,28 +94,26 @@ export default function SubscribePage() {
   return (
     <div>
       <HeaderCustom title="구독" showSearch showCart />
-      <div className="py-14">
-        <Tabs
-          activeTab={activeTab}
-          onChange={handleTabChange}
-          tabs={[
-            { key: 'list', label: '구독리스트' },
-            { key: 'calendar', label: '구독캘린더' },
-          ]}
-        />
+      <Tabs
+        activeTab={activeTab}
+        onChange={handleTabChange}
+        tabs={[
+          { key: 'list', label: '구독리스트' },
+          { key: 'calendar', label: '구독캘린더' },
+        ]}
+      />
 
-        <div>
-          {activeTab === 'list' ? (
-            <SubscribeList value={statusFilter} onChange={setStatusFilter} />
-          ) : (
-            <SubscribeCalendar
-              selectedCategory={selectedCategory}
-              selectedDay={selectedDay}
-              onDaySelect={setSelectedDay}
-              events={filteredEvents}
-            />
-          )}
-        </div>
+      <div>
+        {activeTab === 'list' ? (
+          <SubscribeList value={statusFilter} onChange={setStatusFilter} />
+        ) : (
+          <SubscribeCalendar
+            selectedCategory={selectedCategory}
+            selectedDay={selectedDay}
+            onDaySelect={setSelectedDay}
+            events={filteredEvents}
+          />
+        )}
       </div>
     </div>
   );

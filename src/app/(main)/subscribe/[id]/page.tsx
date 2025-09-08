@@ -2,6 +2,7 @@ import HeaderCustom from '@/components/HeaderCustom';
 import DeliveryIcon from '@/assets/icons/common/delivery-24px.svg';
 import InfoIcon from '@/assets/icons/common/info-14px.svg';
 import DownIcon from '@/assets/icons/down.svg';
+import Link from 'next/link';
 
 export default function Page() {
   return (
@@ -23,9 +24,12 @@ export default function Page() {
           </div>
           <div className="flex flex-col gap-2 bg-gray-50 px-3 py-2">
             <p className="font-semibold">[배송주기 ]1달에 한 번 구독</p>
-            <button className="rounded-xs border border-gray-200 bg-white p-2 text-sm text-black">
+            <Link
+              href={'/subscribe/:id/edit'}
+              className="rounded-xs border border-gray-200 bg-white p-2 text-center text-sm text-black"
+            >
               옵션 변경
-            </button>
+            </Link>
             <p className="text-xs font-medium text-green-700">
               · 진행중 회차의 ‘결제예정 또는 재결제예정” 외 상태에서 변경하신 옵션은 다음 회차부터
               적용됩니다.

@@ -13,7 +13,7 @@ export default function ReviewsMiniSlide({
       <button className="flex gap-3 rounded-sm bg-gray-100" onClick={onClickReview}>
         <div className="aspect-square w-20 rounded-xs bg-gray-200" />
         <div className="flex-1">
-          <div className="text-sm font-medium">
+          <div className="text-left text-sm font-medium">
             <span>{review.user}</span>
             <span>{review.period}</span>
           </div>

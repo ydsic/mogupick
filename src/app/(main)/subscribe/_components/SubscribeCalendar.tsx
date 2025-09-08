@@ -2,6 +2,7 @@
 
 import Calendar from '@/components/calendar/Calendar';
 import { CalendarEvent } from '@/components/calendar/types';
+import Link from 'next/link';
 
 export interface Event {
   id: number;
@@ -89,10 +90,10 @@ export default function SubscribeCalendar({
                 <li key={item.id} className="flex items-center gap-4 rounded-sm bg-white px-4 py-2">
                   <p className="text-xs text-gray-500">{item.date.toLocaleDateString()}</p>
                   <div className={`h-8 w-1 rounded-xs ${item.color}`} />
-                  <div>
+                  <Link href={'/subscribe/:id'}>
                     <p className="mb-0.5 text-sm font-medium">{item.title}</p>
                     <p className="text-base font-semibold">{item.price.toLocaleString()}원</p>
-                  </div>
+                  </Link>
                 </li>
               ))}
             </ul>

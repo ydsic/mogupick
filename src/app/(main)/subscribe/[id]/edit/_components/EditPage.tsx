@@ -59,7 +59,7 @@ export default function EditPage() {
           )}
         </div>
 
-        <div className="bg-white px-4 pt-20 pb-10">
+        <div className="bg-white px-4">
           <button className="w-full bg-black py-3 text-white">옵션설정 완료</button>
         </div>
       </div>
