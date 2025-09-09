@@ -1,13 +1,14 @@
 import { refreshGoogleToken, refreshKakaoToken } from '@/lib/auth/refreshTokens';
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
 
-const GOOGLE_CLIENT_ID = reqEnv('GOOGLE_CLIENT_ID');
-const GOOGLE_CLIENT_SECRET = reqEnv('GOOGLE_CLIENT_SECRET');
-const KAKAO_CLIENT_ID = reqEnv('KAKAO_CLIENT_ID');
-const KAKAO_CLIENT_SECRET = reqEnv('KAKAO_CLIENT_SECRET');
-const NEXTAUTH_SECRET = reqEnv('NEXTAUTH_SECRET');
+// Read envs safely (avoid hard crashes during import)
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID || '';
+const KAKAO_CLIENT_SECRET = process.env.KAKAO_CLIENT_SECRET || '';
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
 
 interface JWTToken {
   accessToken: string;
@@ -19,7 +20,6 @@ interface JWTToken {
   [key: string]: any;
 }
 
-// Account 확장 타입
 interface AccountWithToken {
   access_token: string;
   refresh_token: string;
@@ -27,30 +27,35 @@ interface AccountWithToken {
   expires_in?: number;
 }
 
-function reqEnv(name: string) {
-  const v = process.env[name];
-  if (!v || v.trim() === '') throw new Error(`[ENV] Missing: ${name}`);
-  return v;
-}
+const providers = [] as any[];
 
-export const authOptions: NextAuthOptions = {
-  providers: [
+if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
+  providers.push(
     GoogleProvider({
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
           prompt: 'consent',
-          access_type: 'offline', // refresh_token 발급
+          access_type: 'offline',
           response_type: 'code',
         },
       },
-    }),
+    })
+  );
+}
+
+if (KAKAO_CLIENT_ID && KAKAO_CLIENT_SECRET) {
+  providers.push(
     KakaoProvider({
       clientId: KAKAO_CLIENT_ID,
       clientSecret: KAKAO_CLIENT_SECRET,
-    }),
-  ],
+    })
+  );
+}
+
+export const authOptions: NextAuthOptions = {
+  providers,
   secret: NEXTAUTH_SECRET,
   session: { strategy: 'jwt' },
   pages: {
@@ -58,26 +63,27 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, account, user }): Promise<JWTToken> {
-      console.log('JWT callback token:', token); // 서버로그에서 토큰 발급 시점 확인
-
       const _token = token as JWTToken;
-      // 최초 로그인시
+
+      // first sign-in
       if (account && user) {
-        const a = account as AccountWithToken;
+        const a = account as unknown as AccountWithToken;
         _token.accessToken = a.access_token!;
         _token.refreshToken = a.refresh_token!;
         _token.provider = a.provider!;
         _token.accessTokenExpires = Date.now() + Number(a.expires_in ?? 3600) * 1000;
+        // set userId from provider profile
+        _token.userId = (user as any).sub ?? (user as any).id ?? _token.userId;
         return _token;
       }
 
-      // userId 저장 (Google: sub, Kakao: id)
+      // set userId if present
       _token.userId = user ? ((user as any).sub ?? (user as any).id) : _token.userId;
 
-      // 토큰 만료 여부 확인
+      // if access token is still valid, return it
       if (Date.now() < (_token.accessTokenExpires ?? 0)) return _token;
 
-      // 토큰 갱신
+      // refresh
       if (_token.provider === 'google') return await refreshGoogleToken(_token);
       if (_token.provider === 'kakao') return await refreshKakaoToken(_token);
 
@@ -88,13 +94,14 @@ export const authOptions: NextAuthOptions = {
       const _session = session;
       const _token = token as JWTToken;
 
-      _session.user.id = _token.userId ?? _token.sub ?? _token.sub; // 세션에 id 넣기
-      _session.user.accessToken = _token.accessToken;
-      _session.user.refreshToken = _token.refreshToken;
-      _session.user.provider = _token.provider;
-      _session.error = _token.error;
+      (_session.user as any).id = _token.userId ?? (_token as any).sub ?? (_token as any).sub;
+      (_session.user as any).accessToken = _token.accessToken;
+      (_session.user as any).refreshToken = _token.refreshToken;
+      (_session.user as any).provider = _token.provider;
+      (session as any).error = _token.error;
 
       return _session;
     },
   },
 };
+
