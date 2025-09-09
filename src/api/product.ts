@@ -7,8 +7,8 @@ export interface Product {
   name: string;
   price: number;
   options: object;
-  productImages: File[]; // 대표 이미지들
-  productDescriptionImages: File[]; // 상세 이미지들
+  productImages: string[]; // 대표 이미지들
+  productDescriptionImages: string[]; // 상세 이미지들
 }
 
 // 상품등록
@@ -25,8 +25,6 @@ export const createProduct = async (data: Product) => {
   data.productDescriptionImages.forEach((file) =>
     formData.append('productDescriptionImages', file),
   );
-
-  const res = await apiFetch<Product[]>('/products', 'POST', { body: formData });
 
   return apiFetch<Product>('/products', 'POST', { body: formData });
 };
