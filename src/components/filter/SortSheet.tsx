@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-
-type SortKey = 'recommended' | 'new' | 'popular' | 'review' | 'priceLow';
+import { SortKey } from './types';
 
 export function SortSheet({
   open,
@@ -138,7 +137,7 @@ export function SortSheet({
     <>
       <div
         onClick={() => onOpenChange(false)}
-        className={`fixed inset-0 z-40 ${open ? '' : 'hidden'}`}
+        className={`fixed inset-0 z-[60] bg-black/15 ${open ? '' : 'hidden'}`}
       />
 
       <section
@@ -146,7 +145,7 @@ export function SortSheet({
         role="dialog"
         aria-modal="true"
         aria-labelledby="sortSheetTitle"
-        className={`fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-screen-sm rounded-t-2xl bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.1)] will-change-transform ${
+        className={`fixed inset-x-0 bottom-0 z-[70] mx-auto w-full max-w-screen-sm rounded-t-2xl bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.1)] will-change-transform ${
           open ? '' : 'translate-y-full'
         }`}
         style={{
@@ -162,17 +161,8 @@ export function SortSheet({
           <span className="h-1.5 w-12 rounded-full bg-zinc-200" />
         </div>
 
-        <header ref={headerRef as any} className="touch-none px-4 pb-2 select-none">
-          <h2 id="sortSheetTitle" className="text-base font-semibold text-zinc-900">
-            정렬
-          </h2>
-        </header>
-
-        <hr className="border-zinc-200" />
-
         <div ref={scrollAreaRef} className="max-h-[60vh] overflow-y-auto">
           <div className="divide-y divide-zinc-200 py-1">
-            <Item v="recommended" label="추천순" />
             <Item v="new" label="신상품순" />
             <Item v="popular" label="인기순" />
             <Item v="review" label="리뷰많은순" />
