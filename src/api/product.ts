@@ -7,8 +7,8 @@ export interface Product {
   name: string;
   price: number;
   options: object;
-  productImages: File[]; // 대표 이미지들
-  productDescriptionImages: File[]; // 상세 이미지들
+  productImages: string[]; // 대표 이미지들
+  productDescriptionImages: string[]; // 상세 이미지들
 }
 
 // 상품등록
@@ -18,7 +18,7 @@ export const createProduct = async (data: Product) => {
   formData.append('subCategory', data.subCategory);
   formData.append('brandId', data.brandId.toString());
   formData.append('name', data.name);
-  formData.append('price', data.price.toLocaleString());
+  formData.append('price', data.price.toString());
   formData.append('options', JSON.stringify(data.options));
 
   data.productImages.forEach((file) => formData.append('productImages', file));
@@ -26,9 +26,7 @@ export const createProduct = async (data: Product) => {
     formData.append('productDescriptionImages', file),
   );
 
-  const res = await apiFetch<Product[]>('/products', 'POST', { body: formData });
-
-  return res;
+  return apiFetch<Product>('/products', 'POST', { body: formData });
 };
 
 // 상품 상세조회

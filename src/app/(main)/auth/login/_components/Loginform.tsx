@@ -3,6 +3,7 @@
 import { signIn, useSession } from 'next-auth/react';
 import KakaoIcon from '@/assets/icons/sns/icon-16-kakao.svg';
 import GoogleIcon from '@/assets/icons/sns/icon-16-google.svg';
+import { buildUrl } from '@/lib/config';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { authFetch } from '@/lib/authFetch';
@@ -38,7 +39,7 @@ export default function LoginForm() {
   return (
     <div className="mt-40 flex w-full flex-col items-center gap-3 text-gray-900">
       <Link
-        href={'http://xn--hy1b12lfh85nbqam9ry5f/oauth2/authorization/kakao'}
+        href={buildUrl('/oauth2/authorization/kakao', 'oauth')}
         // onClick={() => void signIn('kakao', { callbackUrl })}
         className="flex w-full items-center justify-center gap-1 rounded-xs bg-amber-300 py-3 font-medium"
       >
@@ -46,7 +47,7 @@ export default function LoginForm() {
         <span>카카오로 시작하기</span>
       </Link>
       <Link
-        href={'http://xn--hy1b12lfh85nbqam9ry5f/oauth2/authorization/google'}
+        href={buildUrl('/oauth2/authorization/google', 'oauth')}
         // onClick={() => void signIn('google', { callbackUrl })}
         className="flex w-full items-center justify-center gap-1 rounded-xs border border-gray-400 py-3 font-medium"
       >
