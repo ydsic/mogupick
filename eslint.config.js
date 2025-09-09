@@ -3,6 +3,7 @@ const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const typescriptParser = require('@typescript-eslint/parser');
 const react = require('eslint-plugin-react');
 const reactHooks = require('eslint-plugin-react-hooks');
+const importPlugin = require('eslint-plugin-import');
 
 module.exports = [
   {
@@ -19,6 +20,7 @@ module.exports = [
       '@typescript-eslint': typescriptEslint,
       react,
       'react-hooks': reactHooks,
+      import: importPlugin,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -35,6 +37,12 @@ module.exports = [
     },
     settings: {
       react: { version: 'detect' },
+      'import/resolver': {
+        typescript: {
+          project: ['./tsconfig.json'],
+        },
+        node: true,
+      },
     },
   },
 ];
