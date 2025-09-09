@@ -1,7 +1,13 @@
 import { refreshGoogleToken, refreshKakaoToken } from '@/lib/auth/refreshTokens';
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
+
+function reqEnv(name: string) {
+  const v = process.env[name];
+  if (!v || v.trim() === '') throw new Error(`[ENV] Missing: ${name}`);
+  return v;
+}
 
 const GOOGLE_CLIENT_ID = reqEnv('GOOGLE_CLIENT_ID');
 const GOOGLE_CLIENT_SECRET = reqEnv('GOOGLE_CLIENT_SECRET');
@@ -19,18 +25,11 @@ interface JWTToken {
   [key: string]: any;
 }
 
-// Account 확장 타입
 interface AccountWithToken {
   access_token: string;
   refresh_token: string;
   provider: string;
   expires_in?: number;
-}
-
-function reqEnv(name: string) {
-  const v = process.env[name];
-  if (!v || v.trim() === '') throw new Error(`[ENV] Missing: ${name}`);
-  return v;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -41,7 +40,7 @@ export const authOptions: NextAuthOptions = {
       authorization: {
         params: {
           prompt: 'consent',
-          access_type: 'offline', // refresh_token 발급
+          access_type: 'offline',
           response_type: 'code',
         },
       },
@@ -58,26 +57,27 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, account, user }): Promise<JWTToken> {
-      console.log('JWT callback token:', token); // 서버로그에서 토큰 발급 시점 확인
-
       const _token = token as JWTToken;
-      // 최초 로그인시
+
+      // first sign-in
       if (account && user) {
-        const a = account as AccountWithToken;
+        const a = account as unknown as AccountWithToken;
         _token.accessToken = a.access_token!;
         _token.refreshToken = a.refresh_token!;
         _token.provider = a.provider!;
         _token.accessTokenExpires = Date.now() + Number(a.expires_in ?? 3600) * 1000;
+        // set userId from provider profile
+        _token.userId = (user as any).sub ?? (user as any).id ?? _token.userId;
         return _token;
       }
 
-      // userId 저장 (Google: sub, Kakao: id)
+      // set userId if present
       _token.userId = user ? ((user as any).sub ?? (user as any).id) : _token.userId;
 
-      // 토큰 만료 여부 확인
+      // if access token is still valid, return it
       if (Date.now() < (_token.accessTokenExpires ?? 0)) return _token;
 
-      // 토큰 갱신
+      // refresh
       if (_token.provider === 'google') return await refreshGoogleToken(_token);
       if (_token.provider === 'kakao') return await refreshKakaoToken(_token);
 
@@ -88,13 +88,14 @@ export const authOptions: NextAuthOptions = {
       const _session = session;
       const _token = token as JWTToken;
 
-      _session.user.id = _token.userId ?? _token.sub ?? _token.sub; // 세션에 id 넣기
-      _session.user.accessToken = _token.accessToken;
-      _session.user.refreshToken = _token.refreshToken;
-      _session.user.provider = _token.provider;
-      _session.error = _token.error;
+      (_session.user as any).id = _token.userId ?? (_token as any).sub ?? (_token as any).sub;
+      (_session.user as any).accessToken = _token.accessToken;
+      (_session.user as any).refreshToken = _token.refreshToken;
+      (_session.user as any).provider = _token.provider;
+      (session as any).error = _token.error;
 
       return _session;
     },
   },
 };
+
