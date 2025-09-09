@@ -57,11 +57,12 @@ export interface RootCategoriesResponse {
 }
 
 export async function getFilterOptions(rootCategory: ApiCategory): Promise<FilterOptionsResponse> {
-  const response = await authFetch(
-    buildUrl(`/categories/options-filters?rootCategory=${rootCategory}`),
-  );
+  const url = buildUrl(`/categories/options-filters?rootCategory=${rootCategory}`);
+  console.log('배포 환경 API 요청 URL:', url);
+  const response = await authFetch(url);
 
   if (!response.ok) {
+    console.error('API 요청 실패:', response.status, response.statusText);
     throw new Error('Failed to fetch filter options');
   }
 
@@ -69,9 +70,12 @@ export async function getFilterOptions(rootCategory: ApiCategory): Promise<Filte
 }
 
 export async function getRootCategories(): Promise<RootCategoriesResponse> {
-  const response = await authFetch(buildUrl('/categories/root'));
+  const url = buildUrl('/categories/root');
+  console.log('배포 환경 API 요청 URL:', url);
+  const response = await authFetch(url);
 
   if (!response.ok) {
+    console.error('API 요청 실패:', response.status, response.statusText);
     throw new Error('Failed to fetch root categories');
   }
 
