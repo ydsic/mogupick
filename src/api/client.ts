@@ -14,14 +14,22 @@ export async function apiFetch<T>(
   const session = await getCurrentUser();
   const token = session?.accessToken;
 
+  const isFormData = options.body instanceof FormData;
+
+  const headers: Record<string, string> = {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...options.headers,
+  };
+
+  // FormData면 Content-Type 자동 설정 제거
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`, {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined,
+    headers,
+    body: options.body ? (isFormData ? options.body : JSON.stringify(options.body)) : undefined,
     ...options,
   });
 
@@ -30,5 +38,5 @@ export async function apiFetch<T>(
     throw new Error(errorText || 'API 요청 실패');
   }
 
-  return res.json();
+  return (await res.json()) as T;
 }

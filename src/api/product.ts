@@ -18,7 +18,7 @@ export const createProduct = async (data: Product) => {
   formData.append('subCategory', data.subCategory);
   formData.append('brandId', data.brandId.toString());
   formData.append('name', data.name);
-  formData.append('price', data.price.toLocaleString());
+  formData.append('price', data.price.toString());
   formData.append('options', JSON.stringify(data.options));
 
   data.productImages.forEach((file) => formData.append('productImages', file));
@@ -28,7 +28,7 @@ export const createProduct = async (data: Product) => {
 
   const res = await apiFetch<Product[]>('/products', 'POST', { body: formData });
 
-  return res;
+  return apiFetch<Product>('/products', 'POST', { body: formData });
 };
 
 // 상품 상세조회
