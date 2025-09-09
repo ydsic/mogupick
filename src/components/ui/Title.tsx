@@ -7,7 +7,7 @@ interface Props {
 
 export default function Title({ text, adver = false }: Props) {
   return (
-    <div className="mb-1 flex items-end justify-between">
+    <div className="mb-2 flex items-end justify-between">
       <h2 className="text-lg font-bold">{text}</h2>
       {adver && <ADIcon />}
     </div>

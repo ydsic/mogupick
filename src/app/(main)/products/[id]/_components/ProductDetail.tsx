@@ -14,7 +14,13 @@ import { ProductCardList } from '@/components/card/Product';
 import { products } from '@/app/(main)/(home)/_components/HomePage';
 import ProductDescription from './ProductDescription';
 import ProductInfo from './ProductInfo';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import BottomSheet from '@/components/bottomsheet/BottomSheet';
+import CustomCycle from '@/components/cycle/CustomCycle';
+import QuickCycle from '@/components/cycle/QuickCycle';
+import SubscribeIntroBottomSheet from '@/components/bottomsheet/subscribe/SubscribeIntroBottomSheet';
+import SubscribeFlowBottomSheet from '@/components/bottomsheet/subscribe/SubscribeFlowBottomSheet';
+import { useLikedStore } from '@/store/useLikedStore';
 
 interface ProductDetailProps {
   reviews: Review[];
@@ -25,6 +31,20 @@ export default function ProductDetail({ reviews, product }: ProductDetailProps) 
   const descriptionRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [step, setStep] = useState(0);
+
+  // ✅ 페이지 진입 시 step1 열림
+  useEffect(() => {
+    setIsOpen(true);
+  }, []);
+
+  const nextStep = () => setStep((prev) => prev + 1);
+
+  // 좋아요 토글, 좋아요 여부
+  // const toggleLike = useLikedStore((state) => state.toggle);
+  // const isLiked = useLikedStore((state) => state.isLiked(p.id));
+
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     if (ref.current) {
       ref.current?.scrollIntoView({ behavior: 'smooth' });
@@ -34,7 +54,7 @@ export default function ProductDetail({ reviews, product }: ProductDetailProps) 
   return (
     <>
       <HeaderCustom showBack showHome showSearch showCart />
-      <div className="pt-15 pb-30">
+      <div className="pt-8 pb-35">
         <ProductInfo product={product} />
 
         <div className="p-4">
@@ -110,6 +130,24 @@ export default function ProductDetail({ reviews, product }: ProductDetailProps) 
           <ProductCardList products={products} path="/products" layout="horizontal" />
         </div>
       </div>
+      <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        {step === 0 && (
+          <SubscribeIntroBottomSheet
+            isOpen={isOpen}
+            // onLike={() => toggleLike(product.id)}
+            // isLiked={isLiked}
+            onSubscribe={() => setStep(1)}
+          />
+        )}
+        {step === 1 && (
+          <SubscribeFlowBottomSheet
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            pricePerItem={12000}
+            productName={'핫 바베큐 소시지'}
+          />
+        )}
+      </BottomSheet>
     </>
   );
 }

@@ -42,9 +42,23 @@ export default function Footer() {
   const pathname = usePathname();
 
   // Footer를 숨길 페이지들
-  const hiddenPages = ['/cart', '/alert', '/payments', '/payments/success'];
+  const hiddenPages: (string | RegExp)[] = [
+    '/cart',
+    '/alert',
+    '/payments',
+    '/payments/success',
+    '/review',
+    '/auth/login',
+    /^\/search\/[^/]+(\/.*)?$/, // /search, /search/result
+    /^\/products\/[^/]+(\/.*)?$/, // /products/:id 및 하위 경로 모두
+    /^\/subscribe\/[^/]+(\/.*)?$/, // /subscribe/:id 및 하위 경로 모두
+  ];
 
-  if (hiddenPages.includes(pathname)) {
+  const isHidden = hiddenPages.some((page) =>
+    typeof page === 'string' ? page === pathname : page.test(pathname),
+  );
+
+  if (isHidden) {
     return null;
   }
 

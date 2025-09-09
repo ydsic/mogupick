@@ -5,6 +5,7 @@ import SessionProviderClient from './_provider/SessionProviderClient';
 
 import './globals.css';
 import { Suspense } from 'react';
+import { Providers } from './_provider/ReactQeuryProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -53,9 +54,11 @@ export default function RootLayout({
           WebkitTapHighlightColor: 'transparent',
         }}
       >
-        <Suspense fallback={<div>Loading...</div>}>
-          <SessionProviderClient>{children}</SessionProviderClient>
-        </Suspense>
+        <Providers>
+          <Suspense fallback={<div>Loading...</div>}>
+            <SessionProviderClient>{children}</SessionProviderClient>
+          </Suspense>
+        </Providers>
       </body>
     </html>
   );

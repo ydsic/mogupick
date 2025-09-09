@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import HeaderCustom from '@/components/HeaderCustom';
 import { ProductCardList } from '@/components/card/Product';
 import CloseIcon from '@/assets/icons/common/close-24px.svg';
@@ -248,11 +249,11 @@ export default function CartPage() {
       {/* 하단 결제 버튼 */}
       <div className="fixed right-0 bottom-0 left-0 bg-white pt-3 md:left-1/2 md:w-[500px] md:-translate-x-1/2">
         <div className="px-8 pb-5">
-          <button className="flex h-12 w-full items-center justify-center rounded border border-gray-300 bg-black px-4">
+          <Link href="/payments" className="flex h-12 w-full items-center justify-center rounded border border-gray-300 bg-black px-4">
             <span className="text-base font-medium text-white">
               {totalPrice.toLocaleString()}원 정기구독 결제하기
             </span>
-          </button>
+          </Link>
         </div>
         <div className="flex h-5 justify-center py-2">
           <div className="h-[5px] w-36 rounded-full bg-black"></div>

@@ -8,10 +8,44 @@ import { categoryMap } from '@/constants/categories';
 import { ProductCardList } from '@/components/card/Product';
 import { Product } from '@/types/product';
 import HeaderCustom from '@/components/HeaderCustom';
+import { useFilterOptions } from '@/hooks/filter/useFilterOptions';
+import { ApiCategory } from '@/api/filters';
+import { SortSheet, SortKey } from '@/components/filter';
+import { FilterSheet } from '@/components/filter/FilterSheet';
+import { FilterState } from '@/components/filter/types';
 
 export default function CategoryPage() {
   const params = useParams();
   const categoryName = typeof params.categoryName === 'string' ? params.categoryName : '';
+
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [sort, setSort] = useState<SortKey>('recommended');
+  const [filters, setFilters] = useState<FilterState>({} as FilterState);
+
+  // 카테고리 slug를 API 카테고리로 매핑
+  const getApiCategory = (slug: string): ApiCategory => {
+    const mapping: Record<string, ApiCategory> = {
+      'fresh-food': 'FRESH_FOOD',
+      'meat-seafood': 'MEAT_SEAFOOD',
+      'dairy-beverage': 'DAIRY_BEVERAGE',
+      'ready-meal': 'CONVENIENCE_FOOD',
+      snack: 'SNACK',
+      'health-food': 'HEALTH_SUPPLEMENTS',
+      'daily-goods': 'DAILY_GOODS',
+      hygiene: 'HYGIENE',
+      pets: 'PET_SUPPLIES',
+      baby: 'BABY_SUPPLIES',
+    };
+    return mapping[slug] || 'FRESH_FOOD';
+  };
+
+  // 카테고리에 맞는 필터 옵션을 가져옵니다
+  const {
+    data: filterOptionsData,
+    isLoading: isLoadingFilters,
+    filterGroups,
+  } = useFilterOptions(getApiCategory(categoryName));
 
   if (!categoryMap[categoryName]) {
     notFound();
@@ -77,7 +111,6 @@ export default function CategoryPage() {
     value: Category;
     onChange: (c: Category) => void;
   }) => (
-
     <nav aria-label="카테고리" className="mt-15 border-b-1 border-[#86C53A]">
       <div className="flex gap-6 px-4">
         {CATEGORIES.map((c) => {
@@ -105,15 +138,30 @@ export default function CategoryPage() {
         <button
           className="inline-flex h-8 items-center gap-1 rounded-full border border-neutral-200 px-3 py-2 text-xs text-neutral-900"
           aria-label="정렬"
+          onClick={() => setSheetOpen(true)}
         >
           리스트 순 <DownIcon />
         </button>
+
+        <SortSheet open={sheetOpen} onOpenChange={setSheetOpen} value={sort} onChange={setSort} />
         <button
           className="inline-flex h-8 items-center gap-1 rounded-full border border-neutral-200 px-3 py-2 text-xs text-neutral-900"
           aria-label="필터"
+          onClick={() => setFilterSheetOpen(true)}
+          disabled={isLoadingFilters}
         >
           필터 <FilterIcon />
         </button>
+        {filterGroups.length > 0 && (
+          <FilterSheet
+            open={filterSheetOpen}
+            onOpenChange={setFilterSheetOpen}
+            filterGroups={filterGroups}
+            filters={filters}
+            onChange={setFilters}
+            productCount={filtered.length}
+          />
+        )}
       </div>
     </div>
   );
@@ -134,15 +182,41 @@ export default function CategoryPage() {
 
   const [category, setCategory] = useState<Category>('전체');
   const filtered = useMemo(() => {
+    let result = MOCK_PRODUCTS_WITH_CATEGORY;
 
-    if (category === '전체') return MOCK_PRODUCTS_WITH_CATEGORY;
-    return MOCK_PRODUCTS_WITH_CATEGORY.filter((p) => p.category === category);
+    // 카테고리 필터링
+    if (category !== '전체') {
+      result = result.filter((p) => p.category === category);
+    }
 
-  }, [category]);
+    // API 기반 필터링
+    Object.entries(filters).forEach(([key, values]) => {
+      if (values && values.length > 0) {
+        result = result.filter((product) => {
+          // 여기서는 실제 상품 데이터에 맞는 필터링 로직을 구현해야 합니다
+          // 현재는 가격 필터만 예시로 구현
+          if (key === 'PRICE') {
+            return values.some((expression: string) => {
+              const price = product.price;
+              // expression 파싱 예: "(0,10000)" -> 0 < price < 10000
+              if (expression.includes('(0,10000)')) return price < 10000;
+              if (expression.includes('[10000,20000)')) return price >= 10000 && price < 20000;
+              if (expression.includes('[20000,30000)')) return price >= 20000 && price < 30000;
+              if (expression.includes('[30000,40000)')) return price >= 30000 && price < 40000;
+              if (expression.includes('[40000,)')) return price >= 40000;
+              return true;
+            });
+          }
+          return true; // 다른 필터들은 임시로 통과
+        });
+      }
+    });
+
+    return result;
+  }, [category, filters]);
 
   return (
     <div className="min-h-dvh bg-white text-neutral-900">
-
       <HeaderCustom title={categoryMap[categoryName]} showBack showHome showSearch showCart />
       <CategoryTabs value={category} onChange={setCategory} />
       <Toolbar total={filtered.length} />

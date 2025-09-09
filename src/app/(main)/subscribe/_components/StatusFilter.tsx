@@ -1,28 +1,30 @@
 'use client';
 
-interface StatusFilterProps {
-  value: 'ongoing' | 'paused' | 'canceled';
-  onChange: (value: 'ongoing' | 'paused' | 'canceled') => void;
+export interface StatusFilterProps {
+  value: 'ongoing' | 'canceled';
+  onChange: (value: 'ongoing' | 'canceled') => void;
 }
 
 export default function StatusFilter({ value, onChange }: StatusFilterProps) {
   return (
-    <div className="flex justify-evenly gap-10 border-b border-gray-200 py-3 text-gray-400">
+    <div className="flex items-center rounded-full bg-white p-1 text-gray-400">
       <button
         onClick={() => onChange('ongoing')}
-        className={value === 'ongoing' ? 'font-semibold text-black' : ''}
+        className={
+          value === 'ongoing'
+            ? 'rounded-full bg-black px-2.5 py-1 text-sm text-white'
+            : 'px-2.5 py-1 text-sm'
+        }
       >
         진행중
       </button>
       <button
-        onClick={() => onChange('paused')}
-        className={value === 'paused' ? 'font-semibold text-black' : ''}
-      >
-        일시정지
-      </button>
-      <button
         onClick={() => onChange('canceled')}
-        className={value === 'canceled' ? 'font-semibold text-black' : ''}
+        className={
+          value === 'canceled'
+            ? 'rounded-full bg-black px-2.5 py-1 text-sm text-white'
+            : 'px-2.5 py-1 text-sm'
+        }
       >
         해지
       </button>

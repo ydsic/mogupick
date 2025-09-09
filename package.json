@@ -12,7 +12,11 @@
     "clean": "rm -rf .next node_modules && rm -f package-lock.json yarn.lock pnpm-lock.yaml"
   },
   "dependencies": {
+    "@nwleedev/use-calendar": "^0.2.0",
+    "@tanstack/react-query": "^5.87.1",
+    "@tanstack/react-query-devtools": "^5.87.3",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.23.12",
     "next": "15.4.6",
     "next-auth": "^4.24.11",
     "react": "19.1.0",

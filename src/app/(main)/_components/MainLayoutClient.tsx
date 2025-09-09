@@ -3,15 +3,24 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Footer from '../(home)/_components/Footer';
+import { useSession } from 'next-auth/react';
 
 interface MainLayoutClientProps {
   children: ReactNode;
 }
 
-const MAIN_ROUTES = ['/', '/categories', '/pick', '/subscribe/list', '/mypage'];
+const MAIN_ROUTES = ['/', '/categories', '/pick', '/subscribe', '/mypage'];
+
 export default function MainLayoutClient({ children }: MainLayoutClientProps) {
   const pathname = usePathname();
   const mainRef = useRef<HTMLElement | null>(null);
+  const { data: session } = useSession();
+
+  // 확인용
+  useEffect(() => {
+    console.log('client session', session ? '로그인 됌' : '로그인 필요');
+  }, [session]);
+
   useEffect(() => {
     const el = mainRef.current ?? document.querySelector('main');
     if (el && 'scrollTo' in el) {

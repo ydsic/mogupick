@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import StarIcon from '@/assets/icons/common/big-star.svg';
 
 interface Props {
   images: File[];
@@ -22,6 +23,14 @@ export default function ImageUploader({ images, addImage, removeImage }: Props) 
 
   return (
     <div className="flex w-full flex-col gap-4">
+      <div className="flex flex-col items-center justify-center gap-2">
+        <div className="flex gap-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <StarIcon key={i} className="fill-current text-[#F9C927]" />
+          ))}
+        </div>
+        <span className="text-sm text-gray-400">- 직장인 점심 그린 샐러드 식단 2주 플랜 -</span>
+      </div>
       {/* 이미지 미리보기 */}
       <div className="flex flex-wrap gap-2">
         {images.map((file, idx) => (
@@ -66,7 +75,7 @@ export default function ImageUploader({ images, addImage, removeImage }: Props) 
         <button
           type="button"
           onClick={handleGalleryClick}
-          className="flex-1 rounded bg-black py-2 text-center text-white"
+          className="flex-1 rounded border border-gray-300 py-3 text-center text-gray-400"
         >
           사진첨부하기
         </button>
