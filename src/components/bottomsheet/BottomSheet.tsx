@@ -23,7 +23,7 @@ export default function BottomSheet({ isOpen, onClose, children }: BottomSheetPr
       {isOpen && (
         <>
           <motion.div
-            className="fixed bottom-0 left-0 z-50 max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white px-4 pt-2 pb-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)]"
+            className="fixed bottom-0 left-0 z-50 max-h-[70vh] w-full overflow-y-auto rounded-t-2xl bg-white px-4 pt-2 pb-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_-2px_4px_-2px_rgba(0,0,0,0.1)]"
             style={{ y }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 1000 }}

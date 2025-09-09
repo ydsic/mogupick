@@ -55,7 +55,7 @@ export default function Step3({
         <Link href={'/cart'} className="flex-1 rounded border border-gray-300 py-3 text-center">
           장바구니
         </Link>
-        <Link href={'/paments'} className="flex-1 rounded bg-black py-3 text-center text-white">
+        <Link href={'/payments'} className="flex-1 rounded bg-black py-3 text-center text-white">
           바로구매
         </Link>
       </div>
