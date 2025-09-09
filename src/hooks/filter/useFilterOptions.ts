@@ -16,15 +16,17 @@ export function useFilterOptions(rootCategory: ApiCategory, subCategory?: string
     const { common, subCategories } = query.data.data;
     let filterGroups = [...common];
 
-    // 서브카테고리가 있다면 해당 필터도 추가
-    if (subCategory && subCategories[subCategory]) {
-      // 중복되지 않는 필터만 추가 (key를 기준으로)
-      const commonKeys = new Set(common.map((group) => group.option.key));
-      const subCategoryFilters = subCategories[subCategory].filter(
-        (group) => !commonKeys.has(group.option.key),
+    // 모든 서브카테고리 필터를 추가 (중복 제거)
+    const commonKeys = new Set(common.map((group) => group.option.key));
+
+    Object.values(subCategories).forEach((subCategoryFilters) => {
+      const uniqueFilters = subCategoryFilters.filter(
+        (group) =>
+          !commonKeys.has(group.option.key) &&
+          !filterGroups.some((existing) => existing.option.key === group.option.key),
       );
-      filterGroups = [...filterGroups, ...subCategoryFilters];
-    }
+      filterGroups = [...filterGroups, ...uniqueFilters];
+    });
 
     return filterGroups;
   };

@@ -1,6 +1,5 @@
 // api/client.ts
 import { getCurrentUser } from '@/utils/ServerAuth';
-import { getSession } from 'next-auth/react';
 
 type FetchOptions = Omit<RequestInit, 'headers' | 'body'> & {
   body?: any;
