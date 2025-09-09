@@ -81,3 +81,4 @@ export async function getRootCategories(): Promise<RootCategoriesResponse> {
 
   return response.json();
 }
+//
