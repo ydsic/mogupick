@@ -1,4 +1,5 @@
 import { authFetch } from '@/lib/authFetch';
+import { buildUrl } from '@/lib/config';
 
 export type ApiCategory =
   | 'FRESH_FOOD'
@@ -57,7 +58,7 @@ export interface RootCategoriesResponse {
 
 export async function getFilterOptions(rootCategory: ApiCategory): Promise<FilterOptionsResponse> {
   const response = await authFetch(
-    `http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/categories/options-filters?rootCategory=${rootCategory}`,
+    buildUrl(`/categories/options-filters?rootCategory=${rootCategory}`),
   );
 
   if (!response.ok) {
@@ -68,9 +69,7 @@ export async function getFilterOptions(rootCategory: ApiCategory): Promise<Filte
 }
 
 export async function getRootCategories(): Promise<RootCategoriesResponse> {
-  const response = await authFetch(
-    'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/categories/root',
-  );
+  const response = await authFetch(buildUrl('/categories/root'));
 
   if (!response.ok) {
     throw new Error('Failed to fetch root categories');

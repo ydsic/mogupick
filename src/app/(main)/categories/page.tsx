@@ -1,5 +1,6 @@
 import HeaderCustom from '@/components/HeaderCustom';
 import { categories as staticCategories } from '@/constants/categories';
+import { buildUrl } from '@/lib/config';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -35,10 +36,10 @@ async function fetchRootCategories(): Promise<UiCategory[]> {
   >;
 
   try {
-    const res = await fetch(
-      'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/categories/root',
-      { cache: 'force-cache', next: { revalidate: 86400 } },
-    );
+    const res = await fetch(buildUrl('/categories/root'), {
+      cache: 'force-cache',
+      next: { revalidate: 86400 },
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json: {
       status: number;

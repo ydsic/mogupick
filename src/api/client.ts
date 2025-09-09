@@ -1,5 +1,6 @@
 // api/client.ts
 import { getCurrentUser } from '@/utils/ServerAuth';
+import { getApiBaseUrl } from '@/lib/config';
 
 type FetchOptions = Omit<RequestInit, 'headers' | 'body'> & {
   body?: any;
@@ -13,8 +14,9 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const session = await getCurrentUser();
   const token = session?.accessToken;
+  const baseUrl = getApiBaseUrl();
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`, {
+  const res = await fetch(`${baseUrl}${url}`, {
     method,
     headers: {
       'Content-Type': 'application/json',
