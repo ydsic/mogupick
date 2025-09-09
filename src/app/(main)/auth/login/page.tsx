@@ -4,10 +4,11 @@ import mogupickLogo from '@/assets/icons/mogupick.png';
 import LoginForm from './_components/Loginform';
 import HeaderCustom from '@/components/HeaderCustom';
 import { redirect } from 'next/navigation';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/authOptions';
 
 export default async function Page() {
-  const session = await getSession();
+  const session = await getServerSession(authOptions);
   console.log('session', session);
 
   // if (session) {

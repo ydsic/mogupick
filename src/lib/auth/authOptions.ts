@@ -3,17 +3,12 @@ import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
 
-function reqEnv(name: string) {
-  const v = process.env[name];
-  if (!v || v.trim() === '') throw new Error(`[ENV] Missing: ${name}`);
-  return v;
-}
-
-const GOOGLE_CLIENT_ID = reqEnv('GOOGLE_CLIENT_ID');
-const GOOGLE_CLIENT_SECRET = reqEnv('GOOGLE_CLIENT_SECRET');
-const KAKAO_CLIENT_ID = reqEnv('KAKAO_CLIENT_ID');
-const KAKAO_CLIENT_SECRET = reqEnv('KAKAO_CLIENT_SECRET');
-const NEXTAUTH_SECRET = reqEnv('NEXTAUTH_SECRET');
+// Read envs safely (avoid hard crashes during import)
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID || '';
+const KAKAO_CLIENT_SECRET = process.env.KAKAO_CLIENT_SECRET || '';
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
 
 interface JWTToken {
   accessToken: string;
@@ -32,8 +27,10 @@ interface AccountWithToken {
   expires_in?: number;
 }
 
-export const authOptions: NextAuthOptions = {
-  providers: [
+const providers = [] as any[];
+
+if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
+  providers.push(
     GoogleProvider({
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
@@ -44,12 +41,21 @@ export const authOptions: NextAuthOptions = {
           response_type: 'code',
         },
       },
-    }),
+    })
+  );
+}
+
+if (KAKAO_CLIENT_ID && KAKAO_CLIENT_SECRET) {
+  providers.push(
     KakaoProvider({
       clientId: KAKAO_CLIENT_ID,
       clientSecret: KAKAO_CLIENT_SECRET,
-    }),
-  ],
+    })
+  );
+}
+
+export const authOptions: NextAuthOptions = {
+  providers,
   secret: NEXTAUTH_SECRET,
   session: { strategy: 'jwt' },
   pages: {
