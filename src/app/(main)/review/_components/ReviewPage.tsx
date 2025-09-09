@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import ReviewStep1 from './ReviewStep1';
 import ReviewStep2 from './ReviewStep2';
-import { useReviewForm } from '@/hooks/useReviewForm';
+import { useReviewForm } from '@/hooks/review/useReviewForm';
 import HeaderCustom from '@/components/HeaderCustom';
 import { useRouter } from 'next/navigation';
 
