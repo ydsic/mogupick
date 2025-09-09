@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { getFilterOptions, FilterOptionsResponse } from '@/api/filters';
+import { getFilterOptions, FilterOptionsResponse, ApiCategory } from '@/api/filters';
 
-export function useFilterOptions(rootCategory: string) {
+export function useFilterOptions(rootCategory: ApiCategory) {
   return useQuery<FilterOptionsResponse>({
     queryKey: ['filterOptions', rootCategory],
     queryFn: () => getFilterOptions(rootCategory),
