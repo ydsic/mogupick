@@ -143,9 +143,6 @@ export function DynamicFilter({ filterGroup, selectedValues, onFilterChange }: D
   };
 
   return (
-    <div className="w-full py-4">
-      {isSingleSelect ? renderRadioFilter() : renderChipFilter()}
-      {!isSingleSelect && renderSelectedChips()}
-    </div>
+    <div className="w-full py-4">{isSingleSelect ? renderRadioFilter() : renderChipFilter()}</div>
   );
 }

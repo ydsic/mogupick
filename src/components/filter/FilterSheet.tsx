@@ -144,9 +144,8 @@ export function FilterSheet({
 
         {/* 선택된 필터들을 표시하는 영역 */}
         {Object.values(localFilters).some((values) => values && values.length > 0) && (
-          <div className="border-t border-zinc-200">
-            <div className="bg-zinc-50 px-4 py-3">
-              <div className="mb-2 text-sm font-medium text-zinc-900">선택된 필터</div>
+          <div className="">
+            <div className="bg-[#F8F8F8] px-4 py-3">
               <div className="flex flex-wrap gap-1">
                 {filterGroups.map((group) => {
                   const selectedValues = localFilters[group.option.key] || [];
@@ -161,7 +160,7 @@ export function FilterSheet({
                     return (
                       <div
                         key={`${group.option.key}-${value}`}
-                        className="flex h-7 items-center gap-1 rounded-full border border-zinc-300 bg-white px-2 py-1"
+                        className="flex h-7 items-center gap-1 rounded-full border border-zinc-300 bg-[#D6D6D6] px-2 py-1"
                       >
                         <span className="text-xs text-zinc-700">{filterOption.name}</span>
                         <button
@@ -176,7 +175,7 @@ export function FilterSheet({
                           className="flex h-3 w-3 items-center justify-center"
                         >
                           <svg
-                            className="h-2 w-2 text-zinc-500"
+                            className="h-5 w-5 text-zinc-500"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
