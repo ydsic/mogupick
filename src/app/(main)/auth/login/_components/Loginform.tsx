@@ -1,13 +1,37 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import KakaoIcon from '@/assets/icons/sns/icon-16-kakao.svg';
 import GoogleIcon from '@/assets/icons/sns/icon-16-google.svg';
 import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { authFetch } from '@/lib/authFetch';
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.user.accessToken && session.user.provider) {
+      const body = {
+        provider: session.user.provider,
+        accessToken: session.user.accessToken,
+      };
+
+      authFetch('/auth/social-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          alert(`JWT 발급 결과: ${data}`);
+          // TODO: localStorage, zustand 등에 저장
+        })
+        .catch((err) => console.error(err));
+    }
+  }, []);
 
   return (
     <div className="mt-40 flex w-full flex-col items-center gap-3 text-gray-900">
