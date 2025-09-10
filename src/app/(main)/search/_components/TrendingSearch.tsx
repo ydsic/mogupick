@@ -27,6 +27,21 @@ export default function TrendingSearch({ onSelect }: TrendingSearchProps) {
   const [updateTime, setUpdateTime] = useState<string>('');
 
   useEffect(() => {
+    const fetchTopRising = async () => {
+      try {
+        const res = await fetch(
+          'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/search/top-rising/today',
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        console.log('top-rising today:', data);
+      } catch (err) {
+        console.error('Failed to fetch top-rising:', err);
+      }
+    };
+
+    fetchTopRising();
+
     const update = () => {
       const shuffled = [...mockTrending].sort(() => 0.5 - Math.random());
       setTrending(shuffled.slice(0, 10));
