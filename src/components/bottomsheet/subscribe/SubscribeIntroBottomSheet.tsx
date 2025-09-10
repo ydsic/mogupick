@@ -19,9 +19,6 @@ export default function SubscribeIntroBottomSheet({
 }: SubscribeIntroBottomSheetProps) {
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose}>
-      <div className="flex shrink-0 items-center justify-center py-2">
-        <span className="h-1.5 w-12 rounded-full bg-zinc-200" />
-      </div>
       <p className="py-4 text-center text-sm text-lime-500">
         현재 {subscriberCount}명이 정기구독중이에요
       </p>

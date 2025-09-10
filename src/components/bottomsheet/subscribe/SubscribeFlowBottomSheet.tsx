@@ -33,9 +33,6 @@ export default function SubscribeFlowBottomSheet({
 
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose}>
-      <div className="flex shrink-0 items-center justify-center py-2">
-        <span className="h-1.5 w-12 rounded-full bg-zinc-200" />
-      </div>
       {step === 1 && (
         <Step1
           productName={productName}
