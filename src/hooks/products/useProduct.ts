@@ -9,12 +9,13 @@ import {
   getProductsPeerBestReviews,
   getProductsRecentlyViewed,
   getProductsSimilar,
+  ConstantlyPopularMappedResult,
 } from '@/api/product';
 import { useQuery } from '@tanstack/react-query';
 
 // 상품 상세조회
 export function useProduct(id: number) {
-  return useQuery({ queryKey: ['products'], queryFn: () => getProduct(id), enabled: !!id });
+  return useQuery({ queryKey: ['products', id], queryFn: () => getProduct(id), enabled: !!id });
 }
 
 // 유사상품 목록조회
@@ -40,11 +41,11 @@ export function useProductsNew() {
   return useQuery({ queryKey: ['products-new'], queryFn: getProductsNew });
 }
 
-// 꾸준히 사랑받는 상품목록 조회
-export function useProductsConstantlyPopular() {
-  return useQuery({
-    queryKey: ['products-constantly-popular'],
-    queryFn: getProductsConstantlyPopular,
+// 꾸준히 사랑받는 상품목록 조회 (페이지, 사이즈)
+export function useProductsConstantlyPopular(page = 0, size = 20) {
+  return useQuery<ConstantlyPopularMappedResult>({
+    queryKey: ['products-constantly-popular', page, size],
+    queryFn: () => getProductsConstantlyPopular(page, size),
   });
 }
 

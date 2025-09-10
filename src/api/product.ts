@@ -11,6 +11,47 @@ export interface Product {
   productDescriptionImages: string[]; // 상세 이미지들
 }
 
+// 꾸준히 사랑받는 상품 API 관련 타입
+export interface ConstantlyPopularItemRaw {
+  product: {
+    productId: number;
+    productImageUrl: string;
+    productName: string;
+    productPrice: number;
+    createdAt: string;
+  };
+  brand: { brandId: number; brandName: string };
+  review: { rating: number; reviewCount: number };
+}
+
+export interface ConstantlyPopularResponse {
+  status: number;
+  message: string;
+  data: {
+    content: ConstantlyPopularItemRaw[];
+    size: number;
+    page: number;
+    totalPages: number;
+  };
+}
+
+export interface MappedProductCardItem {
+  id: number;
+  store: string;
+  title: string;
+  price: number;
+  rating: number;
+  reviewCount: number;
+  imageUrl?: string;
+}
+
+export interface ConstantlyPopularMappedResult {
+  items: MappedProductCardItem[];
+  page: number;
+  size: number;
+  totalPages: number;
+}
+
 // 상품등록
 export const createProduct = async (data: Product) => {
   const formData = new FormData();
@@ -39,9 +80,44 @@ export const getProductsRecentlyViewed = () => apiFetch<Product[]>('/products/re
 export const getProductsPeerBestReviews = () => apiFetch<Product[]>('/products/peer-best-reviews');
 // 이번 달 새로나온 상품조회
 export const getProductsNew = () => apiFetch<Product[]>('/products/new');
-// 꾸준히 사랑받는 상품목록 조회
-export const getProductsConstantlyPopular = () =>
-  apiFetch<Product[]>('/products/constantly-popular');
+// 꾸준히 사랑받는 상품목록 조회 (페이지네이션 적용)
+export const getProductsConstantlyPopular = async (
+  page = 0,
+  size = 20,
+): Promise<ConstantlyPopularMappedResult> => {
+  console.log('[getProductsConstantlyPopular] start fetch', { page, size });
+  try {
+    const res = await apiFetch<ConstantlyPopularResponse>(
+      `/products/constantly-popular?page=${page}&size=${size}`,
+    );
+    console.log('[getProductsConstantlyPopular] raw response', res);
+
+    const mapped: MappedProductCardItem[] = res.data.content.map(
+      (item: ConstantlyPopularItemRaw, idx) => {
+        const mappedItem = {
+          id: item.product.productId,
+          store: item.brand?.brandName ?? '',
+          title: item.product.productName,
+          price: item.product.productPrice,
+          rating: item.review?.rating ?? 0,
+          reviewCount: item.review?.reviewCount ?? 0,
+          imageUrl: item.product.productImageUrl,
+        };
+        return mappedItem;
+      },
+    );
+    console.log('[getProductsConstantlyPopular] mapped items', mapped);
+    return {
+      items: mapped,
+      page: res.data.page,
+      size: res.data.size,
+      totalPages: res.data.totalPages,
+    };
+  } catch (e: any) {
+    console.error('[getProductsConstantlyPopular] error', e?.message || e);
+    throw e;
+  }
+};
 // 루트 카테고리에 대한 상품 목록 조회
 export const getProductsCategory = () => apiFetch<Product[]>('/products/category');
 // 입문용 상품 목록 조회

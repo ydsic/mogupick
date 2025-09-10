@@ -11,6 +11,7 @@ import HeaderCustom from '@/components/HeaderCustom';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import NextIcon from '@/assets/icons/common/next-24px.svg';
+import ConstantlyPopularProducts from './ConstantlyPopularProducts';
 
 export const dummyReviews = [
   {
@@ -103,26 +104,8 @@ export default async function HomePage() {
           )}
         </div>
 
-        <div>
-          <Title text="꾸준히 사랑받는 상품" />
-          <ChipsList categories={categories} />
-          <ProductCardList
-            path={`/products`}
-            products={products}
-            cols={3}
-            size="s"
-            limit={6}
-            query={{ from: 'home', section: 'popular' }}
-          />
-          {products.length >= 4 && (
-            <div className="flex justify-center">
-              <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center text-base">
-                <Link href={`/products?section=popular`}>상품 더보기</Link>
-                <NextIcon />
-              </div>
-            </div>
-          )}
-        </div>
+        <ConstantlyPopularProducts />
+
         <div>
           <Title text="내 또래의 베스트 리뷰 PICK" />
           <ReviewCardList layout="horizontal" reviews={dummyReviews} />
