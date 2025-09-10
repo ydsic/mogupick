@@ -12,45 +12,7 @@ import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import NextIcon from '@/assets/icons/common/next-24px.svg';
 import ConstantlyPopularProducts from './ConstantlyPopularProducts';
-
-export const dummyReviews = [
-  {
-    id: 1,
-    username: 'Alice',
-    review: '정말 마음에 들어요! 배송도 빨랐습니다.',
-    store: '쿠팡',
-    title: '무선 이어폰',
-    rating: 4.8,
-    reviewCount: 500,
-  },
-  {
-    id: 2,
-    username: 'Bob',
-    review: '품질이 생각보다 좋습니다.',
-    store: '11번가',
-    title: '노트북 거치대',
-    rating: 4.5,
-    reviewCount: 230,
-  },
-  {
-    id: 3,
-    username: 'Alice',
-    review: '정말 마음에 들어요! 배송도 빨랐습니다.',
-    store: '쿠팡',
-    title: '무선 이어폰',
-    rating: 4.8,
-    reviewCount: 500,
-  },
-  {
-    id: 4,
-    username: 'Bob',
-    review: '품질이 생각보다 좋습니다.',
-    store: '11번가',
-    title: '노트북 거치대',
-    rating: 4.5,
-    reviewCount: 230,
-  },
-];
+import PeerBestReviewSection from './PeerBestReviewSection';
 
 export const products = [
   { id: 1, store: '쿠팡', title: '무선 이어폰', price: 59000, rating: 4.5, reviewCount: 120 },
@@ -106,10 +68,8 @@ export default async function HomePage() {
 
         <ConstantlyPopularProducts />
 
-        <div>
-          <Title text="내 또래의 베스트 리뷰 PICK" />
-          <ReviewCardList layout="horizontal" reviews={dummyReviews} />
-        </div>
+        {/* 내 또래 베스트 리뷰 섹션을 클라이언트 컴포넌트로 분리 */}
+        <PeerBestReviewSection />
 
         <div>
           <Title text="지금 주목받는 상품" />
