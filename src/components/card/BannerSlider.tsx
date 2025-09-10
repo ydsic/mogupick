@@ -26,6 +26,7 @@ export default function BannerSlider({ num = 5 }: BannerSliderProps) {
       slidesPerView={1.1}
       loop={true}
       initialSlide={0}
+      className="my-7"
     >
       {images.slice(0, count).map((img, idx) => (
         <SwiperSlide key={idx} style={{ width: '80%', borderRadius: '20px', overflow: 'hidden' }}>

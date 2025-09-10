@@ -17,8 +17,8 @@ function Chips({ className, text, selected = false, ...props }: ChipsProps) {
       className={cn(
         'cursor-pointer rounded-full border px-3 py-1.5 text-sm transition-colors',
         selected
-          ? 'border-[var(--color-background)] bg-[var(--foreground)] text-[var(--color-surface)]'
-          : 'border-[var(--color-text-secondary)] bg-transparent',
+          ? 'border-[var(--color-text-primary)] bg-[var(--color-text-primary)] text-[var(--background)]'
+          : 'border-[var(--grey-300)] bg-transparent text-[#434343]',
         className,
       )}
       {...props}
@@ -41,7 +41,7 @@ function ChipsList({ className, categories, showAll }: ChipsListProps) {
   const [selectedId, setSelectedId] = useState(mergedCategories[0]?.id);
   return (
     <div
-      className={cn('flex w-full justify-start gap-1 overflow-x-auto whitespace-nowrap', className)}
+      className={cn('flex w-full justify-start gap-2 overflow-x-auto whitespace-nowrap', className)}
     >
       {mergedCategories.map((c) => (
         <Chips

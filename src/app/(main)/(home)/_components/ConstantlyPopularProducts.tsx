@@ -4,7 +4,7 @@ import Title from '@/components/ui/Title';
 import { ChipsList } from '@/components/ui/Chips';
 import { ProductCardList } from '@/components/card/Product';
 import Link from 'next/link';
-import NextIcon from '@/assets/icons/common/next-24px.svg';
+import NextIcon from '@/assets/icons/common/next-20px.svg';
 import { categories } from '@/constants/categories';
 import { useProductsConstantlyPopular } from '@/hooks/products/useProduct';
 
@@ -45,7 +45,7 @@ function ConstantlyPopularProducts() {
   }));
 
   return (
-    <div>
+    <div className="mb-10">
       <Title text="꾸준히 사랑받는 상품" />
       <ChipsList categories={categories} />
       <ProductCardList
@@ -57,8 +57,8 @@ function ConstantlyPopularProducts() {
         query={{ from: 'home', section: 'popular' }}
       />
       {products.length >= 6 && (
-        <div className="flex justify-center">
-          <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center text-base">
+        <div className="mt-5 flex justify-center">
+          <div className="flex items-center justify-center rounded-2xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-[#434343]">
             <Link href={`/products?section=popular`}>상품 더보기</Link>
             <NextIcon />
           </div>
