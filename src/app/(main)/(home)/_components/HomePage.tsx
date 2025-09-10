@@ -2,13 +2,9 @@
 
 import SearchBar from '@/components/SearchBar';
 import { categories } from '@/constants/categories';
-import { ChipsList } from '@/components/ui/Chips';
-import { RankingList } from '@/components/card/Ranking';
 import { CategoryList } from '@/components/card/Category';
 import BannerSlider from '@/components/card/BannerSlider';
 import HeaderCustom from '@/components/HeaderCustom';
-import Link from 'next/link';
-import NextIcon from '@/assets/icons/common/next-20px.svg';
 import ConstantlyPopularProducts from './ConstantlyPopularProducts';
 import ConditionalSections from './ConditionalSections';
 import NewProductSection from './NewProductSection';
