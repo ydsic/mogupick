@@ -36,10 +36,10 @@ function Category({ c }: CategoryProps) {
 
   return (
     <Link href={`/categories/${c.slug}`} className="text-center">
-      <div className="flex aspect-[1/1] w-full items-center justify-center rounded-sm bg-gray-200">
+      <div className="flex aspect-[1/1] w-full items-center justify-center rounded-[8px] bg-gray-200">
         <img src={src} alt={c.text} className="h-3/4 w-3/4 object-contain" />
       </div>
-      <span className="text-xs">{c.text}</span>
+      <span className="text-xs text-[var(--color-text-primary)]">{c.text}</span>
     </Link>
   );
 }
@@ -50,7 +50,7 @@ interface CategoryListProps {
 
 function CategoryList({ categories }: CategoryListProps) {
   return (
-    <div className="grid grid-cols-5 gap-3">
+    <div className="mb-10 grid grid-cols-5 gap-3">
       {categories.map((c) => (
         <Category key={c.id} c={c} />
       ))}

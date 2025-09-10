@@ -2,9 +2,13 @@
 
 import SearchBar from '@/components/SearchBar';
 import { categories } from '@/constants/categories';
+import { ChipsList } from '@/components/ui/Chips';
+import { RankingList } from '@/components/card/Ranking';
 import { CategoryList } from '@/components/card/Category';
 import BannerSlider from '@/components/card/BannerSlider';
 import HeaderCustom from '@/components/HeaderCustom';
+import Link from 'next/link';
+import NextIcon from '@/assets/icons/common/next-20px.svg';
 import ConstantlyPopularProducts from './ConstantlyPopularProducts';
 import ConditionalSections from './ConditionalSections';
 import NewProductSection from './NewProductSection';
@@ -40,10 +44,28 @@ export default function HomePage() {
   return (
     <div className="flex flex-col px-4 pb-6">
       <HeaderCustom showLogo showBell showCart />
-      <div className="min-h-0 flex-1 space-y-8">
+      <div className="min-h-0 flex-1">
         <SearchBar />
         <BannerSlider />
         <CategoryList categories={categories} />
+
+        <div className="mb-10">
+          <Title text="최근 본 상품과 유사한 상품" adver={true} />
+          <ProductCardList
+            path={`/products`}
+            products={products}
+            limit={4}
+            query={{ from: 'home', section: 'recent' }}
+          />
+
+          {products.length >= 4 && (
+            <div className="mt-5 flex justify-center">
+              <div className="flex items-center justify-center rounded-2xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-[#434343]">
+                <Link href={`/products?section=recent`}>상품 더보기</Link> <NextIcon />
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* 로그인 상태에 따른 조건부 섹션 */}
         <ConditionalSections />

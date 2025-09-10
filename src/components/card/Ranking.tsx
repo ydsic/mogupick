@@ -8,18 +8,20 @@ interface RankingProps {
 function Ranking({ r, limit }: RankingProps) {
   return (
     <div className="flex flex-row gap-1">
-      <span className="h-6 w-6 rounded-xs bg-[var(--foreground)] text-center text-xs leading-6 font-semibold text-[var(--color-background)]">
+      <span className="h-6 w-6 rounded-[4px] bg-[var(--foreground)] text-center text-xs leading-6 font-semibold text-[var(--color-background)]">
         {limit}
       </span>
-      <div className="aspect-[1/1] w-[100px] rounded-sm bg-gray-200"></div>
+      <div className="aspect-[1/1] w-[100px] rounded-[4px] bg-gray-200"></div>
       <div className="flex flex-1/3 flex-col justify-between pl-1">
         <div className="flex flex-col pt-1">
-          <span className="text-xs font-normal">{r.store}</span>
-          <span className="text-sm font-medium">{r.title}</span>
+          <span className="text-xs font-normal text-gray-500">{r.store}</span>
+          <span className="text-sm font-medium text-[#434343]">{r.title}</span>
         </div>
         <div className="pb-1">
-          <span className="text-base font-semibold">{r.price.toLocaleString()}</span>
-          <div className="text-xs font-normal">
+          <span className="text-base font-semibold text-[var(--color-text-primary)]">
+            {r.price.toLocaleString()}원
+          </span>
+          <div className="text-xs font-normal text-gray-500">
             <span>{r.reviewCount.toLocaleString()}</span>명이 보고 있어요
           </div>
         </div>
@@ -37,7 +39,7 @@ function RankingList({ ranking, limit }: RankingListProps) {
   const visibleRanking = limit ? ranking.slice(0, limit) : ranking;
 
   return (
-    <div className="mt-2 flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       {visibleRanking.map((r, idx) => (
         <Ranking key={r.id} r={r} limit={idx + 1} />
       ))}
