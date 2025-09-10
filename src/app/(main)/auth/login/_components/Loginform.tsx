@@ -14,27 +14,18 @@ export default function LoginForm() {
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const { data: session } = useSession();
 
-  // 소셜로그인 된 후, 바로 백엔드에 api전송
-  // useEffect(() => {
-  //   if (session?.user.accessToken && session.user.provider) {
-  //     const body = {
-  //       provider: session.user.provider,
-  //       accessToken: session.user.accessToken,
-  //     };
+  // 전략 A: Spring OAuth -> 프론트 도메인 콜백
+  // 1) 카카오/구글 개발자 콘솔 redirect URI 를 반드시
+  //    https://<프론트도메인>/login/oauth2/code/{provider}
+  //    로 등록
+  // 2) Spring 설정 (application.yml) 예시
+  //    spring.security.oauth2.client.registration.kakao.redirect-uri=https://<프론트도메인>/login/oauth2/code/kakao
+  //    spring.security.oauth2.client.registration.google.redirect-uri=https://<프론트도메인>/login/oauth2/code/google
+  // 3) next.config.ts 에 /login/oauth2/** rewrite 추가 (이미 적용)
+  // 4) 백엔드 OAuth success handler 에서 최종 리다이렉트 (예: /auth/login/success?jwt=..) 로 보내도록 구현 필요
 
-  //     authFetch('/auth/social-login', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify(body),
-  //     })
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         alert(`JWT 발급 결과: ${data}`);
-  //         // TODO: localStorage, zustand 등에 저장
-  //       })
-  //       .catch((err) => console.error(err));
-  //   }
-  // }, []);
+  // TODO: 성공 후 백엔드가 프론트로 jwt, refresh 등을 쿼리나 해시 혹은 httpOnly 쿠키로 전달하면
+  //       여기서 파싱/저장 로직 추가
 
   return (
     <div className="mt-40 flex w-full flex-col items-center gap-3 text-gray-900">
@@ -42,7 +33,6 @@ export default function LoginForm() {
         onClick={() => {
           window.location.href = buildUrl('/oauth2/authorization/kakao', 'oauth');
         }}
-        // onClick={() => void signIn('kakao', { callbackUrl })}
         className="flex w-full items-center justify-center gap-1 rounded-xs bg-amber-300 py-3 font-medium"
       >
         <KakaoIcon />
@@ -52,7 +42,6 @@ export default function LoginForm() {
         onClick={() => {
           window.location.href = buildUrl('/oauth2/authorization/google', 'oauth');
         }}
-        // onClick={() => void signIn('google', { callbackUrl })}
         className="flex w-full items-center justify-center gap-1 rounded-xs border border-gray-400 py-3 font-medium"
       >
         <GoogleIcon />
