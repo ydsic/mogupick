@@ -132,12 +132,10 @@ export const getProductsConstantlyPopular = async (
   page = 0,
   size = 20,
 ): Promise<ConstantlyPopularMappedResult> => {
-  console.log('[getProductsConstantlyPopular] start fetch', { page, size });
   try {
     const res = await apiFetch<ConstantlyPopularResponse>(
       `/products/constantly-popular?page=${page}&size=${size}`,
     );
-    console.log('[getProductsConstantlyPopular] raw response', res);
 
     const mapped: MappedProductCardItem[] = res.data.content.map(
       (item: ConstantlyPopularItemRaw) => {
@@ -153,7 +151,7 @@ export const getProductsConstantlyPopular = async (
         return mappedItem;
       },
     );
-    console.log('[getProductsConstantlyPopular] mapped items', mapped);
+
     return {
       items: mapped,
       page: res.data.page,
@@ -211,12 +209,10 @@ export const getProductsBeginnerFriendlyMapped = async (
   page = 0,
   size = 20,
 ): Promise<BeginnerFriendlyMappedResult> => {
-  console.log('[getProductsBeginnerFriendlyMapped] start fetch', { page, size });
   try {
     const res = await apiFetch<BeginnerFriendlyResponse>(
       `/products/beginner-friendly?page=${page}&size=${size}`,
     );
-    console.log('[getProductsBeginnerFriendlyMapped] raw response', res);
 
     const mapped: MappedProductCardItem[] = res.data.content.map(
       (item: BeginnerFriendlyItemRaw) => {
@@ -232,7 +228,7 @@ export const getProductsBeginnerFriendlyMapped = async (
         return mappedItem;
       },
     );
-    console.log('[getProductsBeginnerFriendlyMapped] mapped items', mapped);
+
     return {
       items: mapped,
       page: res.data.page,
@@ -296,14 +292,12 @@ export const getProductsPeerBestReviewsMapped = async (
   page = 0,
   size = 20,
 ): Promise<PeerBestReviewsMappedResult> => {
-  console.log('[getProductsPeerBestReviewsMapped] start fetch', { page, size });
   try {
     let res: PeerBestReviewResponse | null = null;
     try {
       res = await apiFetch<PeerBestReviewResponse>(
         `/products/peer-best-reviews?page=${page}&size=${size}`,
       );
-      console.log('[getProductsPeerBestReviewsMapped] wrapper response', res);
     } catch (e) {
       console.warn('[getProductsPeerBestReviewsMapped] wrapper 형태 아님, fallback 시도');
     }
@@ -315,7 +309,7 @@ export const getProductsPeerBestReviewsMapped = async (
       const fallbackRes = await apiFetch<any>(
         `/products/peer-best-reviews?page=${page}&size=${size}`,
       );
-      console.log('[getProductsPeerBestReviewsMapped] fallback response', fallbackRes);
+
       if (Array.isArray(fallbackRes)) {
         rawItems = fallbackRes;
       } else if (
@@ -329,7 +323,6 @@ export const getProductsPeerBestReviewsMapped = async (
         rawItems = [];
       }
     }
-    console.log('[getProductsPeerBestReviewsMapped] raw items', rawItems);
 
     const mapped: MappedPeerBestReviewItem[] = rawItems.map((item: any, idx: number) => ({
       id: item.product?.productId ?? idx,
@@ -348,7 +341,6 @@ export const getProductsPeerBestReviewsMapped = async (
         ? { page: res.data.page, size: res.data.size, totalPages: res.data.totalPages }
         : { page, size, totalPages: 1 };
 
-    console.log('[getProductsPeerBestReviewsMapped] mapped items', mapped);
     return { items: mapped, ...meta };
   } catch (e: any) {
     console.error('[getProductsPeerBestReviewsMapped] error', e?.message || e);
@@ -358,10 +350,8 @@ export const getProductsPeerBestReviewsMapped = async (
 
 // 최근 본 상품 목록 조회 (매핑 포함)
 export const getProductsRecentlyViewedMapped = async (): Promise<MappedProductCardItem[]> => {
-  console.log('[getProductsRecentlyViewedMapped] start fetch');
   try {
     const rawData = await getProductsRecentlyViewed();
-    console.log('[getProductsRecentlyViewedMapped] raw response', rawData);
 
     // 기본 Product[] 타입이므로 안전하게 변환
     const mapped: MappedProductCardItem[] = (rawData as any[]).map((item: any, idx: number) => ({
@@ -374,7 +364,6 @@ export const getProductsRecentlyViewedMapped = async (): Promise<MappedProductCa
       imageUrl: item.productImageUrl ?? item.imageUrl,
     }));
 
-    console.log('[getProductsRecentlyViewedMapped] mapped items', mapped);
     return mapped;
   } catch (e: any) {
     console.error('[getProductsRecentlyViewedMapped] error', e?.message || e);
@@ -387,10 +376,8 @@ export const getProductsNewMapped = async (
   page = 0,
   size = 20,
 ): Promise<NewProductMappedResult> => {
-  console.log('[getProductsNewMapped] start fetch', { page, size });
   try {
     const res = await apiFetch<NewProductResponse>(`/products/new?page=${page}&size=${size}`);
-    console.log('[getProductsNewMapped] raw response', res);
 
     const mapped: MappedProductCardItem[] = res.data.content.map((item: NewProductItemRaw) => {
       const mappedItem = {
@@ -404,7 +391,7 @@ export const getProductsNewMapped = async (
       };
       return mappedItem;
     });
-    console.log('[getProductsNewMapped] mapped items', mapped);
+
     return {
       items: mapped,
       page: res.data.page,
@@ -460,12 +447,10 @@ export const getProductsMostViewedMapped = async (
   page = 0,
   size = 20,
 ): Promise<MostViewedMappedResult> => {
-  console.log('[getProductsMostViewedMapped] start fetch', { page, size });
   try {
     const res = await apiFetch<MostViewedResponse>(
       `/products/view-count/most-daily-view-stat-change?page=${page}&size=${size}`,
     );
-    console.log('[getProductsMostViewedMapped] raw response', res);
 
     const mapped: MappedProductCardItem[] = res.data.content.map((item: MostViewedItemRaw) => {
       const mappedItem = {
@@ -479,7 +464,7 @@ export const getProductsMostViewedMapped = async (
       };
       return mappedItem;
     });
-    console.log('[getProductsMostViewedMapped] mapped items', mapped);
+
     return {
       items: mapped,
       page: res.data.page,

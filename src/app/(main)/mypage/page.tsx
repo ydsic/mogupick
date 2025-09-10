@@ -8,6 +8,7 @@ import ArrowIcon from '@/assets/icons/mypage/right-arrow.svg';
 import { signOut } from 'next-auth/react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/utils/useAuth';
+import { useEffect, useState } from 'react';
 
 interface UserStats {
   longestSubscription: number;
@@ -21,10 +22,69 @@ interface MenuItem {
   onClick?: () => void;
 }
 
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  // 추가 필드들은 API 응답에 따라 수정
+}
+
 export default function MyPagePage() {
   const { session, logout } = useAuth();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   console.log('Mypage session', session);
+
+  // API 요청 함수
+  const fetchUserData = async () => {
+    if (!session?.user?.accessToken) {
+      console.log('No access token available');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/delivery-addresses',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${session.user.accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      console.log('API Response status:', response.status);
+      console.log('Access Token used:', session.user.accessToken);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('User data from API:', data);
+        setUserData(data);
+      } else {
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        setError(`API Error: ${response.status} - ${errorText}`);
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
+      setError('네트워크 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 세션이 있을 때 API 요청
+  useEffect(() => {
+    if (session?.user?.accessToken) {
+      fetchUserData();
+    }
+  }, [session?.user?.accessToken]);
 
   const userStats: UserStats = {
     longestSubscription: 12,
@@ -46,6 +106,29 @@ export default function MyPagePage() {
         <HeaderCustom title="마이페이지" showSearch showCart />
 
         <div>
+          {/* API 요청 상태 표시 */}
+          {loading && (
+            <div className="p-4 text-center text-blue-600">사용자 정보를 불러오는 중...</div>
+          )}
+
+          {error && (
+            <div className="p-4 text-center text-red-600">
+              {error}
+              <button onClick={fetchUserData} className="ml-2 text-blue-600 underline">
+                다시 시도
+              </button>
+            </div>
+          )}
+
+          {userData && (
+            <div className="border-l-4 border-blue-400 bg-blue-50 p-4">
+              <h3 className="font-semibold text-blue-900">API 응답 데이터:</h3>
+              <pre className="mt-2 overflow-x-auto text-sm text-blue-800">
+                {JSON.stringify(userData, null, 2)}
+              </pre>
+            </div>
+          )}
+
           {/* 프로필 섹션 */}
           <div className="flex flex-col gap-5 p-4">
             {/* 사용자 정보 */}
@@ -53,7 +136,9 @@ export default function MyPagePage() {
               <div className="h-14 w-14 rounded-full bg-gray-300"></div>
               <div className="flex w-36 flex-col gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-semibold text-black">User Name</span>
+                  <span className="text-lg font-semibold text-black">
+                    {userData?.name || session?.user?.name || 'User Name'}
+                  </span>
                   <ArrowIcon />
                 </div>
                 <div className="flex w-50 items-center gap-3">
