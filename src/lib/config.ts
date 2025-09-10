@@ -51,7 +51,8 @@ export const SOCIAL_LOGIN_CONFIG = {
     scope: ['profile_nickname', 'account_email'],
     clientAuthenticationMethod: 'client_secret_post',
     authorizationGrantType: 'authorization_code',
-    redirectUri: (baseUrl: string) => `${baseUrl}/login/oauth2/code/kakao`,
+    redirectUri: (baseUrl: string) =>
+      `http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/kakao`,
     clientName: 'Kakao',
   } as KakaoConfig,
 } as const;
