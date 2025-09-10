@@ -34,9 +34,7 @@ export default function About() {
           <div>
             <ProductCardList path={`products`} products={products} showHeart={true} limit={4} />
           </div>
-          <div>
-            <PeerBestReviewSection />
-          </div>
+          <div>{/* <PeerBestReviewSection /> */}</div>
 
           <div>
             <Title text="지금 주목받는 상품" />
