@@ -83,11 +83,13 @@ export const getProduct = (productId: number) => apiFetch<Product>(`/products/${
 export const getProductsSimilar = () => apiFetch<Product[]>('/products/similar');
 // 멤버의 최근 본 상품목록조회
 export const getProductsRecentlyViewed = () => apiFetch<Product[]>('/products/recently-viewed');
+// 내 또래 상품 베스트 리뷰 조회
+export const getProductsPeerBestReviews = () => apiFetch<Product[]>('/products/peer-best-reviews');
 
 // 이번 달 새로나온 상품조회
 export const getProductsNew = () => apiFetch<Product[]>('/products/new');
 
-// 꾸준히 사랑받는 상품목록 조회 (페이지네이션 적용)
+// 내 또래의 베스트 리뷰 Pick
 export const getProductsConstantlyPopular = async (
   page = 0,
   size = 20,
@@ -106,7 +108,7 @@ export const getProductsConstantlyPopular = async (
           store: item.brand?.brandName ?? '',
           title: item.product.productName,
           price: item.product.productPrice,
-            rating: item.review?.rating ?? 0,
+          rating: item.review?.rating ?? 0,
           reviewCount: item.review?.reviewCount ?? 0,
           imageUrl: item.product.productImageUrl,
         };
@@ -180,21 +182,40 @@ export const getProductsPeerBestReviewsMapped = async (
 ): Promise<PeerBestReviewsMappedResult> => {
   console.log('[getProductsPeerBestReviewsMapped] start fetch', { page, size });
   try {
-    // 기존 단순 Product[] 반환을 고려하여 우선 래핑 시도 후 실패 시 fallback
     let res: PeerBestReviewResponse | null = null;
     try {
       res = await apiFetch<PeerBestReviewResponse>(
         `/products/peer-best-reviews?page=${page}&size=${size}`,
       );
+      console.log('[getProductsPeerBestReviewsMapped] wrapper response', res);
     } catch (e) {
       console.warn('[getProductsPeerBestReviewsMapped] wrapper 형태 아님, fallback 시도');
     }
 
-    const rawItems: PeerBestReviewItemRaw[] = res
-      ? res.data.content
-      : ((await apiFetch<any[]>(`/products/peer-best-reviews?page=${page}&size=${size}`)) as any[]);
+    let rawItems;
+    if (res && res.data && res.data.content) {
+      rawItems = res.data.content;
+    } else {
+      const fallbackRes = await apiFetch<any>(
+        `/products/peer-best-reviews?page=${page}&size=${size}`,
+      );
+      console.log('[getProductsPeerBestReviewsMapped] fallback response', fallbackRes);
+      if (Array.isArray(fallbackRes)) {
+        rawItems = fallbackRes;
+      } else if (
+        fallbackRes &&
+        typeof fallbackRes === 'object' &&
+        fallbackRes.data &&
+        Array.isArray(fallbackRes.data.content)
+      ) {
+        rawItems = fallbackRes.data.content;
+      } else {
+        rawItems = [];
+      }
+    }
+    console.log('[getProductsPeerBestReviewsMapped] raw items', rawItems);
 
-    const mapped: MappedPeerBestReviewItem[] = rawItems.map((item, idx) => ({
+    const mapped: MappedPeerBestReviewItem[] = rawItems.map((item: any, idx: number) => ({
       id: item.product?.productId ?? idx,
       username: item.user?.username ?? '사용자',
       avatar: item.user?.avatarUrl,
@@ -206,9 +227,10 @@ export const getProductsPeerBestReviewsMapped = async (
       imageUrl: item.product?.productImageUrl,
     }));
 
-    const meta = res
-      ? { page: res.data.page, size: res.data.size, totalPages: res.data.totalPages }
-      : { page, size, totalPages: 1 };
+    const meta =
+      res && res.data
+        ? { page: res.data.page, size: res.data.size, totalPages: res.data.totalPages }
+        : { page, size, totalPages: 1 };
 
     console.log('[getProductsPeerBestReviewsMapped] mapped items', mapped);
     return { items: mapped, ...meta };
@@ -217,6 +239,3 @@ export const getProductsPeerBestReviewsMapped = async (
     throw e;
   }
 };
-
-// 내 또래 상품 베스트 리뷰 조회 (호환용 별칭 - 매핑 결과 사용)
-export const getProductsPeerBestReviews = getProductsPeerBestReviewsMapped;

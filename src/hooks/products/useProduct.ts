@@ -35,7 +35,7 @@ export function useProductsRecentlyViewed() {
 export function useProductsPeerBestReviews() {
   return useQuery({
     queryKey: ['products-peer-best-reviews'],
-    queryFn: getProductsPeerBestReviews,
+    queryFn: getProductsPeerBestReviews, // 매개변수 제거
   });
 }
 

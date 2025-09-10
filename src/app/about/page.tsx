@@ -20,7 +20,8 @@ import { ChipsList } from '@/components/ui/Chips';
 import { ProductCardList } from '@/components/card/Product';
 import { categories } from '@/constants/categories';
 import { ReviewCardList } from '@/components/card/Review';
-import { dummyReviews, products } from '../(main)/(home)/_components/HomePage';
+import { products } from '../(main)/(home)/_components/HomePage';
+import PeerBestReviewSection from '../(main)/(home)/_components/PeerBestReviewSection';
 import Title from '@/components/ui/Title';
 
 export default function About() {
@@ -34,8 +35,7 @@ export default function About() {
             <ProductCardList path={`products`} products={products} showHeart={true} limit={4} />
           </div>
           <div>
-            <Title text="내 또래의 베스트 리뷰 PICK" />
-            <ReviewCardList layout="horizontal" reviews={dummyReviews} />
+            <PeerBestReviewSection />
           </div>
 
           <div>
@@ -68,7 +68,7 @@ export default function About() {
 
             <br />
 
-            <ReviewCardList layout="horizontal" reviews={dummyReviews} />
+            <PeerBestReviewSection />
           </div>
 
           <br />
