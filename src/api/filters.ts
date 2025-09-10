@@ -57,8 +57,6 @@ export interface RootCategoriesResponse {
 
 export async function getFilterOptions(rootCategory: ApiCategory): Promise<FilterOptionsResponse> {
   const url = buildUrl(`/categories/options-filters?rootCategory=${rootCategory}`);
-  console.log('배포 환경 API 요청 URL:', url);
-  // 공개 API이므로 로그인 토큰 강제 불요. 직접 fetch 사용.
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -71,8 +69,6 @@ export async function getFilterOptions(rootCategory: ApiCategory): Promise<Filte
 
 export async function getRootCategories(): Promise<RootCategoriesResponse> {
   const url = buildUrl('/categories/root');
-  console.log('배포 환경 API 요청 URL:', url);
-  // 공개 API이므로 로그인 토큰 강제 불요. 직접 fetch 사용.
   const response = await fetch(url);
 
   if (!response.ok) {

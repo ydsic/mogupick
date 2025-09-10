@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'http', hostname: 'k.kakaocdn.net', pathname: '/**' },
       { protocol: 'https', hostname: 'k.kakaocdn.net', pathname: '/**' },
+      {
+        protocol: 'https',
+        hostname: 'mogupick-prod-uploads-apne2.s3.ap-northeast-2.amazonaws.com',
+        pathname: '/**',
+      },
     ],
   },
   webpack(config) {
