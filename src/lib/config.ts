@@ -22,3 +22,39 @@ export function buildUrl(path: string, type: 'api' | 'oauth' = 'api'): string {
   }
   return `${baseUrl}${normalizedPath}`;
 }
+
+// 소셜 로그인 설정
+interface BaseSocialConfig {
+  clientId: string;
+  scope: readonly string[];
+  redirectUri: (baseUrl: string) => string;
+}
+
+interface GoogleConfig extends BaseSocialConfig {}
+
+interface KakaoConfig extends BaseSocialConfig {
+  clientAuthenticationMethod: string;
+  authorizationGrantType: string;
+  clientName: string;
+}
+
+export const SOCIAL_LOGIN_CONFIG = {
+  google: {
+    clientId:
+      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+      '371140249433-06gt9tu4tjmtkvp3fjvs73lj0h69h22r.apps.googleusercontent.com',
+    scope: ['profile', 'email'],
+    redirectUri: (baseUrl: string) => `${baseUrl}/login/oauth2/code/google`,
+  } as GoogleConfig,
+  kakao: {
+    clientId: process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID || '176bd58bb9828831e99e28b905c81b61',
+    scope: ['profile_nickname', 'account_email'],
+    clientAuthenticationMethod: 'client_secret_post',
+    authorizationGrantType: 'authorization_code',
+    redirectUri: (baseUrl: string) => `${baseUrl}/login/oauth2/code/kakao`,
+    clientName: 'Kakao',
+  } as KakaoConfig,
+} as const;
+
+export type SocialProvider = keyof typeof SOCIAL_LOGIN_CONFIG;
+export type SocialConfig = GoogleConfig | KakaoConfig;

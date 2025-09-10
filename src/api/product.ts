@@ -20,14 +20,20 @@ export interface ConstantlyPopularItemRaw {
     productPrice: number;
     createdAt: string;
   };
-  brand: { brandId: number; brandName: string };
-  review: { rating: number; reviewCount: number };
-  option?: {
+  brand: {
+    brandId: number;
+    brandName: string;
+  };
+  review: {
+    rating: number;
+    reviewCount: number;
+  };
+  option: {
     id: string;
     productId: number;
     rootCategory: string;
     subCategory: string;
-    options: any; // null 가능
+    options: null;
   };
 }
 
@@ -50,6 +56,8 @@ export interface MappedProductCardItem {
   rating: number;
   reviewCount: number;
   imageUrl?: string;
+  rootCategory?: string;
+  subCategory?: string;
 }
 
 export interface ConstantlyPopularMappedResult {
@@ -131,11 +139,33 @@ export interface NewProductMappedResult {
 export const getProductsConstantlyPopular = async (
   page = 0,
   size = 20,
-): Promise<ConstantlyPopularMappedResult> => {
+): Promise<ConstantlyPopularResponse> => {
   try {
     const res = await apiFetch<ConstantlyPopularResponse>(
       `/products/constantly-popular?page=${page}&size=${size}`,
     );
+    console.log('[getProductsConstantlyPopular] API 응답:', res);
+    return res;
+  } catch (e: any) {
+    console.error('[getProductsConstantlyPopular] error', e?.message || e);
+    throw e;
+  }
+};
+
+// 꾸준히 사랑받는 상품 목록 조회 (매핑 포함)
+export const getProductsConstantlyPopularMapped = async (
+  page = 0,
+  size = 20,
+  rootCategory?: string,
+): Promise<ConstantlyPopularMappedResult> => {
+  try {
+    let url = `/products/constantly-popular?page=${page}&size=${size}`;
+    if (rootCategory) {
+      url += `&rootCategory=${rootCategory}`;
+    }
+
+    const res = await apiFetch<ConstantlyPopularResponse>(url);
+    console.log('[getProductsConstantlyPopularMapped] API 응답:', res);
 
     const mapped: MappedProductCardItem[] = res.data.content.map(
       (item: ConstantlyPopularItemRaw) => {
@@ -147,6 +177,8 @@ export const getProductsConstantlyPopular = async (
           rating: item.review?.rating ?? 0,
           reviewCount: item.review?.reviewCount ?? 0,
           imageUrl: item.product.productImageUrl,
+          rootCategory: item.option?.rootCategory,
+          subCategory: item.option?.subCategory,
         };
         return mappedItem;
       },
@@ -159,8 +191,14 @@ export const getProductsConstantlyPopular = async (
       totalPages: res.data.totalPages,
     };
   } catch (e: any) {
-    console.error('[getProductsConstantlyPopular] error', e?.message || e);
-    throw e;
+    console.error('[getProductsConstantlyPopularMapped] error', e?.message || e);
+    // 에러가 발생해도 빈 배열과 기본 메타데이터 반환
+    return {
+      items: [],
+      page,
+      size,
+      totalPages: 1,
+    };
   }
 };
 // 루트 카테고리에 대한 상품 목록 조회
@@ -208,11 +246,15 @@ export interface BeginnerFriendlyMappedResult {
 export const getProductsBeginnerFriendlyMapped = async (
   page = 0,
   size = 20,
+  rootCategory?: string,
 ): Promise<BeginnerFriendlyMappedResult> => {
   try {
-    const res = await apiFetch<BeginnerFriendlyResponse>(
-      `/products/beginner-friendly?page=${page}&size=${size}`,
-    );
+    let url = `/products/beginner-friendly?page=${page}&size=${size}`;
+    if (rootCategory) {
+      url += `&rootCategory=${rootCategory}`;
+    }
+
+    const res = await apiFetch<BeginnerFriendlyResponse>(url);
 
     const mapped: MappedProductCardItem[] = res.data.content.map(
       (item: BeginnerFriendlyItemRaw) => {
@@ -224,6 +266,8 @@ export const getProductsBeginnerFriendlyMapped = async (
           rating: item.review?.rating ?? 0,
           reviewCount: item.review?.reviewCount ?? 0,
           imageUrl: item.product.productImageUrl,
+          rootCategory: item.option?.rootCategory,
+          subCategory: item.option?.subCategory,
         };
         return mappedItem;
       },
@@ -237,7 +281,12 @@ export const getProductsBeginnerFriendlyMapped = async (
     };
   } catch (e: any) {
     console.error('[getProductsBeginnerFriendlyMapped] error', e?.message || e);
-    throw e;
+    return {
+      items: [],
+      page,
+      size,
+      totalPages: 1,
+    };
   }
 };
 
@@ -344,7 +393,13 @@ export const getProductsPeerBestReviewsMapped = async (
     return { items: mapped, ...meta };
   } catch (e: any) {
     console.error('[getProductsPeerBestReviewsMapped] error', e?.message || e);
-    throw e;
+    // 에러가 발생해도 빈 배열과 기본 메타데이터 반환
+    return {
+      items: [],
+      page,
+      size,
+      totalPages: 1,
+    };
   }
 };
 
@@ -353,8 +408,13 @@ export const getProductsRecentlyViewedMapped = async (): Promise<MappedProductCa
   try {
     const rawData = await getProductsRecentlyViewed();
 
+    // rawData가 없거나 배열이 아닌 경우 빈 배열 반환
+    if (!rawData || !Array.isArray(rawData)) {
+      return [];
+    }
+
     // 기본 Product[] 타입이므로 안전하게 변환
-    const mapped: MappedProductCardItem[] = (rawData as any[]).map((item: any, idx: number) => ({
+    const mapped: MappedProductCardItem[] = rawData.map((item: any, idx: number) => ({
       id: item.productId ?? item.id ?? idx,
       store: item.brandName ?? item.store ?? '',
       title: item.productName ?? item.title ?? item.name ?? '상품',
@@ -362,12 +422,14 @@ export const getProductsRecentlyViewedMapped = async (): Promise<MappedProductCa
       rating: item.rating ?? item.starRate ?? 4.5,
       reviewCount: item.reviewCount ?? 0,
       imageUrl: item.productImageUrl ?? item.imageUrl,
+      rootCategory: item.rootCategory,
+      subCategory: item.subCategory,
     }));
 
     return mapped;
   } catch (e: any) {
     console.error('[getProductsRecentlyViewedMapped] error', e?.message || e);
-    throw e;
+    return [];
   }
 };
 
@@ -375,9 +437,15 @@ export const getProductsRecentlyViewedMapped = async (): Promise<MappedProductCa
 export const getProductsNewMapped = async (
   page = 0,
   size = 20,
+  rootCategory?: string,
 ): Promise<NewProductMappedResult> => {
   try {
-    const res = await apiFetch<NewProductResponse>(`/products/new?page=${page}&size=${size}`);
+    let url = `/products/new?page=${page}&size=${size}`;
+    if (rootCategory) {
+      url += `&rootCategory=${rootCategory}`;
+    }
+
+    const res = await apiFetch<NewProductResponse>(url);
 
     const mapped: MappedProductCardItem[] = res.data.content.map((item: NewProductItemRaw) => {
       const mappedItem = {
@@ -388,6 +456,8 @@ export const getProductsNewMapped = async (
         rating: item.review?.rating ?? 0,
         reviewCount: item.review?.reviewCount ?? 0,
         imageUrl: item.product.productImageUrl,
+        rootCategory: item.option?.rootCategory,
+        subCategory: item.option?.subCategory,
       };
       return mappedItem;
     });
@@ -400,7 +470,12 @@ export const getProductsNewMapped = async (
     };
   } catch (e: any) {
     console.error('[getProductsNewMapped] error', e?.message || e);
-    throw e;
+    return {
+      items: [],
+      page,
+      size,
+      totalPages: 1,
+    };
   }
 };
 
@@ -446,11 +521,15 @@ export interface MostViewedMappedResult {
 export const getProductsMostViewedMapped = async (
   page = 0,
   size = 20,
+  rootCategory?: string,
 ): Promise<MostViewedMappedResult> => {
   try {
-    const res = await apiFetch<MostViewedResponse>(
-      `/products/view-count/most-daily-view-stat-change?page=${page}&size=${size}`,
-    );
+    let url = `/products/view-count/most-daily-view-stat-change?page=${page}&size=${size}`;
+    if (rootCategory) {
+      url += `&rootCategory=${rootCategory}`;
+    }
+
+    const res = await apiFetch<MostViewedResponse>(url);
 
     const mapped: MappedProductCardItem[] = res.data.content.map((item: MostViewedItemRaw) => {
       const mappedItem = {
@@ -461,6 +540,8 @@ export const getProductsMostViewedMapped = async (
         rating: item.review?.rating ?? 0,
         reviewCount: item.review?.reviewCount ?? 0,
         imageUrl: item.product.productImageUrl,
+        rootCategory: item.option?.rootCategory,
+        subCategory: item.option?.subCategory,
       };
       return mappedItem;
     });
@@ -473,6 +554,11 @@ export const getProductsMostViewedMapped = async (
     };
   } catch (e: any) {
     console.error('[getProductsMostViewedMapped] error', e?.message || e);
-    throw e;
+    return {
+      items: [],
+      page,
+      size,
+      totalPages: 1,
+    };
   }
 };

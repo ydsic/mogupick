@@ -9,6 +9,8 @@ import { signOut } from 'next-auth/react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/utils/useAuth';
 import { useEffect, useState } from 'react';
+import { SOCIAL_LOGIN_CONFIG, type SocialProvider } from '@/lib/config';
+import { kakaoSocialLogin } from '@/api/socialAuth';
 
 interface UserStats {
   longestSubscription: number;
@@ -48,32 +50,13 @@ export default function MyPagePage() {
     setError(null);
 
     try {
-      const response = await fetch(
-        'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/delivery-addresses',
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${session.user.accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      console.log('API Response status:', response.status);
-      console.log('Access Token used:', session.user.accessToken);
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('User data from API:', data);
-        setUserData(data);
-      } else {
-        const errorText = await response.text();
-        console.error('API Error:', response.status, errorText);
-        setError(`API Error: ${response.status} - ${errorText}`);
-      }
+      // 소셜 로그인 API 함수 사용
+      const data = await kakaoSocialLogin(session.user.accessToken);
+      console.log('User data from API:', data);
+      setUserData(data);
     } catch (err) {
       console.error('Fetch error:', err);
-      setError('네트워크 오류가 발생했습니다.');
+      setError(err instanceof Error ? err.message : '네트워크 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }

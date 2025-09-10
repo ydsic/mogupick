@@ -6,6 +6,7 @@ import {
   getProductsBeginnerFriendlyMapped,
   getProductsCategory,
   getProductsConstantlyPopular,
+  getProductsConstantlyPopularMapped,
   getProductsNew,
   getProductsPeerBestReviews,
   getProductsRecentlyViewed,
@@ -94,18 +95,31 @@ export function useProductsNew() {
 }
 
 // 이번 달 새로나온 상품 목록 조회 (매핑 포함)
-export function useProductsNewMapped(page = 0, size = 20) {
+export function useProductsNewMapped(page = 0, size = 20, rootCategory?: string) {
   return useQuery<NewProductMappedResult>({
-    queryKey: ['products-new-mapped', page, size],
-    queryFn: () => getProductsNewMapped(page, size),
+    queryKey: ['products-new-mapped', page, size, rootCategory],
+    queryFn: () => getProductsNewMapped(page, size, rootCategory),
+    // flicker 최소화를 위해 이전 구조 흉내: placeholder로 직전 값 재사용
+    placeholderData: (prev) => prev, // v5 패턴
+    staleTime: 1000 * 60,
   });
 }
 
 // 꾸준히 사랑받는 상품목록 조회 (페이지, 사이즈)
 export function useProductsConstantlyPopular(page = 0, size = 20) {
-  return useQuery<ConstantlyPopularMappedResult>({
+  return useQuery({
     queryKey: ['products-constantly-popular', page, size],
     queryFn: () => getProductsConstantlyPopular(page, size),
+  });
+}
+
+// 꾸준히 사랑받는 상품목록 조회 (매핑 포함)
+export function useProductsConstantlyPopularMapped(page = 0, size = 20, rootCategory?: string) {
+  return useQuery<ConstantlyPopularMappedResult>({
+    queryKey: ['products-constantly-popular-mapped', page, size, rootCategory],
+    queryFn: () => getProductsConstantlyPopularMapped(page, size, rootCategory),
+    placeholderData: (prev) => prev,
+    staleTime: 1000 * 60,
   });
 }
 
@@ -123,10 +137,12 @@ export function useProductsBeginnerFriendly() {
 }
 
 // 입문용 상품 목록 조회 (페이지네이션, 매핑 포함)
-export function useProductsBeginnerFriendlyMapped(page = 0, size = 20) {
+export function useProductsBeginnerFriendlyMapped(page = 0, size = 20, rootCategory?: string) {
   return useQuery<BeginnerFriendlyMappedResult>({
-    queryKey: ['products-beginner-friendly-mapped', page, size],
-    queryFn: () => getProductsBeginnerFriendlyMapped(page, size),
+    queryKey: ['products-beginner-friendly-mapped', page, size, rootCategory],
+    queryFn: () => getProductsBeginnerFriendlyMapped(page, size, rootCategory),
+    placeholderData: (prev) => prev,
+    staleTime: 1000 * 60,
   });
 }
 
@@ -141,9 +157,11 @@ export function useProductsRecentlyViewedMapped() {
 }
 
 // 지금 주목받는 상품 목록 조회 (매핑 포함)
-export function useProductsMostViewedMapped(page = 0, size = 20) {
+export function useProductsMostViewedMapped(page = 0, size = 20, rootCategory?: string) {
   return useQuery<MostViewedMappedResult>({
-    queryKey: ['products-most-viewed-mapped', page, size],
-    queryFn: () => getProductsMostViewedMapped(page, size),
+    queryKey: ['products-most-viewed-mapped', page, size, rootCategory],
+    queryFn: () => getProductsMostViewedMapped(page, size, rootCategory),
+    placeholderData: (prev) => prev,
+    staleTime: 1000 * 60,
   });
 }

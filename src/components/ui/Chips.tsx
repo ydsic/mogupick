@@ -32,13 +32,21 @@ interface ChipsListProps {
   className?: string;
   categories: Category[];
   showAll?: boolean;
+  onCategoryChange?: (category: Category | null) => void;
 }
 
-function ChipsList({ className, categories, showAll }: ChipsListProps) {
+function ChipsList({ className, categories, showAll, onCategoryChange }: ChipsListProps) {
   const mergedCategories = showAll
     ? [{ id: 0, text: '전체', slug: 'all' }, ...categories]
     : categories;
   const [selectedId, setSelectedId] = useState(mergedCategories[0]?.id);
+
+  const handleCategoryClick = (category: Category) => {
+    setSelectedId(category.id);
+    // 전체 선택시 null 전달, 특정 카테고리 선택시 해당 카테고리 전달
+    onCategoryChange?.(category.id === 0 ? null : category);
+  };
+
   return (
     <div
       className={cn('flex w-full justify-start gap-2 overflow-x-auto whitespace-nowrap', className)}
@@ -48,7 +56,7 @@ function ChipsList({ className, categories, showAll }: ChipsListProps) {
           key={c.id}
           text={c.text}
           selected={selectedId === c.id}
-          onClick={() => setSelectedId(c.id)}
+          onClick={() => handleCategoryClick(c)}
         />
       ))}
     </div>
