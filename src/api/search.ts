@@ -1,4 +1,4 @@
-import { apiFetch } from './client';
+import { buildUrl } from '@/lib/config';
 
 interface Search {
   id: number;
@@ -27,21 +27,111 @@ export interface SearchResponse<T = any> {
 }
 
 // 상품 검색
-export const createSearch = (data: Search) => apiFetch('/search', 'POST', { body: data });
+export const createSearch = async (data: Search) => {
+  const url = buildUrl('/search');
+  console.log('검색 API 요청 URL:', url);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    console.error('API 요청 실패:', response.status, response.statusText);
+    throw new Error('Failed to create search');
+  }
+
+  return response.json();
+};
 
 // 실시간 급상승 검색어 조회
-export const getSearchTopRisingToday = () => apiFetch('/search/top-rising/today');
+export const getSearchTopRisingToday = async () => {
+  const url = buildUrl('/search/top-rising/today');
+  console.log('급상승 검색어 API 요청 URL:', url);
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    console.error('API 요청 실패:', response.status, response.statusText);
+    throw new Error('Failed to fetch top-rising search');
+  }
+
+  return response.json();
+};
 
 // 연관 검색어 조회
-export const getSearchRelated = (data: SearchRelated) =>
-  apiFetch('/search/related', 'POST', { body: data });
+export const getSearchRelated = async (data: SearchRelated) => {
+  const url = buildUrl('/search/related');
+  console.log('연관 검색어 API 요청 URL:', url);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    console.error('API 요청 실패:', response.status, response.statusText);
+    throw new Error('Failed to fetch related search');
+  }
+
+  return response.json();
+};
 
 // 최근 검색어 조회
-export const getSearchRecent = () => apiFetch('/search/recent');
+export const getSearchRecent = async () => {
+  const url = buildUrl('/search/recent');
+  console.log('최근 검색어 API 요청 URL:', url);
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    console.error('API 요청 실패:', response.status, response.statusText);
+    throw new Error('Failed to fetch recent search');
+  }
+
+  return response.json();
+};
 
 // 최근 검색어 삭제
-export const deleteSearchRecent = (keywordId: number) => apiFetch(`/search/recent/${keywordId}`);
+export const deleteSearchRecent = async (keywordId: number) => {
+  const url = buildUrl(`/search/recent/${keywordId}`);
+  console.log('최근 검색어 삭제 API 요청 URL:', url);
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    console.error('API 요청 실패:', response.status, response.statusText);
+    throw new Error('Failed to delete recent search');
+  }
+
+  return response.json();
+};
 
 // 검색어로 POST 요청 (body: { content: string })
-export const postSearch = (content: string) =>
-  apiFetch<SearchResponse>(`/search`, 'POST', { body: { content } as SearchRequest });
+export const postSearch = async (content: string) => {
+  const url = buildUrl('/search');
+  console.log('검색 POST API 요청 URL:', url);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ content } as SearchRequest),
+  });
+
+  if (!response.ok) {
+    console.error('API 요청 실패:', response.status, response.statusText);
+    throw new Error('Failed to post search');
+  }
+
+  return response.json() as Promise<SearchResponse>;
+};
