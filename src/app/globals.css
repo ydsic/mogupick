@@ -3,10 +3,10 @@
 /* ---------- Design Tokens ---------- */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000;
 
   /* --- Green Color Palette --- */
-  --color-green-50: #f4fbec;
+  --color-green-50: #f3f9eb;
   --color-green-100: #def3c4;
   --color-green-200: #cdeea7;
   --color-green-300: #b7e67f;
@@ -22,7 +22,7 @@
   --color-secondary: #93d940;
   --color-background: #ffffff;
   --color-surface: #f2f4f8;
-  --color-text-primary: #171717;
+  --color-text-primary: #242424;
   --color-text-secondary: #5f6368;
   --color-text-disabled: #80868b;
   --color-danger: #d98d00;
@@ -58,7 +58,7 @@
   /* --- Grey palette --- */
   --grey-100: #f9f9f9;
   --grey-200: #ececec;
-  --grey-300: #dedede;
+  --grey-300: #d6d6d6;
   --grey-400: #c8c8c8;
   --grey-500: #a7a7a7;
   --grey-600: #898989;
