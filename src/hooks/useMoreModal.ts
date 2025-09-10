@@ -6,7 +6,7 @@ import {
   useProductsPeerBestReviewsMappedPaged,
   useProductsBeginnerFriendlyMapped,
   useProductsNewMapped,
-  useProductsConstantlyPopular,
+  useProductsConstantlyPopularMapped,
 } from '@/hooks/products/useProduct';
 
 type ModalType =
@@ -32,7 +32,7 @@ export default function useMoreModal() {
   );
   const { data: newProductsData, isLoading: newLoading } = useProductsNewMapped(0, 20);
   const { data: constantlyPopularData, isLoading: constantlyPopularLoading } =
-    useProductsConstantlyPopular(0, 20);
+    useProductsConstantlyPopularMapped(0, 20);
 
   // 모달 데이터 및 설정
   const getModalData = () => {
