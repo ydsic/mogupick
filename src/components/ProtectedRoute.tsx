@@ -8,7 +8,7 @@ interface Props {
   children: React.ReactNode;
   redirectTo?: string;
 }
-
+// 페이지 보호막 : 로그인 여부
 export default function ProtectedRoute({ children, redirectTo = '/auth/login' }: Props) {
   const { isLoggedIn, isLoading } = useAuth();
   const router = useRouter();

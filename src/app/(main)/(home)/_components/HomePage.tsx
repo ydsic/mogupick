@@ -1,55 +1,16 @@
+'use client';
+
 import SearchBar from '@/components/SearchBar';
-import Title from '@/components/ui/Title';
-import { ProductCardList } from '@/components/card/Product';
 import { categories } from '@/constants/categories';
-import { ChipsList } from '@/components/ui/Chips';
-import { ReviewCardList } from '@/components/card/Review';
-import { RankingList } from '@/components/card/Ranking';
 import { CategoryList } from '@/components/card/Category';
 import BannerSlider from '@/components/card/BannerSlider';
 import HeaderCustom from '@/components/HeaderCustom';
-import { getSession } from 'next-auth/react';
-import Link from 'next/link';
-import NextIcon from '@/assets/icons/common/next-24px.svg';
-
-export const dummyReviews = [
-  {
-    id: 1,
-    username: 'Alice',
-    review: '정말 마음에 들어요! 배송도 빨랐습니다.',
-    store: '쿠팡',
-    title: '무선 이어폰',
-    rating: 4.8,
-    reviewCount: 500,
-  },
-  {
-    id: 2,
-    username: 'Bob',
-    review: '품질이 생각보다 좋습니다.',
-    store: '11번가',
-    title: '노트북 거치대',
-    rating: 4.5,
-    reviewCount: 230,
-  },
-  {
-    id: 3,
-    username: 'Alice',
-    review: '정말 마음에 들어요! 배송도 빨랐습니다.',
-    store: '쿠팡',
-    title: '무선 이어폰',
-    rating: 4.8,
-    reviewCount: 500,
-  },
-  {
-    id: 4,
-    username: 'Bob',
-    review: '품질이 생각보다 좋습니다.',
-    store: '11번가',
-    title: '노트북 거치대',
-    rating: 4.5,
-    reviewCount: 230,
-  },
-];
+import ConstantlyPopularProducts from './ConstantlyPopularProducts';
+import ConditionalSections from './ConditionalSections';
+import NewProductSection from './NewProductSection';
+import MostViewedProductSection from './MostViewedProductSection';
+import useMoreModal from '@/hooks/useMoreModal';
+import MoreModal from '@/components/modal/MoreModal';
 
 export const products = [
   { id: 1, store: '쿠팡', title: '무선 이어폰', price: 59000, rating: 4.5, reviewCount: 120 },
@@ -73,9 +34,8 @@ export const products = [
   { id: 12, store: '쿠팡', title: '무선 충전기', price: 33000, rating: 4.4, reviewCount: 72 },
 ];
 
-export default async function HomePage() {
-  // 로그인 여부에 따라 화면 분기처리 ㄱ
-  // const session = await getSession()
+export default function HomePage() {
+  const { openModal, closeModal, modalType, modalData } = useMoreModal();
 
   return (
     <div className="flex flex-col px-4 pb-6">
@@ -85,55 +45,26 @@ export default async function HomePage() {
         <BannerSlider />
         <CategoryList categories={categories} />
 
-        <div>
-          <Title text="최근 본 상품과 유사한 상품" adver={true} />
-          <ProductCardList
-            path={`/products`}
-            products={products}
-            limit={4}
-            query={{ from: 'home', section: 'recent' }}
-          />
+        {/* 로그인 상태에 따른 조건부 섹션 */}
+        <ConditionalSections />
+        <ConstantlyPopularProducts />
 
-          {products.length >= 4 && (
-            <div className="flex justify-center">
-              <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center">
-                <Link href={`/products?section=recent`}>상품 더보기</Link> <NextIcon />
-              </div>
-            </div>
-          )}
-        </div>
+        {/* 이번 달 새로나온 상품 섹션 */}
+        <NewProductSection />
 
-        <div>
-          <Title text="꾸준히 사랑받는 상품" />
-          <ChipsList categories={categories} />
-          <ProductCardList
-            path={`/products`}
-            products={products}
-            cols={3}
-            size="s"
-            limit={6}
-            query={{ from: 'home', section: 'popular' }}
-          />
-          {products.length >= 4 && (
-            <div className="flex justify-center">
-              <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center text-base">
-                <Link href={`/products?section=popular`}>상품 더보기</Link>
-                <NextIcon />
-              </div>
-            </div>
-          )}
-        </div>
-        <div>
-          <Title text="내 또래의 베스트 리뷰 PICK" />
-          <ReviewCardList layout="horizontal" reviews={dummyReviews} />
-        </div>
-
-        <div>
-          <Title text="지금 주목받는 상품" />
-          <ChipsList categories={categories} />
-          <RankingList ranking={products} limit={5} />
-        </div>
+        {/* 지금 주목받는 상품 섹션 */}
+        <MostViewedProductSection />
       </div>
+
+      {/* 더보기 모달 */}
+      <MoreModal
+        isOpen={modalType !== null}
+        onClose={closeModal}
+        title={modalData.title}
+        type={modalData.type}
+        data={modalData.data}
+        isLoading={modalData.isLoading}
+      />
     </div>
   );
 }

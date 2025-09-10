@@ -6,6 +6,7 @@ import CartIcon from '@/assets/icons/common/shoppingcart-32px.svg';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useRecentSearchStore } from '@/store/recentSearchStore';
+import { postSearch } from '@/api/search';
 
 interface SearchHeaderProps {
   value?: string;
@@ -28,12 +29,18 @@ export default function SearchHeader({ value = '', onChange }: SearchHeaderProps
     onChange?.(newValue);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
-    addKeyword(inputValue.trim());
-    router.push(`/search/result?q=${encodeURIComponent(inputValue.trim())}`);
+    const keyword = inputValue.trim();
+    addKeyword(keyword);
+    try {
+      await postSearch(keyword);
+    } catch (err) {
+      console.error('postSearch 실패', err);
+    }
+    router.push(`/search/result?q=${encodeURIComponent(keyword)}`);
   };
 
   const clearInput = () => {

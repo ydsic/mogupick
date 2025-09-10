@@ -12,9 +12,28 @@ export async function apiFetch<T>(
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE' = 'GET',
   options: FetchOptions = {},
 ): Promise<T> {
-  const session = await getCurrentUser();
-  const token = session?.accessToken;
   const baseUrl = getApiBaseUrl();
+
+  let token: string | undefined;
+  // 서버 환경: getServerSession 사용
+  if (typeof window === 'undefined') {
+    try {
+      const session = await getCurrentUser();
+      token = (session as any)?.accessToken;
+    } catch (e) {
+      console.warn('[apiFetch] server session fetch failed (ignored)', e);
+    }
+  } else {
+    // 클라이언트 환경: next-auth/react 의 getSession 동적 import
+    try {
+      const { getSession } = await import('next-auth/react');
+      const session = await getSession();
+      token = (session?.user as any)?.accessToken;
+    } catch (e) {
+      // 공개 API 요청이면 토큰 없어도 됨
+      console.warn('[apiFetch] client getSession failed (maybe not signed in)', e);
+    }
+  }
 
   const isFormData = options.body instanceof FormData;
 
@@ -23,12 +42,15 @@ export async function apiFetch<T>(
     ...options.headers,
   };
 
-  // FormData면 Content-Type 자동 설정 제거
-  if (!isFormData) {
-    headers['Content-Type'] = 'application/json';
+  if (!isFormData) headers['Content-Type'] = 'application/json';
+
+  const finalUrl = `${baseUrl}${url}`;
+  // 디버그 로그
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[apiFetch] request', { finalUrl, method, hasToken: !!token });
   }
 
-  const res = await fetch(`${baseUrl}${url}`, {
+  const res = await fetch(finalUrl, {
     method,
     headers,
     body: options.body ? (isFormData ? options.body : JSON.stringify(options.body)) : undefined,
@@ -37,6 +59,7 @@ export async function apiFetch<T>(
 
   if (!res.ok) {
     const errorText = await res.text();
+    console.error('[apiFetch] error response', res.status, errorText);
     throw new Error(errorText || 'API 요청 실패');
   }
 
