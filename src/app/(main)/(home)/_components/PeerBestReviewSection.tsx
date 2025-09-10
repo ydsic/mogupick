@@ -16,7 +16,7 @@ type ModalType =
   | null;
 
 interface PeerBestReviewSectionProps {
-  openModal: (type: ModalType) => void;
+  openModal?: (type: ModalType) => void;
 }
 
 export default function PeerBestReviewSection({ openModal }: PeerBestReviewSectionProps) {
@@ -62,7 +62,7 @@ export default function PeerBestReviewSection({ openModal }: PeerBestReviewSecti
         {reviewData && <ReviewCardList layout="horizontal" reviews={reviewData} />}
 
         {/* 더보기 버튼 */}
-        {reviewData && reviewData.length >= 4 && (
+        {reviewData && reviewData.length >= 4 && openModal && (
           <div className="flex justify-center">
             <button
               onClick={() => openModal('peer-reviews')}
@@ -82,7 +82,7 @@ export default function PeerBestReviewSection({ openModal }: PeerBestReviewSecti
     <HorizontalProductList
       products={transformToProductCard(newProductsData || []).slice(0, 4)}
       title="이번달 새로 나온 구독"
-      onMoreClick={() => openModal('new-products')}
+      onMoreClick={openModal ? () => openModal('new-products') : undefined}
     />
   );
 }
