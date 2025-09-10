@@ -1,6 +1,5 @@
 'use client';
 
-
 import { useState } from 'react';
 
 import clsx from 'clsx';
@@ -15,7 +14,7 @@ import ReviewIcon from '@/assets/icons/common/review-14px.svg';
 import HeartIcon from '@/assets/icons/common/heart-active-24px.svg';
 import LikeIcon from '@/assets/icons/common/empty-like-24px.svg';
 import { useLikedStore } from '@/store/useLikedStore';
-
+import Image from 'next/image';
 
 /**
  * product-card
@@ -86,7 +85,22 @@ function ProductCard({
     >
       <Link href={`${path}/${p.id}${queryString}`}>
         {/* 이미지 영역 */}
-        <div className={cn('relative mb-2 w-full rounded-sm bg-gray-200', variant.image)}>
+        <div
+          className={cn(
+            'relative mb-2 w-full overflow-hidden rounded-sm bg-gray-200',
+            variant.image,
+          )}
+        >
+          {p.imageUrl && (
+            <Image
+              src={p.imageUrl}
+              alt={p.title}
+              fill
+              sizes="(max-width:768px) 33vw, 200px"
+              className="object-cover"
+              unoptimized
+            />
+          )}
           {showHeart && (
             <button
               type="button"
@@ -146,7 +160,6 @@ interface ProductCardListProps {
   showHeart?: boolean; // 하트 노출 여부 이벤트
   showCartButton?: boolean; // 장바구니 버튼 노출 여부
   query?: Record<string, string>; // ProductCard에 전달
-
 }
 
 function ProductCardList({
@@ -160,13 +173,11 @@ function ProductCardList({
   showCartButton = false,
   query,
 }: ProductCardListProps) {
-
   const gridCols = {
     2: 'grid-cols-2',
     3: 'grid-cols-3',
     4: 'grid-cols-4',
   }[cols];
-
 
   const visibleProducts = limit ? products.slice(0, limit) : products;
 

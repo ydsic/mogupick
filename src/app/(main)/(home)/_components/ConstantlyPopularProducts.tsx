@@ -9,7 +9,7 @@ import { categories } from '@/constants/categories';
 import { useProductsConstantlyPopular } from '@/hooks/products/useProduct';
 
 function ConstantlyPopularProducts() {
-  const { data, isLoading, isError } = useProductsConstantlyPopular(0, 20);
+  const { data, isLoading, isError, error } = useProductsConstantlyPopular(0, 20);
 
   if (isLoading) {
     return (
@@ -25,6 +25,11 @@ function ConstantlyPopularProducts() {
       <div>
         <Title text="꾸준히 사랑받는 상품" />
         <div className="mt-2 text-sm text-red-500">데이터를 불러올 수 없습니다.</div>
+        {error && (
+          <pre className="text-xs whitespace-pre-wrap text-gray-400">
+            {(error as Error).message}
+          </pre>
+        )}
       </div>
     );
   }
@@ -36,6 +41,7 @@ function ConstantlyPopularProducts() {
     price: p.price,
     rating: p.rating,
     reviewCount: p.reviewCount,
+    imageUrl: p.imageUrl,
   }));
 
   return (
