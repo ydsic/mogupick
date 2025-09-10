@@ -170,3 +170,23 @@ textarea {
 body {
   -ms-overflow-style: none;
 }
+
+/* 가로 스크롤을 위한 스타일 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 가로 스크롤 컨테이너 스타일링 */
+.horizontal-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}

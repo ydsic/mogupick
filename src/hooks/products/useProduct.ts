@@ -3,6 +3,7 @@
 import {
   getProduct,
   getProductsBeginnerFriendly,
+  getProductsBeginnerFriendlyMapped,
   getProductsCategory,
   getProductsConstantlyPopular,
   getProductsNew,
@@ -11,10 +12,18 @@ import {
   getProductsSimilar,
   ConstantlyPopularMappedResult,
   PeerBestReviewsMappedResult,
+  BeginnerFriendlyMappedResult,
+  NewProductMappedResult,
+  MostViewedMappedResult,
+  MappedProductCardItem,
   getProductsPeerBestReviewsMapped,
+  getProductsRecentlyViewedMapped,
+  getProductsNewMapped,
+  getProductsMostViewedMapped,
 } from '@/api/product';
 import { useQuery } from '@tanstack/react-query';
 import { ReviewUser } from '@/components/card/Review';
+import { useAuth } from '@/utils/useAuth';
 
 // 상품 상세조회
 export function useProduct(id: number) {
@@ -28,19 +37,27 @@ export function useProductsSimilar() {
 
 // 멤버의 최근 본 상품 목록 조회
 export function useProductsRecentlyViewed() {
-  return useQuery({ queryKey: ['products-recently-viewed'], queryFn: getProductsRecentlyViewed });
+  const { isLoggedIn } = useAuth();
+  return useQuery({
+    queryKey: ['products-recently-viewed'],
+    queryFn: getProductsRecentlyViewed,
+    enabled: isLoggedIn, // 로그인된 경우에만 API 호출
+  });
 }
 
 // 내 또래 상품 베스트 리뷰 조회
 export function useProductsPeerBestReviews() {
+  const { isLoggedIn } = useAuth();
   return useQuery({
     queryKey: ['products-peer-best-reviews'],
-    queryFn: getProductsPeerBestReviews, // 매개변수 제거
+    queryFn: getProductsPeerBestReviews,
+    enabled: isLoggedIn, // 로그인된 경우에만 API 호출
   });
 }
 
 // 내 또래 베스트 리뷰 API 결과를 ReviewCardList 형식에 맞게 매핑하는 훅
 export function useProductsPeerBestReviewsMapped(limit = 10) {
+  const { isLoggedIn } = useAuth();
   return useQuery<ReviewUser[]>({
     queryKey: ['products-peer-best-reviews-mapped', limit],
     queryFn: async () => {
@@ -57,20 +74,31 @@ export function useProductsPeerBestReviewsMapped(limit = 10) {
       })) as ReviewUser[];
       return mapped.slice(0, limit);
     },
+    enabled: isLoggedIn, // 로그인된 경우에만 API 호출
   });
 }
 
 // 내 또래 베스트 리뷰도 꾸준히 사랑받는 상품과 동일한 페이지네이션 매핑 구조 훅
 export function useProductsPeerBestReviewsMappedPaged(page = 0, size = 20) {
+  const { isLoggedIn } = useAuth();
   return useQuery<PeerBestReviewsMappedResult>({
     queryKey: ['products-peer-best-reviews-mapped-paged', page, size],
     queryFn: () => getProductsPeerBestReviewsMapped(page, size),
+    enabled: isLoggedIn, // 로그인된 경우에만 API 호출
   });
 }
 
 // 이번 달 새로나온 상품조회
 export function useProductsNew() {
   return useQuery({ queryKey: ['products-new'], queryFn: getProductsNew });
+}
+
+// 이번 달 새로나온 상품 목록 조회 (매핑 포함)
+export function useProductsNewMapped(page = 0, size = 20) {
+  return useQuery<NewProductMappedResult>({
+    queryKey: ['products-new-mapped', page, size],
+    queryFn: () => getProductsNewMapped(page, size),
+  });
 }
 
 // 꾸준히 사랑받는 상품목록 조회 (페이지, 사이즈)
@@ -91,5 +119,31 @@ export function useProductsBeginnerFriendly() {
   return useQuery({
     queryKey: ['products-beginner-griendly'],
     queryFn: getProductsBeginnerFriendly,
+  });
+}
+
+// 입문용 상품 목록 조회 (페이지네이션, 매핑 포함)
+export function useProductsBeginnerFriendlyMapped(page = 0, size = 20) {
+  return useQuery<BeginnerFriendlyMappedResult>({
+    queryKey: ['products-beginner-friendly-mapped', page, size],
+    queryFn: () => getProductsBeginnerFriendlyMapped(page, size),
+  });
+}
+
+// 최근 본 상품 목록 조회 (매핑 포함)
+export function useProductsRecentlyViewedMapped() {
+  const { isLoggedIn } = useAuth();
+  return useQuery<MappedProductCardItem[]>({
+    queryKey: ['products-recently-viewed-mapped'],
+    queryFn: getProductsRecentlyViewedMapped,
+    enabled: isLoggedIn, // 로그인된 경우에만 API 호출
+  });
+}
+
+// 지금 주목받는 상품 목록 조회 (매핑 포함)
+export function useProductsMostViewedMapped(page = 0, size = 20) {
+  return useQuery<MostViewedMappedResult>({
+    queryKey: ['products-most-viewed-mapped', page, size],
+    queryFn: () => getProductsMostViewedMapped(page, size),
   });
 }
