@@ -51,8 +51,10 @@ export const SOCIAL_LOGIN_CONFIG = {
     scope: ['profile_nickname', 'account_email'],
     clientAuthenticationMethod: 'client_secret_post',
     authorizationGrantType: 'authorization_code',
-    redirectUri: (baseUrl: string) =>
-      `http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/kakao`,
+    // 요청하신 고정 Redirect URI 사용 + 환경변수 우선
+    redirectUri: () =>
+      process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ||
+      'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/kakao',
     clientName: 'Kakao',
   } as KakaoConfig,
 } as const;
