@@ -46,7 +46,7 @@ export function HorizontalProductCard({ product, className }: HorizontalProductC
             {product.store}
           </div>
           <div className="flex w-full flex-col items-start justify-start">
-            <div className="w-full text-sm leading-tight font-medium break-words text-gray-800">
+            <div className="w-full truncate text-sm leading-tight font-medium break-words text-gray-800">
               {product.title}
             </div>
             <div className="justify-start text-base leading-normal font-semibold text-black">
@@ -131,7 +131,7 @@ export function HorizontalProductList({
   };
 
   return (
-    <div className={cn('space-y-4', className)}>
+    <div className={cn('mb-10', className)}>
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-black">{title}</h3>
       </div>

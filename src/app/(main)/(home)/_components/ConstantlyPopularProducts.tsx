@@ -13,7 +13,7 @@ function ConstantlyPopularProducts() {
 
   if (isLoading) {
     return (
-      <div>
+      <div className="mb-10">
         <Title text="꾸준히 사랑받는 상품" />
         <div className="mt-2 text-sm text-gray-500">로딩중...</div>
       </div>
@@ -22,7 +22,7 @@ function ConstantlyPopularProducts() {
 
   if (isError || !data) {
     return (
-      <div>
+      <div className="mb-10">
         <Title text="꾸준히 사랑받는 상품" />
         <div className="mt-2 text-sm text-red-500">데이터를 불러올 수 없습니다.</div>
         {error && (
