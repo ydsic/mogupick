@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import HeaderCustom from '@/components/HeaderCustom';
+import EmptyIcon from '@/assets/icons/common/empty-80px.svg';
 
 interface Alert {
   id: number;
@@ -57,7 +58,7 @@ export default function AlertPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <HeaderCustom title="알림" showBack showSetting bgYellow />
+      <HeaderCustom title="알림" showBack showSetting />
 
       <div className="px-4 pt-17">
         <div className="flex flex-1 flex-col gap-8">
@@ -97,14 +98,14 @@ export default function AlertPage() {
                 <div key={alert.id}>
                   <div className="flex flex-col gap-1.5">
                     <div className="flex flex-col gap-1.5">
-                      <div className="text-sm leading-snug font-medium text-black">
+                      <div className="text-sm leading-snug font-medium text-[#434343]">
                         {alert.title}
                       </div>
-                      <div className="text-xs leading-none font-normal text-black">
+                      <div className="text-xs leading-none font-normal text-[#6f6f6f]">
                         {alert.message}
                       </div>
                     </div>
-                    <div className="text-right text-xs leading-none font-normal text-black">
+                    <div className="text-right text-xs leading-none font-normal text-[#6f6f6f]">
                       {alert.time}
                     </div>
                   </div>
@@ -118,8 +119,11 @@ export default function AlertPage() {
 
               {/* 알림이 없을 때 */}
               {filteredAlerts.length === 0 && (
-                <div className="flex items-center justify-center py-20">
-                  <span className="text-sm text-gray-500">해당 카테고리의 알림이 없습니다.</span>
+                <div className="flex flex-col items-center justify-center gap-6 py-20">
+                  <EmptyIcon />
+                  <span className="text-lg font-semibold text-[#434343]">
+                    아직 도착한 알림이 없습니다.
+                  </span>
                 </div>
               )}
             </div>
