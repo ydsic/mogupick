@@ -5,6 +5,9 @@
   --background: #ffffff;
   --foreground: #000;
 
+  /* --- main Color --- */
+  --main-color: #7ab335;
+
   /* --- Green Color Palette --- */
   --color-green-50: #f3f9eb;
   --color-green-100: #def3c4;
@@ -19,14 +22,14 @@
 
   /* --- Colors (role-based) --- */
   --color-primary: #f9c927;
-  --color-secondary: #93d940;
+  --color-secondary: #7ab335;
   --color-background: #ffffff;
   --color-surface: #f2f4f8;
   --color-text-primary: #242424;
   --color-text-secondary: #5f6368;
   --color-text-disabled: #80868b;
   --color-danger: #d98d00;
-  --color-success: #93d940;
+  --color-success: #7ab335;
   --color-warning: #eeae00;
   --color-info: #3e5b1b;
 
