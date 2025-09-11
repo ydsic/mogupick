@@ -6,7 +6,8 @@ import CartIcon from '@/assets/icons/common/shoppingcart-32px.svg';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useRecentSearchStore } from '@/store/recentSearchStore';
-import { postSearch } from '@/api/search';
+import { postSearch, getSearchRecent } from '@/api/search';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface SearchHeaderProps {
   value?: string;
@@ -16,12 +17,34 @@ interface SearchHeaderProps {
 export default function SearchHeader({ value = '', onChange }: SearchHeaderProps) {
   const router = useRouter();
   const { addKeyword } = useRecentSearchStore();
+  const { isLoggedIn } = useAuthStore();
 
   const [inputValue, setInputValue] = useState(value);
 
   useEffect(() => {
     setInputValue(value);
   }, [value]);
+
+  // 로그인 상태면 마운트 시 서버 최근검색어 호출 → 구조 콘솔 출력
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    (async () => {
+      try {
+        const recent = await getSearchRecent();
+        console.log('[최근 검색어 응답]', recent);
+        const { setRecentEphemeral } = useRecentSearchStore.getState();
+        if (Array.isArray(recent)) {
+          const keywords = recent.map((r: any) => r.content).filter(Boolean);
+          if (keywords.length) setRecentEphemeral(keywords);
+        } else if (recent?.data && Array.isArray(recent.data)) {
+          const keywords = recent.data.map((r: any) => r.content).filter(Boolean);
+          if (keywords.length) setRecentEphemeral(keywords);
+        }
+      } catch (e) {
+        console.error('최근 검색어 불러오기 실패', e);
+      }
+    })();
+  }, [isLoggedIn]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -34,9 +57,14 @@ export default function SearchHeader({ value = '', onChange }: SearchHeaderProps
     if (!inputValue.trim()) return;
 
     const keyword = inputValue.trim();
-    addKeyword(keyword);
+
+    if (!isLoggedIn) {
+      // 비로그인: 기존 로컬 recent 저장 로직 유지
+      addKeyword(keyword);
+    }
+
     try {
-      await postSearch(keyword);
+      await postSearch(keyword); // 토큰 자동 포함 (로그인 시)
     } catch (err) {
       console.error('postSearch 실패', err);
     }

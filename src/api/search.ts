@@ -1,4 +1,5 @@
 import { buildUrl } from '@/lib/config';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface Search {
   id: number;
@@ -83,12 +84,18 @@ export const getSearchRelated = async (data: SearchRelated) => {
   return response.json();
 };
 
-// 최근 검색어 조회
+// 최근 검색어 조회 (로그인 필요: Authorization 포함)
 export const getSearchRecent = async () => {
   const url = buildUrl('/search/recent');
   console.log('최근 검색어 API 요청 URL:', url);
 
-  const response = await fetch(url);
+  let headers: Record<string, string> = {};
+  try {
+    const { accessToken } = useAuthStore.getState();
+    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+  } catch {}
+
+  const response = await fetch(url, { headers });
 
   if (!response.ok) {
     console.error('API 요청 실패:', response.status, response.statusText);
@@ -115,16 +122,22 @@ export const deleteSearchRecent = async (keywordId: number) => {
   return response.json();
 };
 
-// 검색어로 POST 요청 (body: { content: string })
+// 검색어로 POST 요청 (body: { content: string }) - 로그인 시 토큰 포함
 export const postSearch = async (content: string) => {
   const url = buildUrl('/search');
   console.log('검색 POST API 요청 URL:', url);
 
+  let headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  try {
+    const { accessToken } = useAuthStore.getState();
+    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+  } catch {}
+
   const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify({ content } as SearchRequest),
   });
 

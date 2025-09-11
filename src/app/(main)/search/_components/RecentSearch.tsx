@@ -1,24 +1,28 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import CloseIcon from '@/assets/icons/common/close-16px.svg';
 import { RECENT_KEY, useRecentSearchStore } from '@/store/recentSearchStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function RecentSearch({ onSelect }: { onSelect: (v: string) => void }) {
   const router = useRouter();
   const { recent, addKeyword, removeKeyword, clearAll, setRecent } = useRecentSearchStore();
+  const { isLoggedIn } = useAuthStore();
 
-  // 클라이언트에서만 localStorage 접근
+  // 비로그인: localStorage 로드, 로그인: SearchHeader에서 서버 값 ephemeral 세팅
   useEffect(() => {
+    if (isLoggedIn) return; // 로그인 상태 skip
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(RECENT_KEY);
       if (saved) setRecent(JSON.parse(saved));
     }
-  }, [setRecent]);
+  }, [setRecent, isLoggedIn]);
 
   const handleSearch = (keyword: string) => {
+    // 비로그인 상태에서만 addKeyword가 localStorage 업데이트 의미있음
     addKeyword(keyword);
     onSelect(keyword);
   };
@@ -43,14 +47,16 @@ export default function RecentSearch({ onSelect }: { onSelect: (v: string) => vo
               onClick={() => handleSearch(item)}
             >
               <span>{item}</span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeKeyword(item);
-                }}
-              >
-                <CloseIcon />
-              </button>
+              {!isLoggedIn && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeKeyword(item);
+                  }}
+                >
+                  <CloseIcon />
+                </button>
+              )}
             </div>
           ))}
         </div>
