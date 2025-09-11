@@ -25,7 +25,7 @@ export const createCart = async (memberId: number, productId: number, cart: Cart
     subscriptionOptionId,
     firstDeliveryDate,
   };
-  
+
   try {
     // 프로덕션 환경에서는 프록시 사용 (HTTPS Mixed Content 문제 해결)
     if (process.env.NODE_ENV === 'production') {
@@ -35,7 +35,7 @@ export const createCart = async (memberId: number, productId: number, cart: Cart
       // 개발 환경에서는 직접 fetch 사용 (프록시 500 에러 회피)
       const { useAuthStore } = await import('@/store/useAuthStore');
       const { accessToken } = useAuthStore.getState();
-      
+
       if (!accessToken) {
         throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
       }
@@ -72,8 +72,42 @@ export const patchCart = (memberId: number, cartItemId: number, body: Cart) =>
 // 장바구니 조회 (memberId 경로 방식)
 export const getCart = (memberId: number) => apiFetch<any>(`/carts/${memberId}`);
 
-// 장바구니 조회 (토큰 기반 내 장바구니)
-export const getMyCart = () => apiFetch<any>('/carts');
+// 장바구니 조회 (토큰 기반 내 장바구니) - 환경별 분기
+export const getMyCart = async () => {
+  try {
+    // 프로덕션 환경에서는 프록시 사용
+    if (process.env.NODE_ENV === 'production') {
+      return await apiFetch<any>('/carts');
+    } else {
+      // 개발 환경에서는 직접 fetch 사용
+      const { useAuthStore } = await import('@/store/useAuthStore');
+      const { accessToken } = useAuthStore.getState();
+
+      if (!accessToken) {
+        throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
+      }
+
+      const url = 'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/carts';
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `요청 실패 (status: ${res.status})`);
+      }
+
+      return await res.json();
+    }
+  } catch (e) {
+    console.error('[getMyCart] 에러', e);
+    throw e;
+  }
+};
 
 // 장바구니 아이템 삭제
 export const deleteCart = (memberId: number, cartItemId: number) =>
