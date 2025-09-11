@@ -8,24 +8,35 @@ import TermsAgreement from './TermsAgreement';
 import { getApiBaseUrl } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
+import EyeHide from '@/assets/icons/common/eye-hide-24px.svg';
+import EyeShow from '@/assets/icons/common/eye-show-24px.svg';
+import { useState } from 'react';
 
 const schema = yup
   .object({
-    password: yup.string().required('비밀번호를 입력해 주세요').min(6),
+    password: yup
+      .string()
+      .required('비밀번호를 입력해 주세요')
+      .min(10, '비밀번호는 최소 10자 이상이어야 합니다')
+      .max(20, '비밀번호는 20자 이하로 입력해 주세요'),
     passwordCheck: yup
       .string()
       .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다')
       .required('비밀번호 확인이 필요합니다'),
-    name: yup.string().required('이름을 입력해 주세요'),
+    name: yup
+      .string()
+      .required('이름을 입력해 주세요')
+      .max(10, '이름은 10자 이하로 입력해 주세요')
+      .matches(/^[가-힣a-zA-Z]+$/, '올바른 이름을 입력해 주세요.'),
     email: yup.string().email('올바른 이메일이 아닙니다').required(),
     phone: yup
       .string()
-      .matches(/^\d{10,11}$/, '숫자만 입력')
-      .required(),
+      .required('휴대폰 번호를 입력해 주세요')
+      .matches(/^\d{11}$/, '휴대폰 번호는 숫자 11자리여야 합니다'),
     birthDate: yup
       .string()
       .required('생년월일을 입력해 주세요')
-      .matches(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD 형식이어야 합니다'),
+      .matches(/^\d{8}$/, '생년월일은 YYYYMMDD 8자리 숫자여야 합니다'),
   })
   .required();
 
@@ -33,6 +44,8 @@ type FormValues = yup.InferType<typeof schema>;
 
 export default function Page() {
   const router = useRouter();
+  const [showPw, setShowPw] = useState(false);
+  const [showPwCheck, setShowPwCheck] = useState(false);
   const {
     register,
     handleSubmit,
@@ -40,13 +53,14 @@ export default function Page() {
     setFocus,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
-    mode: 'onSubmit',
+    mode: 'all',
+    reValidateMode: 'onChange',
   });
 
   const onValid: SubmitHandler<FormValues> = async (data) => {
     try {
-      // 항상 YYYY-MM-DD 형식으로 변환
-      let formattedBirthDate = data.birthDate.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
+      // YYYY-MM-DD 형식으로 변환
+      const formattedBirthDate = data.birthDate.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
 
       const { passwordCheck, ...payloadData } = data;
       const payload = {
@@ -79,7 +93,6 @@ export default function Page() {
   };
 
   const onInvalid = (errors: any) => {
-    // 첫 번째 오류 필드에 자동 포커스
     const firstErrorField = Object.keys(errors)[0] as keyof FormValues;
     setFocus(firstErrorField);
   };
@@ -92,7 +105,7 @@ export default function Page() {
         <h2 className="mb-5 text-xl font-bold text-[#434343]">회원가입</h2>
         <form onSubmit={handleSubmit(onValid, onInvalid)}>
           <div className="flex flex-col gap-3 border-b border-[#d6d6d6] pb-10">
-            {/* name */}
+            {/* 이름 */}
             <div className="flex flex-col gap-1">
               <label htmlFor="name" className="text-[14px] font-medium text-[#434343]">
                 이름<span className="text-base text-red-700">*</span>
@@ -100,6 +113,7 @@ export default function Page() {
               <input
                 id="name"
                 type="text"
+                maxLength={10}
                 placeholder="이름을 입력해 주세요"
                 {...register('name')}
                 className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#c2c2c2] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
@@ -107,39 +121,61 @@ export default function Page() {
               {errors.name && <p className="text-xs text-red-600">{errors.name.message}</p>}
             </div>
 
-            {/* password */}
+            {/* 비밀번호 */}
             <div className="flex flex-col gap-1">
               <label htmlFor="password" className="text-[14px] font-medium text-[#434343]">
                 비밀번호<span className="text-base text-red-700">*</span>
               </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="비밀번호를 입력해 주세요"
-                {...register('password')}
-                className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#c2c2c2] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPw ? 'text' : 'password'}
+                  maxLength={20}
+                  placeholder="비밀번호를 입력해 주세요"
+                  {...register('password')}
+                  className="w-full rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#c2c2c2] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
+                />
+                <button
+                  type="button"
+                  className="absolute top-1/2 right-2 -translate-y-1/2"
+                  onClick={() => setShowPw((p) => !p)}
+                  aria-label={showPw ? '비밀번호 숨기기' : '비밀번호 보기'}
+                >
+                  {showPw ? <EyeShow /> : <EyeHide />}
+                </button>
+              </div>
               {errors.password && <p className="text-xs text-red-600">{errors.password.message}</p>}
             </div>
 
-            {/* passwordCheck */}
+            {/* 비밀번호 확인 */}
             <div className="flex flex-col gap-1">
               <label htmlFor="passwordCheck" className="text-[14px] font-medium text-[#434343]">
                 비밀번호 확인<span className="text-base text-red-700">*</span>
               </label>
-              <input
-                id="passwordCheck"
-                type="password"
-                placeholder="비밀번호를 다시 입력해 주세요"
-                {...register('passwordCheck')}
-                className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#c2c2c2] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
-              />
+              <div className="relative">
+                <input
+                  id="passwordCheck"
+                  type={showPwCheck ? 'text' : 'password'}
+                  maxLength={20}
+                  placeholder="비밀번호를 다시 입력해 주세요"
+                  {...register('passwordCheck')}
+                  className="w-full rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#c2c2c2] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
+                />
+                <button
+                  type="button"
+                  className="absolute top-1/2 right-2 -translate-y-1/2"
+                  onClick={() => setShowPwCheck((p) => !p)}
+                  aria-label={showPw ? '비밀번호 숨기기' : '비밀번호 보기'}
+                >
+                  {showPwCheck ? <EyeShow /> : <EyeHide />}
+                </button>
+              </div>
               {errors.passwordCheck && (
                 <p className="text-xs text-red-600">{errors.passwordCheck.message}</p>
               )}
             </div>
 
-            {/* email */}
+            {/* 이메일 */}
             <div className="flex flex-col gap-1">
               <label htmlFor="email" className="text-[14px] font-medium text-[#434343]">
                 이메일<span className="text-base text-red-700">*</span>
@@ -154,14 +190,16 @@ export default function Page() {
               {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
             </div>
 
-            {/* phone */}
+            {/* 휴대폰 */}
             <div className="flex flex-col gap-1">
               <label htmlFor="phone" className="text-[14px] font-medium text-[#434343]">
                 휴대폰<span className="text-base text-red-700">*</span>
               </label>
               <input
                 id="phone"
-                type="text"
+                type="tel"
+                inputMode="numeric"
+                maxLength={11}
                 placeholder="'-없이' 휴대폰번호를 입력해 주세요"
                 {...register('phone')}
                 className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#c2c2c2] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
@@ -169,7 +207,7 @@ export default function Page() {
               {errors.phone && <p className="text-xs text-red-600">{errors.phone.message}</p>}
             </div>
 
-            {/* birthDate */}
+            {/* 생년월일 */}
             <div className="flex flex-col gap-1">
               <label htmlFor="birthDate" className="text-[14px] font-medium text-[#434343]">
                 생년월일<span className="text-base text-red-700">*</span>
@@ -177,7 +215,9 @@ export default function Page() {
               <input
                 id="birthDate"
                 type="text"
-                placeholder="YYYY-MM-DD 형식으로 입력해주세요"
+                inputMode="numeric"
+                maxLength={8}
+                placeholder="YYYYMMDD 형식으로 입력해주세요"
                 {...register('birthDate')}
                 className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#c2c2c2] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
               />
