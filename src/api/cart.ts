@@ -25,7 +25,7 @@ export const createCart = async (memberId: number, productId: number, cart: Cart
     subscriptionOptionId,
     firstDeliveryDate,
   };
-  
+
   try {
     // 프로덕션 환경에서는 프록시 사용 (HTTPS Mixed Content 문제 해결)
     if (process.env.NODE_ENV === 'production') {
@@ -35,7 +35,7 @@ export const createCart = async (memberId: number, productId: number, cart: Cart
       // 개발 환경에서는 직접 fetch 사용 (프록시 500 에러 회피)
       const { useAuthStore } = await import('@/store/useAuthStore');
       const { accessToken } = useAuthStore.getState();
-      
+
       if (!accessToken) {
         throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
       }
