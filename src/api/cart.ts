@@ -17,7 +17,7 @@ export interface CartItemUI {
   brand: string; // 브랜드명
 }
 
-// 장바구니 담기 (JSON payload) - 환경에 따라 다른 방식 사용
+// 장바구니 담기 (로그인 API 방식: getApiBaseUrl + fetch)
 export const createCart = async (memberId: number, productId: number, cart: Cart) => {
   const { subscriptionOptionId, firstDeliveryDate } = cart;
   const body = {
@@ -27,36 +27,31 @@ export const createCart = async (memberId: number, productId: number, cart: Cart
   };
 
   try {
-    // 프로덕션 환경에서는 프록시 사용 (HTTPS Mixed Content 문제 해결)
-    if (process.env.NODE_ENV === 'production') {
-      const res = await apiFetch<Cart>('/carts', 'POST', { body });
-      return res;
-    } else {
-      // 개발 환경에서는 직접 fetch 사용 (프록시 500 에러 회피)
-      const { useAuthStore } = await import('@/store/useAuthStore');
-      const { accessToken } = useAuthStore.getState();
+    // 로그인 API와 동일한 패턴으로 전송
+    const { getApiBaseUrl } = await import('@/lib/config');
+    const { useAuthStore } = await import('@/store/useAuthStore');
 
-      if (!accessToken) {
-        throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
-      }
-
-      const url = 'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/carts';
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || `요청 실패 (status: ${res.status})`);
-      }
-
-      return await res.json();
+    const { accessToken } = useAuthStore.getState();
+    if (!accessToken) {
+      throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
     }
+
+    const url = `${getApiBaseUrl()}/carts`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `요청 실패 (status: ${res.status})`);
+    }
+
+    return await res.json();
   } catch (e) {
     console.error('[createCart] 에러', e);
     throw e;
