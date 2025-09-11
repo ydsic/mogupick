@@ -12,15 +12,16 @@ export default function PickPage() {
   return (
     <div>
       <HeaderCustom title="찜" showSearch showCart />
-      <Tabs
+      {/* <Tabs
         activeTab={activeTab}
         onChange={setActiveTab}
         tabs={[
           { key: 'pick', label: '찜 상품' },
           { key: 'new', label: '최근 본' },
         ]}
-      />
-      {activeTab === 'pick' ? <Pick /> : <New />}
+      /> */}
+      <Pick />
+      {/* {activeTab === 'pick' ?  : <New />} */}
     </div>
   );
 }

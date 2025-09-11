@@ -68,7 +68,7 @@ export default async function CategoriesPage() {
   const categories = await fetchRootCategories();
 
   return (
-    <div className="flex flex-col items-center justify-center pb-4">
+    <div className="flex flex-col items-center justify-center pb-20">
       <HeaderCustom title="카테고리" showSearch showCart />
       <div className="grid w-full grid-cols-2 gap-2 px-4">
         {categories.map((cat) => (
