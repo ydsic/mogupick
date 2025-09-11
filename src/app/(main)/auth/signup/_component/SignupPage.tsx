@@ -7,7 +7,7 @@ import HeaderCustom from '@/components/HeaderCustom';
 import TermsAgreement from './TermsAgreement';
 import { getApiBaseUrl } from '@/lib/config';
 import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import EyeHide from '@/assets/icons/common/eye-hide-24px.svg';
 import EyeShow from '@/assets/icons/common/eye-show-24px.svg';
 import { useState } from 'react';
@@ -111,7 +111,6 @@ export default function Page() {
 
   return (
     <>
-      <Toaster position="top-center" reverseOrder={false} />
       <HeaderCustom showBack />
       <div className="px-4">
         <h2 className="mb-5 text-xl font-bold text-[#434343]">회원가입</h2>
