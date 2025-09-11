@@ -39,7 +39,7 @@ export default function SubscribeCalendar({
   const selectedEvents = selectedDay ? eventsForDay(selectedDay) : [];
 
   return (
-    <div className="min-h-dvh bg-gray-100 p-4 shadow-md">
+    <div className="min-h-dvh bg-[#f8f8f8] p-4 shadow-md">
       <div className="flex w-full flex-col items-center rounded-sm bg-white p-4">
         <div className="w-full">
           <Calendar
@@ -50,7 +50,7 @@ export default function SubscribeCalendar({
             renderEvent={(event) => (
               <span
                 key={event.id}
-                className={`rounded px-1 text-xs ${event.color ?? 'bg-gray-200'}`}
+                className={`rounded px-1 text-xs ${event.color ?? 'bg-gray-200'} truncate`}
               >
                 {event.title}
               </span>
@@ -67,7 +67,7 @@ export default function SubscribeCalendar({
           />
         </div>
         <div className="flex w-full justify-between border-t border-gray-200 px-4 pt-4">
-          <p className="text-sm font-medium">이번달 결제 예정 금액</p>
+          <p className="text-sm font-medium text-[#6f6f6f]">이번달 결제 예정 금액</p>
           <div className="font-semibold">
             <span>60,000</span>원
           </div>
@@ -75,8 +75,8 @@ export default function SubscribeCalendar({
       </div>
 
       <div className="mt-4">
-        <div className="flex justify-between text-sm font-medium text-gray-500">
-          <div>
+        <div className="flex justify-between text-[13px] font-medium text-[#6f6f6f]">
+          <div className="font-semibold">
             총 <span>6</span>개
           </div>
           <div>편집</div>
