@@ -116,10 +116,10 @@ export default function MyPagePage() {
           <div className="flex flex-col gap-5 p-4">
             {/* 사용자 정보 */}
             <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-full bg-gray-300"></div>
+              <div className="h-14 w-14 rounded-full bg-[#d9d9d9]"></div>
               <div className="flex w-36 flex-col gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-semibold text-black">
+                  <span className="text-lg font-semibold text-[#434343]">
                     {userData?.name || session?.user?.name || 'User Name'}
                   </span>
                   <ArrowIcon />
@@ -127,12 +127,12 @@ export default function MyPagePage() {
                 <div className="flex w-50 items-center gap-3">
                   <Link href="/review" className="flex items-center gap-1">
                     <ReviewIcon />
-                    <span className="text-xs font-medium text-gray-600">리뷰관리</span>
+                    <span className="text-xs font-medium text-[#6f6f6f]">리뷰관리</span>
                   </Link>
                   <div className="h-3 w-px bg-gray-300"></div>
                   <div className="flex items-center gap-1">
                     <AddressIcon />
-                    <span className="text-xs font-medium text-gray-600">주소관리</span>
+                    <span className="text-xs font-medium text-[#6f6f6f]">주소관리</span>
                   </div>
                 </div>
               </div>
@@ -143,33 +143,35 @@ export default function MyPagePage() {
               <div className="flex items-center gap-2">
                 <span className="text-base font-medium">🗓️</span>
                 <div className="flex items-center gap-1">
-                  <span className="text-sm font-medium text-gray-700">가장 오래 구독한 기간은</span>
-                  <span className="text-lg font-semibold text-black">
+                  <span className="text-sm font-medium text-[#575757]">
+                    가장 오래 구독한 기간은
+                  </span>
+                  <span className="text-lg font-semibold text-[#242424]">
                     {userStats.longestSubscription}개월
                   </span>
-                  <span className="text-sm font-medium text-gray-700">이에요.</span>
+                  <span className="text-sm font-medium text-[#575757]">이에요.</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-base font-medium">💬</span>
                 <div className="flex items-center gap-1">
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-[#575757]">
                     지금까지 작성한 리뷰 수는
                   </span>
-                  <span className="text-lg font-semibold text-black">
+                  <span className="text-lg font-semibold text-[#242424]">
                     {userStats.reviewCount}개
                   </span>
-                  <span className="text-sm font-medium text-gray-700">에요.</span>
+                  <span className="text-sm font-medium text-[#575757]">에요.</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-base font-medium">🎁</span>
                 <div className="flex items-center gap-1">
-                  <span className="text-sm font-medium text-gray-700">모구픽과</span>
-                  <span className="text-lg font-semibold text-black">
+                  <span className="text-sm font-medium text-[#575757]">모구픽과</span>
+                  <span className="text-lg font-semibold text-[#242424]">
                     {userStats.totalMonths}개월
                   </span>
-                  <span className="text-sm font-medium text-gray-700">동안 함께했어요.</span>
+                  <span className="text-sm font-medium text-[#575757]">동안 함께했어요.</span>
                 </div>
               </div>
             </div>
@@ -177,20 +179,20 @@ export default function MyPagePage() {
 
           {/* 구분선 */}
           <div className="py-4">
-            <div className="h-px bg-gray-200"></div>
+            <div className="h-px bg-[#f2f2f2]"></div>
           </div>
 
           {/* 고객 지원 섹션 */}
           <div className="px-4">
             <div className="flex flex-col gap-5">
-              <span className="text-sm font-medium text-gray-600">고객 지원</span>
+              <span className="text-sm font-medium text-[#a6a6a6]">고객 지원</span>
               <div className="flex flex-col gap-7">
                 {customerSupportItems.map((item, index) =>
                   item.href ? (
                     <Link
                       key={index}
                       href={item.href}
-                      className="text-left text-base font-medium text-black"
+                      className="text-left text-base font-medium text-[#434343]"
                     >
                       {item.title}
                     </Link>
@@ -198,7 +200,7 @@ export default function MyPagePage() {
                     <button
                       key={index}
                       onClick={item.onClick}
-                      className="text-left text-base font-medium text-black"
+                      className="text-left text-base font-medium text-[#434343]"
                     >
                       {item.title}
                     </button>

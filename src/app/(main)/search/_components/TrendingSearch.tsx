@@ -57,8 +57,8 @@ export default function TrendingSearch({ onSelect }: TrendingSearchProps) {
     return (
       <div className="p-4 text-sm text-gray-500">
         <div className="mb-2 flex items-end justify-between">
-          <h3 className="text-base font-semibold">급상승 검색어</h3>
-          {updateTime && <span className="text-xs text-gray-400">{updateTime} 기준</span>}
+          <h3 className="text-base font-semibold text-[#434343]">급상승 검색어</h3>
+          {updateTime && <span className="text-xs text-[#a6a6a6]">{updateTime} 기준</span>}
         </div>
         현재 급상승 검색어가 없습니다.
       </div>
@@ -66,15 +66,15 @@ export default function TrendingSearch({ onSelect }: TrendingSearchProps) {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <div className="flex items-end justify-between">
-        <h3 className="text-base font-semibold">급상승 검색어</h3>
+        <h3 className="text-base font-semibold text-[#434343]">급상승 검색어</h3>
         <span className="text-xs text-gray-500">{updateTime} 기준 업데이트</span>
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-6">
         {/* 왼쪽 리스트 */}
-        <ol className="list-inside list-decimal space-y-3 text-sm">
+        <ol className="list-inside list-decimal space-y-3 text-base font-normal text-[#434343]">
           {firstHalf.map((item, i) => (
             <li
               key={i}
@@ -92,7 +92,10 @@ export default function TrendingSearch({ onSelect }: TrendingSearchProps) {
         </ol>
 
         {/* 오른쪽 리스트 (6번부터 시작) */}
-        <ol start={6} className="list-inside list-decimal space-y-3 text-sm">
+        <ol
+          start={6}
+          className="list-inside list-decimal space-y-3 text-base font-normal text-[#434343]"
+        >
           {secondHalf.map((item, i) => (
             <li
               key={i + 5}

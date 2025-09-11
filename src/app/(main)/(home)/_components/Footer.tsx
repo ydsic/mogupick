@@ -65,7 +65,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="fixed right-0 bottom-0 left-0 z-50 bg-white md:left-1/2 md:w-[500px] md:-translate-x-1/2">
+    <footer className="fixed right-0 bottom-0 left-0 z-50 bg-white shadow-[0_0_10px_0_#0000001A] md:left-1/2 md:w-[500px] md:-translate-x-1/2">
       <nav className="flex h-15 items-center justify-around py-2.5">
         <FooterLink href="/" label="홈" Icon={HomeIcon} ActiveIcon={HomeActiveIcon} />
         <FooterLink

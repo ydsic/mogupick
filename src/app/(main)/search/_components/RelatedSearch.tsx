@@ -8,7 +8,7 @@ function HighlightText({ text, query }: { text: string; query: string }) {
     <>
       {parts.map((part, i) =>
         part.toLowerCase() === query.toLowerCase() ? (
-          <span key={i} className="font-semibold text-blue-500">
+          <span key={i} className="font-semibold text-[var(--color-green-600)]">
             {part}
           </span>
         ) : (
@@ -27,13 +27,12 @@ export default function RelatedSearch({
   onSelect: (v: string) => void;
 }) {
   return (
-    <div>
-      <h3 className="mb-2 border-t border-gray-300 pt-6 font-bold">연관 검색어</h3>
-      <ul className="space-y-2">
+    <div className="border-t border-[#f2f2f2] pt-4">
+      <ul className="space-y-6">
         {mockSuggestions.map((item) => (
           <li
             key={item}
-            className="cursor-pointer hover:text-blue-500"
+            className="cursor-pointer hover:text-[var(--color-green-600)]"
             onClick={() => onSelect(item)}
           >
             <HighlightText text={item} query={query} />

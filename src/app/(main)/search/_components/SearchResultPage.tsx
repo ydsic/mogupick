@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { postSearch } from '@/api/search';
-import { products } from '../../(home)/_components/HomePage';
 import { sortOptions } from '@/constants/sort';
 import SortSelector from '@/components/ui/SortSelector';
 import { ProductCardList } from '@/components/card/Product';
+import EmptySearchIcon from '@/assets/icons/common/empty-search-80px.svg';
 
 export default function SearchResultPage({ query }: { query?: string | string[] }) {
   const [sort, setSort] = useState<string>(sortOptions[0].value);
@@ -44,13 +44,13 @@ export default function SearchResultPage({ query }: { query?: string | string[] 
       {error && <p className="text-sm text-red-500">{error}</p>}
       {/* 기존 mock 정렬/필터 UI는 유지 */}
       {results.length > 0 && (
-        <div className="flex items-end justify-between pt-2">
-          <div className="text-sm">
+        <div className="flex items-center justify-between px-4 py-1">
+          <div className="text-sm text-[13px] text-[#f6f6f6]">
             총 <span>{results.length}</span>개
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-[13px] text-[#434343]">
             <SortSelector value={sort} onChange={setSort} />
-            <span className="rounded-2xl border border-[#E4E6E8] px-3 py-2 pr-8 text-sm">필터</span>
+            <span className="rounded-2xl border border-[#d6d6d6] px-3 py-2 pr-8">필터</span>
           </div>
         </div>
       )}
@@ -66,10 +66,11 @@ export default function SearchResultPage({ query }: { query?: string | string[] 
           />
         ) : (
           !loading && (
-            <>
-              <h2>"{q}"에 대한 검색 결과</h2>
-              <p className="text-gray-500">검색 결과가 없습니다.</p>
-            </>
+            <div className="mt-6 flex h-96 flex-col items-center justify-center border-t border-[#f2f2f2]">
+              <EmptySearchIcon />
+              <p className="mt-6 text-lg font-semibold text-[#434343]">해당 검색결과가 없습니다.</p>
+              <p className="text-[13px] text-[#a6a6a6]">다른 검색어로 재검색을 해주세요.</p>
+            </div>
           )
         )}
       </div>
