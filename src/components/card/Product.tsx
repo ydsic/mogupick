@@ -15,6 +15,7 @@ import HeartIcon from '@/assets/icons/common/heart-30px.svg';
 import LikeIcon from '@/assets/icons/common/empty-like-30px.svg';
 import { useLikedStore } from '@/store/useLikedStore';
 import Image from 'next/image';
+import AddToCartButton from '@/components/cart/AddToCartButton';
 
 /**
  * product-card
@@ -133,15 +134,13 @@ function ProductCard({
       {/* 장바구니 담기 버튼 */}
       {showCartButton && (
         <div className={`mt-1 transition-all duration-200`}>
-          <button
+          <AddToCartButton
+            productId={p.id}
+            label="장바구니 담기"
             className="inline-flex h-10 w-full items-center justify-center gap-1 rounded border border-[var(--grey-300)] bg-white px-4"
-            onClick={(e) => {
-              e.preventDefault();
-              console.log('장바구니에 추가:', p.title);
-            }}
-          >
-            <div className="text-base leading-normal font-normal text-[#434343]">장바구니 담기</div>
-          </button>
+            onSuccess={() => {}}
+            onError={(e) => console.error('장바구니 담기 실패:', e)}
+          />
         </div>
       )}
     </div>

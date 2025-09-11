@@ -89,6 +89,11 @@ export const createProduct = async (data: Product) => {
 export const getProduct = (productId: number) => apiFetch<Product>(`/products/${productId}/detail`);
 // 유사상품 목록조회
 export const getProductsSimilar = () => apiFetch<Product[]>('/products/similar');
+
+// 유사상품 목록조회 (페이지네이션)
+export const getProductsSimilarPaged = (page = 0, size = 20) =>
+  apiFetch<any>(`/products/similar?page=${page}&size=${size}`);
+
 // 멤버의 최근 본 상품목록조회
 export const getProductsRecentlyViewed = () => apiFetch<Product[]>('/products/recently-viewed');
 // 내 또래 상품 베스트 리뷰 조회
@@ -144,7 +149,6 @@ export const getProductsConstantlyPopular = async (
     const res = await apiFetch<ConstantlyPopularResponse>(
       `/products/constantly-popular?page=${page}&size=${size}`,
     );
-    console.log('[getProductsConstantlyPopular] API 응답:', res);
     return res;
   } catch (e: any) {
     console.error('[getProductsConstantlyPopular] error', e?.message || e);
@@ -165,7 +169,6 @@ export const getProductsConstantlyPopularMapped = async (
     }
 
     const res = await apiFetch<ConstantlyPopularResponse>(url);
-    console.log('[getProductsConstantlyPopularMapped] API 응답:', res);
 
     const mapped: MappedProductCardItem[] = res.data.content.map(
       (item: ConstantlyPopularItemRaw) => {
@@ -393,13 +396,7 @@ export const getProductsPeerBestReviewsMapped = async (
     return { items: mapped, ...meta };
   } catch (e: any) {
     console.error('[getProductsPeerBestReviewsMapped] error', e?.message || e);
-    // 에러가 발생해도 빈 배열과 기본 메타데이터 반환
-    return {
-      items: [],
-      page,
-      size,
-      totalPages: 1,
-    };
+    return { items: [], page, size, totalPages: 1 };
   }
 };
 

@@ -41,7 +41,10 @@ export function useProductsRecentlyViewed() {
   const { isLoggedIn } = useAuth();
   return useQuery({
     queryKey: ['products-recently-viewed'],
-    queryFn: getProductsRecentlyViewed,
+    queryFn: async () => {
+      const res = await getProductsRecentlyViewed();
+      return res;
+    },
     enabled: isLoggedIn, // 로그인된 경우에만 API 호출
   });
 }

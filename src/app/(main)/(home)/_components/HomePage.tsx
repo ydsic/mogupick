@@ -11,6 +11,9 @@ import NewProductSection from './NewProductSection';
 import MostViewedProductSection from './MostViewedProductSection';
 import useMoreModal from '@/hooks/useMoreModal';
 import MoreModal from '@/components/modal/MoreModal';
+import { useEffect } from 'react';
+import { getProductsSimilarPaged } from '@/api/product';
+import { useAuth } from '@/utils/useAuth';
 
 export const products = [
   { id: 1, store: '쿠팡', title: '무선 이어폰', price: 59000, rating: 4.5, reviewCount: 120 },
@@ -36,6 +39,23 @@ export const products = [
 
 export default function HomePage() {
   const { openModal, closeModal, modalType, modalData } = useMoreModal();
+  const { accessToken } = useAuth();
+
+  // 메인 진입 시 유사상품 API 호출 (Authorization 헤더 포함)
+  useEffect(() => {
+    if (!accessToken) {
+      console.warn('[GET /api/v1/products/similar] accessToken 없음 - 로그인 필요');
+      return;
+    }
+    (async () => {
+      try {
+        const res = await getProductsSimilarPaged(0, 20);
+        console.log('[GET /api/v1/products/similar] 응답:', res);
+      } catch (e) {
+        console.error('[GET /api/v1/products/similar] 실패:', e);
+      }
+    })();
+  }, [accessToken]);
 
   return (
     <div className="flex flex-col px-4 pb-6">

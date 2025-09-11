@@ -7,15 +7,44 @@ import { categories } from '@/constants/categories';
 import { useProductsMostViewedMapped } from '@/hooks/products/useProduct';
 import Link from 'next/link';
 import NextIcon from '@/assets/icons/common/next-20px.svg';
+import { useEffect } from 'react';
+import { useAuth } from '@/utils/useAuth';
+import { getApiBaseUrl } from '@/lib/config';
 
 export default function MostViewedProductSection() {
   const { data, isLoading, isError, error } = useProductsMostViewedMapped(0, 20);
+  const { accessToken } = useAuth();
+
+  // peer-best-reviews API 테스트 호출 (Authorization: Bearer {accessToken})
+  useEffect(() => {
+    if (!accessToken) {
+      console.warn('[GET /api/v1/products/peer-best-reviews] accessToken 없음 - 로그인 필요');
+      return;
+    }
+    (async () => {
+      try {
+        const url = `${getApiBaseUrl()}/products/peer-best-reviews`;
+        const res = await fetch(url, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${accessToken}` },
+          credentials: 'include',
+        });
+        let body: any;
+        try {
+          body = await res.json();
+        } catch {}
+        if (body === undefined) body = await res.text();
+        console.log('[GET /api/v1/products/peer-best-reviews] status:', res.status, 'body:', body);
+      } catch (e) {
+        console.error('[GET /api/v1/products/peer-best-reviews] 실패:', e);
+      }
+    })();
+  }, [accessToken]);
 
   if (isLoading) {
     return (
       <div className="mb-10">
         <Title text="지금 주목받는 상품" />
-        <ChipsList categories={categories} />
         <div className="mt-2 text-sm text-gray-500">로딩중...</div>
       </div>
     );
@@ -25,7 +54,6 @@ export default function MostViewedProductSection() {
     return (
       <div className="mb-10">
         <Title text="지금 주목받는 상품" />
-        <ChipsList categories={categories} />
         <div className="mt-2 text-sm text-red-500">데이터를 불러올 수 없습니다.</div>
         {error && (
           <pre className="text-xs whitespace-pre-wrap text-gray-400">
