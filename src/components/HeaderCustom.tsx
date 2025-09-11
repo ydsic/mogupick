@@ -13,6 +13,7 @@ import CloseIcon from '@/assets/icons/common/close-32px.svg';
 import BellIcon from '@/assets/icons/common/bell.svg';
 import SettingIcon from '@/assets/icons/alert/setting.svg';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface HeaderProps {
   title?: string;
@@ -44,6 +45,12 @@ export default function HeaderCustom({
   rightCustom,
 }: HeaderProps) {
   const router = useRouter();
+  const { isLoggedIn } = useAuthStore();
+
+  const goMyPage = () => {
+    if (isLoggedIn) router.push('/mypage');
+    else router.push('/auth/credential');
+  };
 
   return (
     <header
@@ -70,6 +77,9 @@ export default function HeaderCustom({
 
         {/* 오른쪽 */}
         <div className="flex items-center gap-3">
+          <button onClick={goMyPage} aria-label="마이페이지" className="flex items-center">
+            <HomeIcon />
+          </button>
           {showHome && (
             <Link href="/">
               <HomeIcon />

@@ -55,7 +55,8 @@ export default function PeerBestReviewSection({ openModal }: PeerBestReviewSecti
   // 로그인된 상태: 내 또래의 베스트 리뷰 PICK
   if (isLoggedIn) {
     return (
-      <div className="space-y-4">
+
+      <div className={reviewData ? `mb-0` : `mb-10`}>
         <Title text="내 또래 베스트 리뷰 PICK" />
         {reviewLoading && <div className="mt-2 text-sm text-gray-500">로딩중...</div>}
         {isError && <div className="mt-2 text-sm text-red-500">데이터를 불러올 수 없습니다.</div>}

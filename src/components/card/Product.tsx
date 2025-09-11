@@ -11,8 +11,8 @@ import { Product } from '@/types/product';
 import RatingStarIcon from '@/assets/icons/common/rating-star-14px.svg';
 import ReviewIcon from '@/assets/icons/common/review-14px.svg';
 
-import HeartIcon from '@/assets/icons/common/heart-active-24px.svg';
-import LikeIcon from '@/assets/icons/common/empty-like-24px.svg';
+import HeartIcon from '@/assets/icons/common/heart-30px.svg';
+import LikeIcon from '@/assets/icons/common/empty-like-30px.svg';
 import { useLikedStore } from '@/store/useLikedStore';
 import Image from 'next/image';
 
@@ -34,25 +34,25 @@ type ProductCardProps = {
 
 const cardVariants = {
   s: {
-    wrapper: 'px-2 py-1',
+    wrapper: 'py-1',
     image: 'aspect-[1/1]',
-    title: 'text-sm font-medium text-black',
-    price: 'text-sm font-bold text-black',
-    meta: 'text-xs gap-1',
+    title: 'text-sm font-medium text-black block pt-2 truncate',
+    price: 'text-sm font-bold text-black block pb-1',
+    meta: 'text-xs gap-2',
   },
   m: {
-    wrapper: 'p-2',
+    wrapper: 'py-1',
     image: 'aspect-[1/1]',
-    title: 'text-base font-medium text-black',
-    price: 'text-base font-bold text-black',
-    meta: 'text-sm gap-1',
+    title: 'text-base font-medium text-black block pt-2 truncate',
+    price: 'text-base font-bold text-black block pb-1',
+    meta: 'text-sm gap-2',
   },
   l: {
-    wrapper: 'p-2',
+    wrapper: 'py-1',
     image: 'aspect-[8/9]',
-    title: 'text-lg font-semibold text-black',
-    price: 'text-lg font-bold text-black',
-    meta: 'text-sm gap-1',
+    title: 'text-lg font-semibold text-black block pt-2 truncate',
+    price: 'text-lg font-bold text-black block pb-1',
+    meta: 'text-sm gap-2',
   },
 };
 
@@ -79,17 +79,14 @@ function ProductCard({
 
   return (
     <div
-      className={cn('mb-3 flex flex-col rounded-sm bg-white', className)}
+      className={cn('flex flex-col rounded bg-white', className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link href={`${path}/${p.id}${queryString}`}>
         {/* 이미지 영역 */}
         <div
-          className={cn(
-            'relative mb-2 w-full overflow-hidden rounded-sm bg-gray-200',
-            variant.image,
-          )}
+          className={cn('relative mb-2 w-full overflow-hidden rounded bg-[#d9d9d9]', variant.image)}
         >
           {p.imageUrl && (
             <Image
@@ -116,30 +113,34 @@ function ProductCard({
         </div>
 
         {/* 정보 영역 */}
-        <div className={cn('flex flex-col gap-1', variant.wrapper)}>
+        <div className={cn('flex flex-col', variant.wrapper)}>
           <span className="text-xs text-gray-500">{p.store}</span>
           <span className={variant.title}>{p.title}</span>
           <span className={variant.price}>{p.price.toLocaleString()}원</span>
           <div className={cn('flex items-center text-gray-500', variant.meta)}>
-            <RatingStarIcon />
-            <span>{p.rating}</span>
-            <ReviewIcon />
-            <span>{p.reviewCount}</span>
+            <div className="flex items-center gap-1">
+              <RatingStarIcon />
+              <span>{p.rating}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <ReviewIcon />
+              <span>{p.reviewCount}</span>
+            </div>
           </div>
         </div>
       </Link>
 
       {/* 장바구니 담기 버튼 */}
       {showCartButton && (
-        <div className={`transition-all duration-200`}>
+        <div className={`mt-1 transition-all duration-200`}>
           <button
-            className="inline-flex h-10 w-full items-center justify-center gap-1 rounded border border-stone-300 bg-white px-4"
+            className="inline-flex h-10 w-full items-center justify-center gap-1 rounded border border-[var(--grey-300)] bg-white px-4"
             onClick={(e) => {
               e.preventDefault();
               console.log('장바구니에 추가:', p.title);
             }}
           >
-            <div className="text-base leading-normal font-normal text-gray-800">장바구니 담기</div>
+            <div className="text-base leading-normal font-normal text-[#434343]">장바구니 담기</div>
           </button>
         </div>
       )}
@@ -183,7 +184,7 @@ function ProductCardList({
 
   if (layout === 'list') {
     return (
-      <div className="flex flex-col gap-4 py-2">
+      <div className="flex flex-col gap-3">
         {visibleProducts.map((p) => (
           <ProductCard
             key={p.id}
@@ -201,7 +202,7 @@ function ProductCardList({
 
   if (layout === 'horizontal') {
     return (
-      <div className="flex gap-4 overflow-x-auto py-2">
+      <div className="flex gap-3 overflow-x-auto">
         {visibleProducts.map((p) => (
           <ProductCard
             key={p.id}
@@ -219,7 +220,7 @@ function ProductCardList({
   }
 
   return (
-    <div className={clsx('grid gap-4 py-2', gridCols)}>
+    <div className={clsx('grid gap-3', gridCols)}>
       {visibleProducts.map((p) => (
         <ProductCard
           key={p.id}

@@ -45,10 +45,6 @@ export async function apiFetch<T>(
   if (!isFormData) headers['Content-Type'] = 'application/json';
 
   const finalUrl = `${baseUrl}${url}`;
-  // 디버그 로그
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('[apiFetch] request', { finalUrl, method, hasToken: !!token });
-  }
 
   const res = await fetch(finalUrl, {
     method,

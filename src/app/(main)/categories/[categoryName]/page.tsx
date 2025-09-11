@@ -14,6 +14,7 @@ import { SortSheet, SortKey } from '@/components/filter';
 import { FilterSheet } from '@/components/filter/FilterSheet';
 import { FilterState } from '@/components/filter/types';
 import { useQuery } from '@tanstack/react-query';
+import { useProductsConstantlyPopularMapped } from '@/hooks/products/useProduct';
 
 export default function CategoryPage() {
   const params = useParams();
@@ -94,64 +95,35 @@ export default function CategoryPage() {
     </nav>
   );
 
-  const MOCK_PRODUCTS: Product[] = [
-    {
-      id: 1,
-      title: 'Product',
-      store: 'Store',
-      price: 10000,
-      rating: 4.8,
-      reviewCount: 500,
-    },
-    {
-      id: 2,
-      title: 'Product',
-      store: 'Store',
-      price: 3000,
-      rating: 4.6,
-      reviewCount: 120,
-    },
-    {
-      id: 3,
-      title: 'Product',
-      store: 'Store',
-      price: 18000,
-      rating: 4.7,
-      reviewCount: 320,
-    },
-    {
-      id: 4,
-      title: 'Product',
-      store: 'Store',
-      price: 90000,
-      rating: 4.9,
-      reviewCount: 820,
-    },
-  ];
+  // 선택된 API 카테고리
+  const apiCategory = getApiCategory(categoryName);
 
-  // 카테고리별 필터링을 위한 확장된 Product 타입
-  const MOCK_PRODUCTS_WITH_CATEGORY = [
-    { ...MOCK_PRODUCTS[0], category: '과일' },
-    { ...MOCK_PRODUCTS[1], category: '채소' },
-    { ...MOCK_PRODUCTS[2], category: '쌀/잡곡' },
-    { ...MOCK_PRODUCTS[3], category: '과일' },
-  ];
+  // 실제 상품 데이터 가져오기
+  const { data: productData, isLoading: isLoadingProducts } = useProductsConstantlyPopularMapped(
+    0,
+    100,
+    apiCategory,
+  );
+
+  // 실제 상품 목록
+  const products = productData?.items || [];
 
   // 선택된 탭과 필터 기반 상품 목록 계산
   const [category, setCategory] = useState<CategoryTab>('전체');
   const filtered = useMemo(() => {
-    let result = MOCK_PRODUCTS_WITH_CATEGORY;
+    let result = products;
 
-    // 카테고리 필터링
+    // 서브카테고리 필터링
     if (category !== '전체') {
-      result = result.filter((p) => p.category === category);
+      // 서브카테고리 이름으로 필터링
+      result = result.filter((p) => p.subCategory === category);
     }
 
     // API 기반 필터링
     Object.entries(filters).forEach(([key, values]) => {
       if (values && (values as unknown[]).length > 0) {
         result = result.filter((product) => {
-          // 현재는 가격 필터만 예시로 구현
+          // 가격 필터
           if (key === 'PRICE') {
             return (values as string[]).some((expression: string) => {
               const price = product.price;
@@ -169,7 +141,7 @@ export default function CategoryPage() {
     });
 
     return result;
-  }, [category, filters]);
+  }, [products, category, filters]);
 
   const Toolbar = ({ total }: { total: number }) => (
     <div className="flex items-center justify-between px-4 py-4">
@@ -206,7 +178,7 @@ export default function CategoryPage() {
     </div>
   );
 
-  const ProductGrid = ({ items }: { items: Product[] }) => (
+  const ProductGrid = ({ items }: { items: any[] }) => (
     <div className="px-4 pb-12">
       <ProductCardList
         products={items}
@@ -226,7 +198,13 @@ export default function CategoryPage() {
       <CategoryTabs value={category} onChange={setCategory} />
       <Toolbar total={filtered.length} />
       <main className="mb-15">
-        <ProductGrid items={filtered} />
+        {isLoadingProducts ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-neutral-500">상품을 불러오는 중...</div>
+          </div>
+        ) : (
+          <ProductGrid items={filtered} />
+        )}
       </main>
     </div>
   );

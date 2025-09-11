@@ -3,6 +3,7 @@ import { create } from 'zustand';
 interface RecentSearchState {
   recent: string[];
   setRecent: (items: string[]) => void;
+  setRecentEphemeral: (items: string[]) => void; // 서버 전용 (localStorage 미저장)
   addKeyword: (keyword: string) => void;
   removeKeyword: (keyword: string) => void;
   clearAll: () => void;
@@ -17,6 +18,10 @@ export const useRecentSearchStore = create<RecentSearchState>((set) => ({
     if (typeof window !== 'undefined') {
       localStorage.setItem(RECENT_KEY, JSON.stringify(items));
     }
+  },
+  setRecentEphemeral: (items) => {
+    // localStorage 저장 없이 상태만 갱신
+    set({ recent: items });
   },
 
   addKeyword: (keyword) =>

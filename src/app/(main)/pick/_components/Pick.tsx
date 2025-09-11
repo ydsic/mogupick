@@ -8,8 +8,8 @@ export default function Pick() {
     <div className="p-4">
       <ChipsList categories={categories} showAll />
 
-      <div>
-        <div>
+      <div className="pb-20">
+        <div className="mt-1 mb-3 pl-4 text-sm text-[#6f6f6f]">
           총 <span>100</span>개
         </div>
         <ProductCardList

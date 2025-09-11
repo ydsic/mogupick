@@ -41,7 +41,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           response_type: 'code',
         },
       },
-    })
+    }),
   );
 }
 
@@ -50,7 +50,7 @@ if (KAKAO_CLIENT_ID && KAKAO_CLIENT_SECRET) {
     KakaoProvider({
       clientId: KAKAO_CLIENT_ID,
       clientSecret: KAKAO_CLIENT_SECRET,
-    })
+    }),
   );
 }
 
@@ -60,7 +60,9 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/auth/login',
+    error: '/auth/login', // 에러 발생시 로그인 페이지로 리다이렉트
   },
+  debug: process.env.NODE_ENV === 'development', // 개발 환경에서 디버그 모드 활성화
   callbacks: {
     async jwt({ token, account, user }): Promise<JWTToken> {
       const _token = token as JWTToken;
@@ -104,4 +106,3 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
-

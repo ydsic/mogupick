@@ -40,7 +40,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col px-4 pb-6">
       <HeaderCustom showLogo showBell showCart />
-      <div className="min-h-0 flex-1 space-y-8">
+      <div className="min-h-0 flex-1">
         <SearchBar />
         <BannerSlider />
         <CategoryList categories={categories} />

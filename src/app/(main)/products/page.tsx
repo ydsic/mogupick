@@ -4,7 +4,7 @@ import HeaderCustom from '@/components/HeaderCustom';
 import { ProductCardList } from '@/components/card/Product';
 import { sectionTitles } from '@/constants/sectionTitles';
 import {
-  useProductsConstantlyPopular,
+  useProductsConstantlyPopularMapped,
   useProductsNewMapped,
   useProductsMostViewedMapped,
   useProductsBeginnerFriendlyMapped,
@@ -18,14 +18,15 @@ export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const section = searchParams.get('section') || 'recent';
+  const category = searchParams.get('category'); // 카테고리 필터 추가
   const key = section as keyof typeof sectionTitles;
   const title = sectionTitles[key] || sectionTitles.recent;
 
   // 섹션에 따라 적절한 API 훅 사용
-  const constantlyPopular = useProductsConstantlyPopular(0, 50);
-  const newProducts = useProductsNewMapped(0, 50);
-  const mostViewed = useProductsMostViewedMapped(0, 50);
-  const beginnerFriendly = useProductsBeginnerFriendlyMapped(0, 50);
+  const constantlyPopular = useProductsConstantlyPopularMapped(0, 50, category || undefined);
+  const newProducts = useProductsNewMapped(0, 50, category || undefined);
+  const mostViewed = useProductsMostViewedMapped(0, 50, category || undefined);
+  const beginnerFriendly = useProductsBeginnerFriendlyMapped(0, 50, category || undefined);
   const peerReviews = useProductsPeerBestReviewsMapped();
   const recentlyViewed = useProductsRecentlyViewedMapped();
 

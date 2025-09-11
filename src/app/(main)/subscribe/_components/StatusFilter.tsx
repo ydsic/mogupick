@@ -7,13 +7,13 @@ export interface StatusFilterProps {
 
 export default function StatusFilter({ value, onChange }: StatusFilterProps) {
   return (
-    <div className="flex items-center rounded-full bg-white p-1 text-gray-400">
+    <div className="flex items-center rounded-full bg-white p-1 font-semibold text-black">
       <button
         onClick={() => onChange('ongoing')}
         className={
           value === 'ongoing'
-            ? 'rounded-full bg-black px-2.5 py-1 text-sm text-white'
-            : 'px-2.5 py-1 text-sm'
+            ? 'rounded-full bg-black px-2.5 py-1 text-[13px] text-white'
+            : 'px-2.5 py-1 text-[13px]'
         }
       >
         진행중
@@ -22,8 +22,8 @@ export default function StatusFilter({ value, onChange }: StatusFilterProps) {
         onClick={() => onChange('canceled')}
         className={
           value === 'canceled'
-            ? 'rounded-full bg-black px-2.5 py-1 text-sm text-white'
-            : 'px-2.5 py-1 text-sm'
+            ? 'rounded-full bg-black px-2.5 py-1 text-[13px] text-white'
+            : 'px-2.5 py-1 text-[13px]'
         }
       >
         해지

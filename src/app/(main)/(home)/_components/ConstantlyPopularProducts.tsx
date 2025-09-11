@@ -1,28 +1,39 @@
 'use client';
 
+import { useState } from 'react';
 import Title from '@/components/ui/Title';
 import { ChipsList } from '@/components/ui/Chips';
 import { ProductCardList } from '@/components/card/Product';
 import Link from 'next/link';
-import NextIcon from '@/assets/icons/common/next-24px.svg';
+import NextIcon from '@/assets/icons/common/next-20px.svg';
 import { categories } from '@/constants/categories';
-import { useProductsConstantlyPopular } from '@/hooks/products/useProduct';
+import { useProductsConstantlyPopularMapped } from '@/hooks/products/useProduct';
+import { Category } from '@/types/category';
 
 function ConstantlyPopularProducts() {
-  const { data, isLoading, isError, error } = useProductsConstantlyPopular(0, 20);
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
+  const { data, isLoading, isError, error } = useProductsConstantlyPopularMapped(
+    0,
+    20,
+    selectedCategory,
+  );
+
+  const handleCategoryChange = (category: Category | null) => {
+    setSelectedCategory(category?.rootCategory);
+  };
 
   if (isLoading) {
     return (
-      <div>
+      <div className="mb-10">
         <Title text="꾸준히 사랑받는 상품" />
         <div className="mt-2 text-sm text-gray-500">로딩중...</div>
       </div>
     );
   }
 
-  if (isError || !data) {
+  if (isError || !data || !data.items) {
     return (
-      <div>
+      <div className="mb-10">
         <Title text="꾸준히 사랑받는 상품" />
         <div className="mt-2 text-sm text-red-500">데이터를 불러올 수 없습니다.</div>
         {error && (
@@ -34,20 +45,18 @@ function ConstantlyPopularProducts() {
     );
   }
 
-  const products = data.items.map((p) => ({
-    id: p.id,
-    store: p.store,
-    title: p.title,
-    price: p.price,
-    rating: p.rating,
-    reviewCount: p.reviewCount,
-    imageUrl: p.imageUrl,
-  }));
+  // 데이터가 이미 올바른 형태로 매핑되어 있음
+  const products = data.items;
+
+  // 더보기 링크에 현재 선택된 카테고리 포함
+  const moreLink = selectedCategory
+    ? `/products?section=popular&category=${selectedCategory}`
+    : `/products?section=popular`;
 
   return (
-    <div>
+    <div className="mb-10">
       <Title text="꾸준히 사랑받는 상품" />
-      <ChipsList categories={categories} />
+      <ChipsList categories={categories} showAll onCategoryChange={handleCategoryChange} />
       <ProductCardList
         path={`/products`}
         products={products}
@@ -57,9 +66,10 @@ function ConstantlyPopularProducts() {
         query={{ from: 'home', section: 'popular' }}
       />
       {products.length >= 6 && (
-        <div className="flex justify-center">
-          <div className="flex items-center justify-center rounded-2xl border border-gray-400 px-6 py-2 text-center text-base">
-            <Link href={`/products?section=popular`}>상품 더보기</Link>
+
+        <div className="mt-5 flex justify-center">
+          <div className="flex items-center justify-center rounded-2xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-[#434343]">
+            <Link href={moreLink}>상품 더보기</Link>
             <NextIcon />
           </div>
         </div>
