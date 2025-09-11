@@ -20,6 +20,7 @@ const schema = yup.object().shape({
     .string()
     .email('올바른 이메일 형식을 입력해주세요.')
     .required('이메일을 입력해주세요.'),
+  password: yup.string().required('비밀번호를 입력해주세요.'),
 });
 
 type LoginForm = yup.InferType<typeof schema>;
