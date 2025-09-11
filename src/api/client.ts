@@ -24,20 +24,48 @@ export async function apiFetch<T>(
       console.warn('[apiFetch] server session fetch failed (ignored)', e);
     }
   } else {
-    // 클라이언트 환경: next-auth/react 의 getSession 동적 import
+    // 클라이언트 환경: 0) useAuthStore 우선 1) oauthTokens(localStorage) 2) next-auth 세션 3) cookie
     try {
-      const { getSession } = await import('next-auth/react');
-      const session = await getSession();
-      token = (session?.user as any)?.accessToken;
+      const mod = await import('@/store/useAuthStore');
+      const state = mod.useAuthStore.getState();
+      if (state?.accessToken) token = state.accessToken;
     } catch (e) {
-      // 공개 API 요청이면 토큰 없어도 됨
-      console.warn('[apiFetch] client getSession failed (maybe not signed in)', e);
+      // ignore
+    }
+
+    if (!token) {
+      try {
+        const { getLocalAccessToken } = await import('@/utils/oauthTokens');
+        const local = getLocalAccessToken();
+        if (local) token = local;
+      } catch (e) {
+        console.warn('[apiFetch] getLocalAccessToken failed (ignored)', e);
+      }
+    }
+
+    if (!token) {
+      try {
+        const { getSession } = await import('next-auth/react');
+        const session = await getSession();
+        token = (session?.user as any)?.accessToken;
+      } catch (e) {
+        console.warn('[apiFetch] client getSession failed (maybe not signed in)', e);
+      }
+    }
+
+    // 선택: 쿠키에 accessToken이 있다면 마지막 폴백으로 사용
+    if (!token) {
+      try {
+        const m = document.cookie.match(/(?:^|; )accessToken=([^;]+)/);
+        if (m) token = decodeURIComponent(m[1]);
+      } catch {}
     }
   }
 
   const isFormData = options.body instanceof FormData;
 
   const headers: Record<string, string> = {
+    Accept: 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers,
   };
@@ -45,6 +73,17 @@ export async function apiFetch<T>(
   if (!isFormData) headers['Content-Type'] = 'application/json';
 
   const finalUrl = `${baseUrl}${url}`;
+
+  if (process.env.NODE_ENV !== 'production') {
+    const { Authorization, ...hdr } = headers;
+    console.log('[apiFetch] request', {
+      method,
+      url: finalUrl,
+      headers: hdr,
+      hasAuth: !!Authorization,
+      bodyPreview: isFormData ? '[FormData]' : options.body,
+    });
+  }
 
   const res = await fetch(finalUrl, {
     method,

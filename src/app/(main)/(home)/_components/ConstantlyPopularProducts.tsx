@@ -56,7 +56,6 @@ function ConstantlyPopularProducts() {
   return (
     <div className="mb-10">
       <Title text="꾸준히 사랑받는 상품" />
-      <ChipsList categories={categories} showAll onCategoryChange={handleCategoryChange} />
       <ProductCardList
         path={`/products`}
         products={products}

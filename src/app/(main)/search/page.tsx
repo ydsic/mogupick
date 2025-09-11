@@ -24,7 +24,5 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const { q } = await searchParams;
 
-  console.log('q', q);
-
   return <SearchPage initialQuery={q} />;
 }

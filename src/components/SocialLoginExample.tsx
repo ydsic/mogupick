@@ -19,7 +19,6 @@ export default function SocialLoginExample() {
     try {
       const userData = await socialLogin({ provider, accessToken });
       setResult(userData);
-      console.log(`${provider} 로그인 성공:`, userData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '로그인 실패';
       setError(errorMessage);
@@ -37,7 +36,6 @@ export default function SocialLoginExample() {
     try {
       const userData = await googleSocialLogin(accessToken);
       setResult(userData);
-      console.log('Google 로그인 성공:', userData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Google 로그인 실패';
       setError(errorMessage);
@@ -55,7 +53,6 @@ export default function SocialLoginExample() {
     try {
       const userData = await kakaoSocialLogin(accessToken);
       setResult(userData);
-      console.log('Kakao 로그인 성공:', userData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Kakao 로그인 실패';
       setError(errorMessage);

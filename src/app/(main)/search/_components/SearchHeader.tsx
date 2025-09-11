@@ -31,7 +31,6 @@ export default function SearchHeader({ value = '', onChange }: SearchHeaderProps
     (async () => {
       try {
         const recent = await getSearchRecent();
-        console.log('[최근 검색어 응답]', recent);
         const { setRecentEphemeral } = useRecentSearchStore.getState();
         if (Array.isArray(recent)) {
           const keywords = recent.map((r: any) => r.content).filter(Boolean);
