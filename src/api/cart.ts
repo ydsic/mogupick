@@ -17,6 +17,29 @@ export interface CartItemUI {
   brand: string; // 브랜드명
 }
 
+// 클라이언트에서 accessToken 회수 (store -> localStorage(oauthTokens) -> cookie)
+async function getAccessTokenClient(): Promise<string | undefined> {
+  if (typeof window === 'undefined') return undefined;
+  try {
+    const { useAuthStore } = await import('@/store/useAuthStore');
+    const t = useAuthStore.getState().accessToken;
+    if (t) return t;
+  } catch {}
+
+  try {
+    const { getLocalAccessToken } = await import('@/utils/oauthTokens');
+    const t = getLocalAccessToken();
+    if (t) return t;
+  } catch {}
+
+  try {
+    const m = document.cookie.match(/(?:^|; )accessToken=([^;]+)/);
+    if (m) return decodeURIComponent(m[1]);
+  } catch {}
+
+  return undefined;
+}
+
 // 장바구니 담기 (JSON payload) - 환경에 따라 다른 방식 사용
 export const createCart = async (memberId: number, productId: number, cart: Cart) => {
   const { subscriptionOptionId, firstDeliveryDate } = cart;
@@ -27,16 +50,19 @@ export const createCart = async (memberId: number, productId: number, cart: Cart
   };
 
   try {
-    // 프로덕션 환경에서는 프록시 사용 (HTTPS Mixed Content 문제 해결)
+    // 프로덕션 환경에서도 토큰을 명시적으로 주입하여 누락 방지
     if (process.env.NODE_ENV === 'production') {
-      const res = await apiFetch<Cart>('/carts', 'POST', { body });
+      const token = await getAccessTokenClient();
+      if (!token) throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
+      const res = await apiFetch<Cart>('/carts', 'POST', {
+        body,
+        headers: { Authorization: `Bearer ${token}` },
+      });
       return res;
     } else {
       // 개발 환경에서는 직접 fetch 사용 (프록시 500 에러 회피)
-      const { useAuthStore } = await import('@/store/useAuthStore');
-      const { accessToken } = useAuthStore.getState();
-
-      if (!accessToken) {
+      const token = await getAccessTokenClient();
+      if (!token) {
         throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
       }
 
@@ -45,7 +71,7 @@ export const createCart = async (memberId: number, productId: number, cart: Cart
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(body),
       });
@@ -75,15 +101,18 @@ export const getCart = (memberId: number) => apiFetch<any>(`/carts/${memberId}`)
 // 장바구니 조회 (토큰 기반 내 장바구니) - 환경별 분기
 export const getMyCart = async () => {
   try {
-    // 프로덕션 환경에서는 프록시 사용
+    // 프로덕션 환경에서도 토큰을 명시적으로 주입
     if (process.env.NODE_ENV === 'production') {
-      return await apiFetch<any>('/carts');
+      const token = await getAccessTokenClient();
+      if (!token) throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
+      return await apiFetch<any>('/carts', 'GET', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
     } else {
       // 개발 환경에서는 직접 fetch 사용
-      const { useAuthStore } = await import('@/store/useAuthStore');
-      const { accessToken } = useAuthStore.getState();
+      const token = await getAccessTokenClient();
 
-      if (!accessToken) {
+      if (!token) {
         throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
       }
 
@@ -92,7 +121,7 @@ export const getMyCart = async () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
