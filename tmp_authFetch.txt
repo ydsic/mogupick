@@ -1,0 +1,30 @@
+﻿import { getSession } from 'next-auth/react';
+
+export async function authFetch(input: RequestInfo, init?: RequestInit) {
+  const session = await getSession();
+
+  if (!session?.user?.accessToken) {
+    throw new Error('濡쒓렇?몄씠 ?꾩슂?⑸땲??');
+  }
+
+  const headers = {
+    ...init?.headers,
+    Authorization: `Bearer ${session.user.accessToken}`,
+  };
+
+  return fetch(input, { ...init, headers });
+}
+
+// ?ъ슜 ?덉떆
+// "use client";
+// import { authFetch } from "@/lib/authFetch";
+
+// export default function Example() {
+//   async function loadData() {
+//     const res = await authFetch("/api/protected");
+//     const data = await res.json();
+//     console.log(data);
+//   }
+
+//   return <button onClick={loadData}>API ?몄텧</button>;
+// }
