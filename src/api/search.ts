@@ -84,6 +84,7 @@ export const getSearchRelated = async (data: SearchRelated) => {
   return response.json();
 };
 
+
 // 최근 검색어 조회 (로그인 필요: Authorization 포함)
 export const getSearchRecent = async () => {
   const url = buildUrl('/search/recent');

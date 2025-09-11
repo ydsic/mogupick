@@ -163,5 +163,6 @@ export function useProductsMostViewedMapped(page = 0, size = 20, rootCategory?: 
     queryFn: () => getProductsMostViewedMapped(page, size, rootCategory),
     placeholderData: (prev) => prev,
     staleTime: 1000 * 60,
+
   });
 }

@@ -183,7 +183,6 @@ export const getProductsConstantlyPopularMapped = async (
         return mappedItem;
       },
     );
-
     return {
       items: mapped,
       page: res.data.page,
@@ -272,7 +271,6 @@ export const getProductsBeginnerFriendlyMapped = async (
         return mappedItem;
       },
     );
-
     return {
       items: mapped,
       page: res.data.page,
@@ -358,7 +356,6 @@ export const getProductsPeerBestReviewsMapped = async (
       const fallbackRes = await apiFetch<any>(
         `/products/peer-best-reviews?page=${page}&size=${size}`,
       );
-
       if (Array.isArray(fallbackRes)) {
         rawItems = fallbackRes;
       } else if (
@@ -415,6 +412,7 @@ export const getProductsRecentlyViewedMapped = async (): Promise<MappedProductCa
 
     // 기본 Product[] 타입이므로 안전하게 변환
     const mapped: MappedProductCardItem[] = rawData.map((item: any, idx: number) => ({
+
       id: item.productId ?? item.id ?? idx,
       store: item.brandName ?? item.store ?? '',
       title: item.productName ?? item.title ?? item.name ?? '상품',
@@ -554,6 +552,7 @@ export const getProductsMostViewedMapped = async (
     };
   } catch (e: any) {
     console.error('[getProductsMostViewedMapped] error', e?.message || e);
+
     return {
       items: [],
       page,

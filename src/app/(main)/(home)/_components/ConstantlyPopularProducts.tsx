@@ -66,6 +66,7 @@ function ConstantlyPopularProducts() {
         query={{ from: 'home', section: 'popular' }}
       />
       {products.length >= 6 && (
+
         <div className="mt-5 flex justify-center">
           <div className="flex items-center justify-center rounded-2xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-[#434343]">
             <Link href={moreLink}>상품 더보기</Link>
