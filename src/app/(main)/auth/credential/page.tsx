@@ -4,22 +4,58 @@ import Image from 'next/image';
 import HeaderCustom from '@/components/HeaderCustom';
 import LogoImg from '@/assets/icons/mogupick.png';
 import EyeHide from '@/assets/icons/common/eye-hide-20px.svg';
+import EyeShow from '@/assets/icons/common/eye-show-24px.svg';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import toast from 'react-hot-toast';
+
+// ✅ yup validation schema
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email('올바른 이메일 형식을 입력해주세요.')
+    .required('이메일을 입력해주세요.'),
+  password: yup
+    .string()
+    .required('비밀번호를 입력해 주세요')
+    .min(10, '비밀번호는 최소 10자 이상이어야 합니다')
+    .max(20, '비밀번호는 20자 이하로 입력해 주세요'),
+});
+
+type LoginForm = yup.InferType<typeof schema>;
 
 export default function Page() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
-  const { login, loading, error } = useAuthStore();
+  const { login, loading } = useAuthStore();
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await login(email, password);
-    if (useAuthStore.getState().isLoggedIn) router.push('/');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: yupResolver(schema),
+    mode: 'onSubmit',
+  });
+
+  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
+    await login(data.email, data.password);
+
+    const { isLoggedIn, error } = useAuthStore.getState();
+
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    if (isLoggedIn) {
+      router.push('/');
+    }
   };
 
   return (
@@ -33,7 +69,9 @@ export default function Page() {
             나의 새로운 일상!
           </h2>
         </div>
-        <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+          {/* 이메일 */}
           <div className="flex flex-col gap-1">
             <label htmlFor="email" className="text-[14px] text-[#434343]">
               이메일
@@ -43,34 +81,37 @@ export default function Page() {
               type="email"
               placeholder="이메일 입력"
               className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#d6d6d6] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              {...register('email')}
             />
+            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
           </div>
-          <div className="relative flex flex-col gap-1">
+
+          {/* 비밀번호 */}
+          <div className="flex flex-col gap-1">
             <label htmlFor="password" className="text-[14px] text-[#434343]">
               비밀번호
             </label>
-            <input
-              id="password"
-              type={showPw ? 'text' : 'password'}
-              placeholder="비밀번호(영문, 숫자, 특수문자 8~20자)"
-              className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 pr-10 text-sm text-[#434343] placeholder-[#d6d6d6] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button
-              type="button"
-              className="absolute top-1/2 right-2 -translate-y-1/2"
-              onClick={() => setShowPw((p) => !p)}
-              aria-label={showPw ? '비밀번호 숨기기' : '비밀번호 보기'}
-            >
-              <EyeHide className={showPw ? 'opacity-40' : ''} />
-            </button>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPw ? 'text' : 'password'}
+                placeholder="비밀번호(영문, 숫자, 특수문자 8~20자)"
+                className="w-full rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 pr-10 text-sm text-[#434343] placeholder-[#d6d6d6] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
+                {...register('password')}
+              />
+              <button
+                type="button"
+                className="absolute top-1/2 right-2 -translate-y-1/2"
+                onClick={() => setShowPw((p) => !p)}
+                aria-label={showPw ? '비밀번호 숨기기' : '비밀번호 보기'}
+              >
+                {showPw ? <EyeShow /> : <EyeHide />}
+              </button>
+            </div>
+            {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+
+          {/* 로그인 버튼 */}
           <button
             type="submit"
             disabled={loading}
@@ -79,6 +120,7 @@ export default function Page() {
             {loading ? '로그인 중...' : '로그인'}
           </button>
         </form>
+
         <div className="mt-8 flex items-center justify-center space-x-3 text-sm text-[#434343]">
           <Link href={'/auth/signup'} className="text-[var(--color-secondary)]">
             회원가입
