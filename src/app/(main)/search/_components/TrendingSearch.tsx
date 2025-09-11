@@ -18,10 +18,8 @@ export default function TrendingSearch({ onSelect }: TrendingSearchProps) {
     const fetchTopRising = async () => {
       try {
         const data = await getSearchTopRisingToday();
-        console.log('API 응답:', data);
         // API가 { data: [...] } 형태 또는 바로 [...] 형태 둘 다 지원
         const raw = data?.data ?? data ?? [];
-        console.log('원본 배열(raw):', raw);
         // 원본 순서를 보장하기 위해 인덱스 붙이고 정렬(검색량 내림차순, 같으면 원래 인덱스 순 유지)
         const list = (Array.isArray(raw) ? raw : [])
           .map((item: any, idx: number) => ({ ...item, __idx: idx }))
@@ -31,7 +29,6 @@ export default function TrendingSearch({ onSelect }: TrendingSearchProps) {
             return diff !== 0 ? diff : a.__idx - b.__idx;
           })
           .map((item: any) => item.content);
-        console.log('정렬 후 리스트:', list);
         setTrending(list.slice(0, 10));
       } catch (err) {
         console.error('Failed to fetch top-rising:', err);

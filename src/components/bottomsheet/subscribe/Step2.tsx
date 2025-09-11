@@ -3,10 +3,16 @@
 import Calendar from '@/components/calendar/Calendar';
 import CustomCycle from '@/components/cycle/CustomCycle';
 import QuickCycle from '@/components/cycle/QuickCycle';
-import { useState } from 'react';
 
-export default function Step2({ goNext }: { goNext: () => void }) {
-  const [startDate, setStartDate] = useState<Date | null>(new Date()); // ✅ 선택 날짜 상태
+export default function Step2({
+  startDate,
+  setStartDate,
+  onComplete,
+}: {
+  startDate: Date | null;
+  setStartDate: (date: Date) => void;
+  onComplete: () => void;
+}) {
   return (
     <div className="pt-10">
       <div className="bg-gray-100 px-3 py-4">
@@ -51,7 +57,7 @@ export default function Step2({ goNext }: { goNext: () => void }) {
       </div>
 
       <div className="bg-white pt-4">
-        <button onClick={goNext} className="w-full bg-black py-3 text-white">
+        <button onClick={onComplete} className="w-full bg-black py-3 text-white">
           완료
         </button>
       </div>

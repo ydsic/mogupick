@@ -19,6 +19,7 @@ export default function ConditionalSections() {
   // 로딩 중이면 스켈레톤 UI 표시
   if (authLoading || (isLoggedIn && recentLoading)) {
     return (
+
       <div className="mb-10">
         <div className="h-6 w-48 animate-pulse rounded bg-gray-200"></div>
         <div className="overflow-x-auto">

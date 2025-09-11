@@ -52,8 +52,6 @@ interface PageProps {
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
 
-  console.log('id', id);
-
   const product = products.find((p) => p.id === Number(id));
 
   if (!product) {

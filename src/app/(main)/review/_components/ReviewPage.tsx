@@ -14,7 +14,6 @@ export default function ReviewPage() {
 
   const handleNext = () => setStep(2);
   const handleSubmit = () => {
-    console.log('리뷰 제출:', form);
     // API 호출
   };
 

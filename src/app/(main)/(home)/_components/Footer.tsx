@@ -49,6 +49,8 @@ export default function Footer() {
     '/payments/success',
     '/review',
     '/auth/login',
+    '/auth/signup',
+    '/auth/credential',
     /^\/search\/[^/]+(\/.*)?$/, // /search, /search/result
     /^\/products\/[^/]+(\/.*)?$/, // /products/:id 및 하위 경로 모두
     /^\/subscribe\/[^/]+(\/.*)?$/, // /subscribe/:id 및 하위 경로 모두

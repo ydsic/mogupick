@@ -16,11 +16,6 @@ export default function MainLayoutClient({ children }: MainLayoutClientProps) {
   const mainRef = useRef<HTMLElement | null>(null);
   const { data: session } = useSession();
 
-  // 확인용
-  useEffect(() => {
-    console.log('client session', session ? '로그인 됌' : '로그인 필요');
-  }, [session]);
-
   useEffect(() => {
     const el = mainRef.current ?? document.querySelector('main');
     if (el && 'scrollTo' in el) {
