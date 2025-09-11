@@ -46,6 +46,13 @@ export default function Page() {
   const router = useRouter();
   const [showPw, setShowPw] = useState(false);
   const [showPwCheck, setShowPwCheck] = useState(false);
+  const [checkedAll, setCheckedAll] = useState(false);
+  const [checked, setChecked] = useState({
+    age: false,
+    terms: false,
+    marketing: false,
+    ads: false,
+  });
   const {
     register,
     handleSubmit,
@@ -59,6 +66,11 @@ export default function Page() {
 
   const onValid: SubmitHandler<FormValues> = async (data) => {
     try {
+      // 필수 약관 체크 확인
+      if (!checked.age || !checked.terms) {
+        toast.error('필수 약관에 동의해 주세요.');
+        return;
+      }
       // YYYY-MM-DD 형식으로 변환
       const formattedBirthDate = data.birthDate.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
 
@@ -199,6 +211,7 @@ export default function Page() {
                 id="phone"
                 type="tel"
                 inputMode="numeric"
+                pattern="\d*"
                 maxLength={11}
                 placeholder="'-없이' 휴대폰번호를 입력해 주세요"
                 {...register('phone')}
@@ -216,6 +229,7 @@ export default function Page() {
                 id="birthDate"
                 type="text"
                 inputMode="numeric"
+                pattern="\d*"
                 maxLength={8}
                 placeholder="YYYYMMDD 형식으로 입력해주세요"
                 {...register('birthDate')}
@@ -227,7 +241,12 @@ export default function Page() {
             </div>
           </div>
 
-          <TermsAgreement />
+          <TermsAgreement
+            checked={checked}
+            checkedAll={checkedAll}
+            setChecked={setChecked}
+            setCheckedAll={setCheckedAll}
+          />
 
           <button
             type="submit"

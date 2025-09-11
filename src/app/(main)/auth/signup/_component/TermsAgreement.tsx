@@ -1,16 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+type TermsProps = {
+  checked: {
+    age: boolean;
+    terms: boolean;
+    marketing: boolean;
+    ads: boolean;
+  };
+  checkedAll: boolean;
+  setChecked: React.Dispatch<
+    React.SetStateAction<{
+      age: boolean;
+      terms: boolean;
+      marketing: boolean;
+      ads: boolean;
+    }>
+  >;
+  setCheckedAll: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-export default function TermsAgreement() {
-  const [checkedAll, setCheckedAll] = useState(false);
-  const [checked, setChecked] = useState({
-    age: false,
-    terms: false,
-    marketing: false,
-    ads: false,
-  });
-
+export default function TermsAgreement({
+  checked,
+  checkedAll,
+  setChecked,
+  setCheckedAll,
+}: TermsProps) {
   const handleAllChange = () => {
     const newValue = !checkedAll;
     setCheckedAll(newValue);
@@ -28,6 +42,7 @@ export default function TermsAgreement() {
     setChecked(newChecked);
     setCheckedAll(Object.values(newChecked).every(Boolean));
   };
+
   return (
     <div className="pt-10 pb-16 text-[14px] font-semibold text-[#242424]">
       <h2 className="mb-3 font-semibold">모구픽 이용 약관 동의</h2>
@@ -44,7 +59,6 @@ export default function TermsAgreement() {
       </label>
 
       <div className="ml-2 space-y-3">
-        {/* 필수 */}
         <label className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <input
@@ -71,7 +85,6 @@ export default function TermsAgreement() {
           <button className="text-xs underline">자세히</button>
         </label>
 
-        {/* 선택 */}
         <label className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <input
