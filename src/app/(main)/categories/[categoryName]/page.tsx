@@ -75,7 +75,7 @@ export default function CategoryPage() {
     value: CategoryTab;
     onChange: (c: CategoryTab) => void;
   }) => (
-    <nav aria-label="카테고리" className="mt-15 border-b-1 border-[#86C53A]">
+    <nav aria-label="카테고리" className="mt-15 border-b-1 border-[#f2f2f2]">
       <div className="flex gap-6 overflow-x-auto px-4">
         {categoryTabs.map((c) => {
           const active = c === value;
@@ -84,7 +84,7 @@ export default function CategoryPage() {
               key={c}
               role="tab"
               aria-selected={active}
-              className={`py-3 text-sm whitespace-nowrap ${active ? 'border-b-2 border-[#86C53A] font-semibold text-green-700' : 'text-neutral-500'}`}
+              className={`pb-1 text-base font-medium whitespace-nowrap ${active ? 'border-b-2 border-[#86C53A] font-semibold text-[#86C53A]' : 'text-[#a6a6a6]'}`}
               onClick={() => onChange(c)}
             >
               {c}
@@ -144,8 +144,8 @@ export default function CategoryPage() {
   }, [products, category, filters]);
 
   const Toolbar = ({ total }: { total: number }) => (
-    <div className="flex items-center justify-between px-4 py-4">
-      <span className="text-xs text-neutral-700">총 {total}개</span>
+    <div className="flex items-center justify-between px-4 py-3">
+      <span className="text-[13px] text-[#6f6f6f]">총 {total}개</span>
       <div className="flex items-center gap-2">
         <button
           className="inline-flex h-8 items-center gap-1 rounded-full border border-neutral-200 px-3 py-2 text-xs text-neutral-900"
