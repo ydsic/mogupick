@@ -5,6 +5,7 @@ import LikeIcon from '@/assets/icons/common/hand-like.svg';
 // import HeaderCustom from '@/components/HeaderCustom';
 import BigStarIcon from '@/assets/icons/common/big-star.svg';
 import SmallStarIcon from '@/assets/icons/common/small-star.svg';
+import HeaderCustom from '@/components/HeaderCustom';
 
 type Review = {
   id: string;
@@ -19,7 +20,7 @@ type Review = {
 
 function TotalRating({ value }: { value: number }) {
   return (
-    <div className="flex items-center" aria-label={`별점 ${value}점 / 5점`}>
+    <div className="flex items-center gap-1" aria-label={`별점 ${value}점 / 5점`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <BigStarIcon key={i} className="fill-current text-[#F9C927]" />
       ))}
@@ -29,7 +30,7 @@ function TotalRating({ value }: { value: number }) {
 
 function Rating({ value }: { value: number; size?: number }) {
   return (
-    <div className="flex items-center" aria-label={`별점 ${value}점 / 5점`}>
+    <div className="flex items-center gap-[2px]" aria-label={`별점 ${value}점 / 5점`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <SmallStarIcon key={i} fill="#F9C927" />
       ))}
@@ -67,33 +68,33 @@ function ReviewCard({ r }: { r: Review }) {
       {/* 작성자/메타 정보 */}
       <div className="flex flex-col items-start justify-start gap-1 self-stretch">
         <div className="inline-flex items-start justify-start gap-2">
-          <div className="h-10 w-10 rounded-full bg-zinc-300" />
+          <div className="h-10 w-10 rounded-full bg-[#d9d9d9]" />
           <div className="inline-flex flex-col items-start justify-start gap-1">
-            <div className="inline-flex items-center justify-start gap-2">
-              <div className="justify-center text-sm font-medium text-black">{r.user}</div>
+            <div className="inline-flex items-center justify-start gap-2 text-[#434343]">
+              <div className="justify-center text-sm font-medium">{r.user}</div>
               <div className="h-1 w-1 rounded-full bg-gray-300" />
-              <div className="justify-center text-xs text-black">{r.subscriptionLabel}</div>
+              <div className="justify-center text-[13px]">{r.subscriptionLabel}</div>
             </div>
-            <div className="mb-1 inline-flex w-30 items-start justify-between">
+            <div className="inline-flex items-center justify-between gap-3.5">
               <Rating value={r.rating} />
-              <div className="justify-center text-[10px] text-gray-500">{r.timeAgo}</div>
+              <div className="justify-center text-[12px] text-gray-500">{r.timeAgo}</div>
             </div>
           </div>
         </div>
 
         {/* 본문 */}
-        <div className="max-h-28 justify-start self-stretch text-sm leading-snug text-black">
+        <div className="max-h-28 justify-start self-stretch text-sm leading-snug text-[#434343]">
           {r.text}
         </div>
       </div>
 
       {/* 좋아요 */}
       <div className="flex flex-col items-end justify-center gap-2.5 self-stretch">
-        <div className="inline-flex items-center justify-center gap-1 rounded border border-gray-600 px-2 py-1">
+        <div className="inline-flex items-center justify-center gap-1 rounded border border-[#6f6f6f] px-2 py-1">
           <div className="relative h-5 w-5">
-            <LikeIcon className="h-5 w-5 text-gray-600" />
+            <LikeIcon className="h-5 w-5 text-[#6f6f6f]" />
           </div>
-          <div className="justify-start text-sm text-gray-600">{r.likes}</div>
+          <div className="justify-start text-sm text-[#6f6f6f]">{r.likes}</div>
         </div>
       </div>
     </div>
@@ -137,7 +138,7 @@ export default function ReviewsPage() {
   return (
     <>
       {/* 헤더 */}
-      {/* <HeaderCustom title="리뷰" showBack /> */}
+      <HeaderCustom title="리뷰" showBack />
       <section className="relative my-15 bg-white">
         {/* 별점 요약 */}
         <div className="flex w-full flex-col items-center gap-4 px-4">
@@ -146,9 +147,9 @@ export default function ReviewsPage() {
             <div className="flex items-center gap-1">
               <div className="flex items-center">
                 <span className="text-xl leading-7 font-semibold text-black">4.0</span>
-                <span className="text-xl leading-7 font-semibold text-gray-600">/5.0</span>
+                <span className="text-xl leading-7 font-semibold text-[#6f6f6f]">/5.0</span>
               </div>
-              <span className="text-xs leading-none text-gray-600">(500)</span>
+              <span className="text-[13px] leading-none text-[#6f6f6f]">(500)</span>
             </div>
           </div>
 
@@ -157,7 +158,7 @@ export default function ReviewsPage() {
               {Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={`top-${i}`}
-                  className="h-32 flex-1 rounded bg-zinc-300"
+                  className="aspect-[6/7] flex-1 rounded bg-[#d9d9d9]"
                   aria-hidden="true"
                 />
               ))}
@@ -166,7 +167,7 @@ export default function ReviewsPage() {
               {Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={`bottom-${i}`}
-                  className="h-32 flex-1 rounded bg-zinc-300"
+                  className="aspect-[6/7] flex-1 rounded bg-[#d9d9d9]"
                   aria-hidden="true"
                 />
               ))}
@@ -175,8 +176,8 @@ export default function ReviewsPage() {
         </div>
 
         {/* 필터 바 */}
-        <div className="z-10 w-full border-b border-gray-200 bg-white">
-          <div className="flex w-full justify-end gap-1.5 p-4">
+        <div className="z-10 w-full border-b border-[#f2f2f2] bg-white">
+          <div className="flex w-full justify-end gap-1.5 px-4 py-3">
             <button
               type="button"
               className="inline-flex h-8 items-center gap-1 rounded-full border border-zinc-200 px-3 py-2 text-xs text-gray-900"
@@ -184,25 +185,25 @@ export default function ReviewsPage() {
               리스트 순
               <DownArrowIcon />
             </button>
-            <button
+            {/* <button
               type="button"
               className="inline-flex h-8 items-center gap-1 rounded-full border border-zinc-200 px-3 py-2 text-xs text-gray-900"
             >
               필터
               <FinterIcon />
-            </button>
+            </button> */}
           </div>
         </div>
 
         {/* 리뷰 리스트 */}
-        <div className="w-full px-4 py-5">
+        <div className="w-full px-4 py-7">
           <div className="flex flex-col gap-6">
             {reviews.map((r, index) => (
               <div key={r.id} className="flex flex-col">
                 <ReviewCard r={r} />
                 {index < reviews.length - 1 && (
                   <div className="mt-6 h-px self-stretch">
-                    <div className="h-px w-full bg-gray-200" />
+                    <div className="h-px w-full bg-[#f2f2f2]" />
                   </div>
                 )}
               </div>
