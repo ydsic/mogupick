@@ -11,8 +11,8 @@ import { Product } from '@/types/product';
 import RatingStarIcon from '@/assets/icons/common/rating-star-14px.svg';
 import ReviewIcon from '@/assets/icons/common/review-14px.svg';
 
-import HeartIcon from '@/assets/icons/common/heart-active-24px.svg';
-import LikeIcon from '@/assets/icons/common/empty-like-24px.svg';
+import HeartIcon from '@/assets/icons/common/heart-30px.svg';
+import LikeIcon from '@/assets/icons/common/empty-like-30px.svg';
 import { useLikedStore } from '@/store/useLikedStore';
 import Image from 'next/image';
 
@@ -86,7 +86,7 @@ function ProductCard({
       <Link href={`${path}/${p.id}${queryString}`}>
         {/* 이미지 영역 */}
         <div
-          className={cn('relative mb-2 w-full overflow-hidden rounded bg-gray-200', variant.image)}
+          className={cn('relative mb-2 w-full overflow-hidden rounded bg-[#d9d9d9]', variant.image)}
         >
           {p.imageUrl && (
             <Image
@@ -132,15 +132,15 @@ function ProductCard({
 
       {/* 장바구니 담기 버튼 */}
       {showCartButton && (
-        <div className={`transition-all duration-200`}>
+        <div className={`mt-1 transition-all duration-200`}>
           <button
-            className="inline-flex h-10 w-full items-center justify-center gap-1 rounded border border-stone-300 bg-white px-4"
+            className="inline-flex h-10 w-full items-center justify-center gap-1 rounded border border-[var(--grey-300)] bg-white px-4"
             onClick={(e) => {
               e.preventDefault();
               console.log('장바구니에 추가:', p.title);
             }}
           >
-            <div className="text-base leading-normal font-normal text-gray-800">장바구니 담기</div>
+            <div className="text-base leading-normal font-normal text-[#434343]">장바구니 담기</div>
           </button>
         </div>
       )}
