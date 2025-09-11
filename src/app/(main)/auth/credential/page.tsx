@@ -1,10 +1,27 @@
+'use client';
+
 import Image from 'next/image';
 import HeaderCustom from '@/components/HeaderCustom';
 import LogoImg from '@/assets/icons/mogupick.png';
 import EyeHide from '@/assets/icons/common/eye-hide-20px.svg';
 import Link from 'next/link';
+import { useState } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const { login, loading, error } = useAuthStore();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await login(email, password);
+    if (useAuthStore.getState().isLoggedIn) router.push('/');
+  };
+
   return (
     <div className="py-14">
       <HeaderCustom showBack />
@@ -16,15 +33,19 @@ export default function Page() {
             나의 새로운 일상!
           </h2>
         </div>
-        <form className="flex flex-col gap-6">
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1">
             <label htmlFor="email" className="text-[14px] text-[#434343]">
               이메일
             </label>
             <input
+              id="email"
               type="email"
               placeholder="이메일 입력"
               className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#d6d6d6] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="relative flex flex-col gap-1">
@@ -32,30 +53,39 @@ export default function Page() {
               비밀번호
             </label>
             <input
-              type="password"
+              id="password"
+              type={showPw ? 'text' : 'password'}
               placeholder="비밀번호(영문, 숫자, 특수문자 8~20자)"
-              className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#d6d6d6] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
+              className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 pr-10 text-sm text-[#434343] placeholder-[#d6d6d6] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
-            <button className="absolute top-[55%] right-2 -translate-y-1/8">
-              <EyeHide />
+            <button
+              type="button"
+              className="absolute top-1/2 right-2 -translate-y-1/2"
+              onClick={() => setShowPw((p) => !p)}
+              aria-label={showPw ? '비밀번호 숨기기' : '비밀번호 보기'}
+            >
+              <EyeHide className={showPw ? 'opacity-40' : ''} />
             </button>
           </div>
+          {error && <p className="text-sm text-red-500">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-4 w-full rounded-[4px] bg-black py-3 text-base font-medium text-white disabled:opacity-50"
+          >
+            {loading ? '로그인 중...' : '로그인'}
+          </button>
         </form>
-        <button
-          type="submit"
-          className="mt-12 w-full rounded-[4px] bg-black py-3 text-base font-medium text-white"
-        >
-          로그인
-        </button>
         <div className="mt-8 flex items-center justify-center space-x-3 text-sm text-[#434343]">
           <Link href={'/auth/signup'} className="text-[var(--color-secondary)]">
             회원가입
           </Link>
           <span className="h-2 w-px bg-gray-300"></span>
-
           <span>비밀번호 찾기</span>
           <span className="h-2 w-px bg-gray-300"></span>
-
           <span>문의하기</span>
         </div>
       </div>
