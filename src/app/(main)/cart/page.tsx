@@ -15,7 +15,13 @@ import SubscribeFlowBottomSheet, {
 // 신규: 옵션 id 매칭 및 패치 호출을 위한 스토어/API
 import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { getSubscriptionOptions } from '@/api/subscription';
-import { getMyCartMapped, patchCart, CartItemUI } from '@/api/cart';
+import {
+  CartItemUI,
+  deleteCartItem,
+  updateCartItemOption,
+  getMyCart,
+  mapCartResponseToUI,
+} from '@/api/cart';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function CartPage() {
@@ -39,7 +45,9 @@ export default function CartPage() {
     (async () => {
       try {
         setLoading(true);
-        const mapped = await getMyCartMapped();
+        const raw = await getMyCart();
+        console.log('장바구니 API 응답(raw):', raw);
+        const mapped = mapCartResponseToUI(raw);
         if (mounted) {
           setCartItems(mapped);
         }
@@ -85,6 +93,17 @@ export default function CartPage() {
     setCartItems((items) => items.filter((item) => !item.selected));
   };
 
+  // 단건 삭제(닫기 X 버튼): 서버 API 호출 후 UI 반영
+  const handleDeleteItem = async (id: number) => {
+    try {
+      await deleteCartItem(id);
+      setCartItems((items) => items.filter((it) => it.id !== id));
+    } catch (e) {
+      console.error('[Cart] 삭제 실패', e);
+      alert('삭제에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
   // "구독 옵션 변경" 클릭 시 모달 열기
   const openOptionSheet = (item: CartItemUI) => {
     setActiveItem(item);
@@ -124,6 +143,9 @@ export default function CartPage() {
 
   // 모달 적용 처리: 서버 patchCart 연동
   const handleApplySubscribeOption = async (payload: SubscribeConfirmPayload) => {
+    // 확인 시 어떤 값이 넘어오는지 출력
+    console.log('옵션 변경 확인 payload:', payload);
+
     if (!activeItem) return;
     if (!memberId) {
       alert('로그인이 필요합니다.');
@@ -139,7 +161,7 @@ export default function CartPage() {
       if (!optionId) throw new Error('선택한 주기에 해당하는 구독 옵션을 찾을 수 없습니다.');
 
       // 3) 장바구니 아이템 옵션 변경 API 호출
-      await patchCart(memberId, activeItem.id, {
+      await updateCartItemOption(activeItem.id, {
         subscriptionOptionId: optionId,
         firstDeliveryDate: payload.firstDeliveryDate,
       });
@@ -246,7 +268,7 @@ export default function CartPage() {
                           <CheckBoxIcon className="h-5 w-5" />
                         )}
                       </button>
-                      <button>
+                      <button onClick={() => handleDeleteItem(item.id)}>
                         <CloseIcon className="h-6 w-6" />
                       </button>
                     </div>

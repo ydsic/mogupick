@@ -17,7 +17,7 @@ const schema = yup
     password: yup
       .string()
       .required('비밀번호를 입력해 주세요')
-      .min(10, '비밀번호는 최소 10자 이상이어야 합니다')
+      .min(6, '비밀번호는 최소 6자 이상이어야 합니다')
       .max(20, '비밀번호는 20자 이하로 입력해 주세요'),
     passwordCheck: yup
       .string()
@@ -26,13 +26,13 @@ const schema = yup
     name: yup
       .string()
       .required('이름을 입력해 주세요')
-      .max(10, '이름은 10자 이하로 입력해 주세요')
+      .max(20, '이름은 20자 이하로 입력해 주세요')
       .matches(/^[가-힣a-zA-Z]+$/, '올바른 이름을 입력해 주세요.'),
     email: yup.string().email('올바른 이메일이 아닙니다').required(),
     phone: yup
       .string()
       .required('휴대폰 번호를 입력해 주세요')
-      .matches(/^\d{11}$/, '휴대폰 번호는 숫자 11자리여야 합니다'),
+      .matches(/^\d{10,11}$/, '휴대폰 번호는 숫자 10자리 또는 11자리여야 합니다'),
     birthDate: yup
       .string()
       .required('생년월일을 입력해 주세요')

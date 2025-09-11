@@ -58,60 +58,124 @@ export const createCart = async (memberId: number, productId: number, cart: Cart
   }
 };
 
-// 장바구니 아이템 옵션 변경
+// 장바구니 아이템 옵션 변경 (구버전 경로) — 유지되지만 신규 로직에서는 사용하지 않음
 export const patchCart = (memberId: number, cartItemId: number, body: Cart) =>
   apiFetch<Cart>(`/carts/${memberId}/${cartItemId}/option`, 'PATCH', {
     body,
   });
 
-// 장바구니 조회 (memberId 경로 방식)
-export const getCart = (memberId: number) => apiFetch<any>(`/carts/${memberId}`);
-
-// 장바구니 조회 (토큰 기반 내 장바구니) - 환경별 분기
+// 장바구니 조회 (로그인 기반: /carts)
 export const getMyCart = async () => {
   try {
-    // 프로덕션 환경에서는 프록시 사용
-    if (process.env.NODE_ENV === 'production') {
-      return await apiFetch<any>('/carts');
-    } else {
-      // 개발 환경에서는 직접 fetch 사용
-      const { useAuthStore } = await import('@/store/useAuthStore');
-      const { accessToken } = useAuthStore.getState();
+    const { getApiBaseUrl } = await import('@/lib/config');
+    const { useAuthStore } = await import('@/store/useAuthStore');
+    const { accessToken } = useAuthStore.getState();
 
-      if (!accessToken) {
-        throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
-      }
-
-      const url = 'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/carts';
-      const res = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || `요청 실패 (status: ${res.status})`);
-      }
-
-      return await res.json();
+    if (!accessToken) {
+      throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
     }
+
+    const url = `${getApiBaseUrl()}/carts`;
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `요청 실패 (status: ${res.status})`);
+    }
+
+    return await res.json();
   } catch (e) {
     console.error('[getMyCart] 에러', e);
     throw e;
   }
 };
 
-// 장바구니 아이템 삭제
+// 장바구니 아이템 삭제 (구버전 경로) — 유지되지만 신규 로직에서는 사용하지 않음
 export const deleteCart = (memberId: number, cartItemId: number) =>
   apiFetch<Cart>(`/carts/${memberId}/${cartItemId}/option`, 'DELETE');
 
-// ===== UI 매핑 유틸리티 =====
-export const getMyCartMapped = async (): Promise<CartItemUI[]> => {
-  const res = await getMyCart();
+// 장바구니 아이템 단건 삭제 (로그인 API 방식)
+export const deleteCartItem = async (cartItemId: number) => {
+  try {
+    const { getApiBaseUrl } = await import('@/lib/config');
+    const { useAuthStore } = await import('@/store/useAuthStore');
+    const { accessToken } = useAuthStore.getState();
 
+    if (!accessToken) {
+      throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
+    }
+
+    const url = `${getApiBaseUrl()}/carts/items/${cartItemId}`;
+    const res = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `요청 실패 (status: ${res.status})`);
+    }
+
+    // 서버가 본문을 반환하지 않을 수도 있으므로 안전 처리
+    try {
+      return await res.json();
+    } catch {
+      return true;
+    }
+  } catch (e) {
+    console.error('[deleteCartItem] 에러', e);
+    throw e;
+  }
+};
+
+// 장바구니 아이템 옵션 변경 (로그인 API 방식)
+export const updateCartItemOption = async (cartItemId: number, body: Cart) => {
+  try {
+    const { getApiBaseUrl } = await import('@/lib/config');
+    const { useAuthStore } = await import('@/store/useAuthStore');
+    const { accessToken } = useAuthStore.getState();
+
+    if (!accessToken) {
+      throw new Error('로그인이 필요합니다. accessToken이 없습니다.');
+    }
+
+    const url = `${getApiBaseUrl()}/carts/items/${cartItemId}/option`;
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `요청 실패 (status: ${res.status})`);
+    }
+
+    try {
+      return await res.json();
+    } catch {
+      return true;
+    }
+  } catch (e) {
+    console.error('[updateCartItemOption] 에러', e);
+    throw e;
+  }
+};
+
+// ===== UI 매핑 유틸리티 =====
+export const mapCartResponseToUI = (res: any): CartItemUI[] => {
   // 응답 배열 추출 (data.items | data.content | data | root)
   const items: any[] = Array.isArray(res?.data?.items)
     ? res.data.items
@@ -163,4 +227,9 @@ export const getMyCartMapped = async (): Promise<CartItemUI[]> => {
   });
 
   return mapped;
+};
+
+export const getMyCartMapped = async (): Promise<CartItemUI[]> => {
+  const res = await getMyCart();
+  return mapCartResponseToUI(res);
 };
