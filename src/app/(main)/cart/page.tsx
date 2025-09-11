@@ -166,15 +166,11 @@ export default function CartPage() {
         firstDeliveryDate: payload.firstDeliveryDate,
       });
 
-      // 4) 로컬 UI 업데이트 (서버 반영 후 동기화가 필요하면 getMyCart 연동 가능)
-      const newSubText = `${payload.subscriptionOptionText} ∙ 첫배송 ${payload.firstDeliveryDate}`;
-      setCartItems((prev) =>
-        prev.map((it) =>
-          it.id === activeItem.id
-            ? { ...it, subscriptionType: newSubText, quantity: payload.quantity }
-            : it,
-        ),
-      );
+      // 4) 서버에서 장바구니 재조회하여 동기화
+      const raw = await getMyCart();
+      console.log('옵션 변경 후 장바구니 API 응답(raw):', raw);
+      const mapped = mapCartResponseToUI(raw);
+      setCartItems(mapped);
 
       setIsOptionSheetOpen(false);
       setActiveItem(null);
