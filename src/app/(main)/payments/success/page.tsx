@@ -15,7 +15,7 @@ export default function PaymentSuccessPage() {
       <main className="grid place-items-center place-self-stretch px-4 py-6">
         <div className="w-full max-w-md">
           <div className="flex flex-col items-center gap-6">
-            <CheckIcon className="fill-current text-[#86C53A]" />
+            <CheckIcon className="fill-current text-[var(--color-green-600)]" />
             <h1 className="w-full text-center text-2xl leading-loose font-bold text-black">
               정기구독 신청이 완료되었습니다!
             </h1>
