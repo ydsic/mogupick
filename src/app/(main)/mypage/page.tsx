@@ -11,6 +11,7 @@ import { useAuth } from '@/utils/useAuth';
 import { useEffect, useState } from 'react';
 import { SOCIAL_LOGIN_CONFIG, type SocialProvider } from '@/lib/config';
 import { kakaoSocialLogin } from '@/api/socialAuth';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface UserStats {
   longestSubscription: number;
@@ -32,7 +33,8 @@ interface UserData {
 }
 
 export default function MyPagePage() {
-  const { session, logout } = useAuth();
+  const { session, logout, accessToken } = useAuth();
+  const setProfile = useAuthStore((s) => s.setProfile);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,6 +70,56 @@ export default function MyPagePage() {
       fetchUserData();
     }
   }, [session?.user?.accessToken]);
+
+  // 추가: 마이페이지 진입 시 /members/me 호출하여 콘솔 출력 + 프로필 저장
+  useEffect(() => {
+    if (!accessToken) {
+      console.log('[MY PAGE] No access token. Skip calling /members/me');
+      return;
+    }
+
+    const controller = new AbortController();
+
+    (async () => {
+      try {
+        console.log('[MY PAGE] calling /members/me ...');
+        const res = await fetch(
+          'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/members/me',
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            signal: controller.signal,
+          },
+        );
+
+        if (!res.ok) {
+          const text = await res.text().catch(() => '');
+          console.error('[MY PAGE] /members/me error:', res.status, text);
+          return;
+        }
+
+        const json = await res.json();
+        console.log('[MY PAGE] /members/me response:', json);
+        const d = json?.data || json; // 응답 포맷 유연 처리
+        if (d?.email || d?.name) {
+          setProfile({
+            email: d.email,
+            name: d.name,
+            nickname: d.nickname ?? null,
+            provider: d.provider ?? null,
+          });
+        }
+      } catch (err: any) {
+        if (err?.name === 'AbortError') return;
+        console.error('[MY PAGE] /members/me fetch failed:', err);
+      }
+    })();
+
+    return () => controller.abort();
+  }, [accessToken, setProfile]);
 
   const userStats: UserStats = {
     longestSubscription: 12,

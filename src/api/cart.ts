@@ -8,6 +8,7 @@ export interface Cart {
 // UI에서 사용하는 장바구니 아이템 타입
 export interface CartItemUI {
   id: number; // cartItemId
+  productId?: number; // 실제 상품 ID (주문 생성 시 사용)
   title: string; // product name
   subscriptionType: string; // 예: "1달에 한 번 구독 ∙ 첫배송 2025-09-11"
   price: number; // 단가
@@ -194,6 +195,7 @@ export const mapCartResponseToUI = (res: any): CartItemUI[] => {
     const subscription = item.subscription ?? item.option ?? {};
 
     // 최신 스키마(top-level)에 대응하는 보강
+    const productId = product.productId ?? product.id ?? item.productId ?? undefined;
     const productName = product.productName ?? item.productName ?? '상품이름';
     const productPrice = product.productPrice ?? item.productPrice ?? item.price ?? 0;
     const brandName = brand.brandName ?? item.brandName ?? '브랜드';
@@ -219,6 +221,7 @@ export const mapCartResponseToUI = (res: any): CartItemUI[] => {
 
     return {
       id: Number(cartItemId),
+      productId: productId !== undefined ? Number(productId) : undefined,
       title: String(productName),
       subscriptionType: String(subscriptionType),
       price: Number(productPrice) || 0,
