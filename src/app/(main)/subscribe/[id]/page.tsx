@@ -43,7 +43,7 @@ export default function Page() {
             <div className="mt-4 flex flex-col gap-2">
               <div className="flex items-end justify-between">
                 <DeliveryIcon />
-                <button className="rounded-[3px] border border-[var(--grey-200)] px-3 py-2 text-[var(--color-primary)]">
+                <button className="rounded-[3px] border border-[var(--grey-200)] px-3 py-2 text-[13px] text-[var(--color-primary)]">
                   배송조회
                 </button>
               </div>

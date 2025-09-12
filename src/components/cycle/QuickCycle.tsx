@@ -6,15 +6,15 @@ export default function QuickCycle() {
   const monthOptions = ['1달', '2달', '3달'];
 
   return (
-    <div className="border-b border-gray-200 pb-7">
-      <p className="mb-3 text-xl font-bold">빠른 주기 선택</p>
+    <div className="border-b border-[var(--grey-100)] pb-8">
+      <p className="mb-4 text-xl font-bold">빠른 주기 선택</p>
 
-      <div className="mb-4 grid grid-cols-4 gap-2">
+      <div className="mb-3.5 grid grid-cols-4 gap-2">
         {weekOptions.map((opt) => (
           <button
             key={opt}
             onClick={() => setQuickCycle(opt)}
-            className={`rounded-xs border py-5 text-sm ${
+            className={`rounded-[4px] border py-5 text-[13px] ${
               quickCycle === opt
                 ? 'border-black bg-black text-white'
                 : 'border-gray-300 bg-white text-gray-700'
@@ -30,7 +30,7 @@ export default function QuickCycle() {
           <button
             key={opt}
             onClick={() => setQuickCycle(opt)}
-            className={`rounded-xs border py-5 text-sm ${
+            className={`rounded-[4px] border py-5 text-[13px] ${
               quickCycle === opt
                 ? 'border-black bg-black text-white'
                 : 'border-gray-300 bg-white text-gray-700'

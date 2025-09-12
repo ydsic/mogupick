@@ -12,12 +12,14 @@ export default function EditPage() {
   const [startDate, setStartDate] = useState<Date | null>(new Date()); // ✅ 선택 날짜 상태
 
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh pt-8">
       <HeaderCustom title="옵션 설정" showClose onClose={() => router.back()} />
-      <div className="bg-gray-50 py-14">
+      <div className="bg-[#f8f8f8] pt-6 pb-10">
         <div className="bg-white px-4 pt-6 pb-10">
-          <h2 className="mb-6 text-2xl font-bold">원하는 배송주기를 선택해주세요.</h2>
-          <div className="bg-gray-100 px-3 py-4">
+          <h2 className="mb-6 text-2xl font-bold text-[var(--color-primary)]">
+            원하는 배송주기를 선택해주세요.
+          </h2>
+          <div className="rounded-xl bg-[#f8f8f8] px-3 py-4">
             <QuickCycle />
             <CustomCycle />
           </div>
@@ -25,7 +27,7 @@ export default function EditPage() {
 
         <div className="mt-2 bg-white px-4 pt-6 pb-10">
           <h2 className="mb-6 text-2xl font-bold">배송 희망일을 선택해주세요</h2>
-          <div className="bg-gray-100 px-2 pt-4">
+          <div className="rounded-xl bg-[#f8f8f8] px-2 pt-4">
             <Calendar
               mode="select"
               selectedDate={startDate ?? new Date()}
@@ -60,7 +62,9 @@ export default function EditPage() {
         </div>
 
         <div className="bg-white px-4">
-          <button className="w-full bg-black py-3 text-white">옵션설정 완료</button>
+          <button className="w-full bg-[var(--color-text-primary)] py-3 text-white">
+            옵션설정 완료
+          </button>
         </div>
       </div>
     </div>

@@ -26,12 +26,20 @@ export default function CustomCycle() {
           <label key={option} className="flex cursor-pointer items-center">
             <span
               className={`mr-2 flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-                customUnit === option ? 'border-lime-400' : 'border-gray-300'
+                customUnit === option ? 'border-[var(--green-500)]' : 'border-[var(--grey-200)]'
               }`}
             >
-              {customUnit === option && <span className="h-3 w-3 rounded-full bg-lime-400"></span>}
+              {customUnit === option && (
+                <span
+                  className={`h-3 w-3 rounded-full ${customUnit === option ? 'bg-[var(--green-500)]' : 'bg-[var(--grey-200)]'}`}
+                ></span>
+              )}
             </span>
-            {option}
+            <span
+              className={`text-sm ${customUnit === option ? 'test-[var(--green-500)]' : 'text-[#c2c2c2]'} `}
+            >
+              {option}
+            </span>
             <input
               type="radio"
               name="cycle"
@@ -47,13 +55,15 @@ export default function CustomCycle() {
       {/* 숫자 조절 */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center justify-center overflow-hidden">
-          <button onClick={handleDecrease} className="bg-white px-4 py-2.5 text-xl">
+          <button onClick={handleDecrease} className="h-9 w-9 bg-white text-xl">
             -
           </button>
-          <span className="bg-white px-6 py-3 text-base">{customCount}</span>
+          <span className="h-9 w-9 border-r border-l border-[#f8f8f8] bg-white text-center text-[13px] leading-9">
+            {customCount}
+          </span>
           <button
             onClick={() => setCustomCount(customCount + 1)}
-            className="bg-white px-4 py-2.5 text-xl"
+            className="h-9 w-9 bg-white text-lg"
           >
             +
           </button>
@@ -61,7 +71,9 @@ export default function CustomCycle() {
       </div>
 
       {/* 안내문구 */}
-      <p className="rounded-xs bg-green-50 px-2 py-3 text-sm text-green-700">{displayText}</p>
+      <p className="rounded-xs bg-green-50 px-2 py-3 text-center text-base font-medium text-[var(--green-700)]">
+        {displayText}
+      </p>
     </div>
   );
 }
