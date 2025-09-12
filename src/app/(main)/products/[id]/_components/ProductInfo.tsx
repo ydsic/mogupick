@@ -1,7 +1,8 @@
 import LikeIcon from '@/assets/icons/common/icon-24-like.svg';
 import ShareIcon from '@/assets/icons/common/icon-24-Share.svg';
-import NextIcon from '@/assets/icons/common/next-24px.svg';
-import RatingStar from './RatingStar';
+import NextMoreIcon from '@/assets/icons/common/next-more-16px.svg';
+import NextIcon from '@/assets/icons/common/next-more-24px.svg';
+import StarIcon from '@/assets/icons/common/star-16px.svg';
 import Link from 'next/link';
 import { Product } from '@/types/product';
 import Image from 'next/image';
@@ -91,43 +92,51 @@ export default function ProductInfo({ product }: Props) {
       </div>
 
       <div>
-        <div className="flex items-start justify-between border-b border-gray-200 px-4 py-4">
+        <div className="flex items-start justify-between border-b border-[var(--grey-100)] px-4 py-4">
           <div className="flex flex-col gap-3">
             <div className="flex items-center">
-              <span className="text-sm font-medium">{detail.store}</span>
+              <span className="text-sm font-medium text-[var(--color-primary)]">
+                {detail.store}브랜드
+              </span>
               <NextIcon />
             </div>
-            <p className="text-base font-semibold">{detail.title}</p>
-            <div className="text-2xl font-bold">
+            <p className="text-base font-medium text-[var(--color-primary)]">{detail.title}</p>
+            <div className="text-2xl font-bold text-[var(--color-text-primary)]">
               <span>{detail.price.toLocaleString()}</span>원
             </div>
-            <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-2 text-sm text-[#6f6f6f]">
               <div className="flex items-center">
-                <RatingStar rating={detail.rating} />
+                <StarIcon className="fill-current" />
                 <span>{detail.rating.toFixed(1)}</span>
               </div>
-              <Link href={`/products/${detail.id}/reviews`} className="underline">
-                리뷰 {detail.reviewCount}
-              </Link>
+              <div className="h-[8px] w-[1px] bg-[#d6d6d6]" />
+              <Link href={`/products/${detail.id}/reviews`}>리뷰 {detail.reviewCount}</Link>
             </div>
           </div>
-          <div className="flex items-start gap-3">
+          <div className="flex items-center gap-3">
             <button
               onClick={handleLike}
               aria-pressed={!!liked}
-              className={liked ? 'text-red-500' : 'text-gray-400'}
+              className={liked ? 'text-red-500' : 'text-[var(--color-primary)]'}
             >
               <LikeIcon />
             </button>
             <button>
-              <ShareIcon />
+              <ShareIcon className="text-[var(--color-primary)]" />
             </button>
           </div>
         </div>
-        <div className="flex justify-start gap-8 border-b border-gray-200 p-4 text-sm">
+        <div className="flex justify-start gap-7 border-b border-[var(--grey-100)] p-4 text-[13px] text-[var(--color-text-primary)]">
           <span>배송</span>
           <div>
-            <p>당일출발 11:00 마감 | 평균 2일 이내 도착 확률 80%</p>
+            <div className="flex items-center gap-2">
+              <p className="flex items-center gap-2">
+                <span>당일출발 11:00 마감</span>
+                <div className="h-1 w-1 rounded-full bg-[#d6d6d6]" />
+                <span>평균 2일 이내 도착 확률 80%</span>
+              </p>
+              <NextMoreIcon className="text-[#a6a6a6]" />
+            </div>
             <p>지금 결제 시 {shippingText} 발송 예정</p>
             <p>무료배송</p>
           </div>

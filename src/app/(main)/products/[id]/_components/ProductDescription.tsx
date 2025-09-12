@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, forwardRef } from 'react';
+import NextIcon from '@/assets/icons/common/next-more-24px.svg';
 
 interface ProductDescriptionProps {
   onClickDescription: () => void;
@@ -24,7 +25,7 @@ const ProductDescription = forwardRef<HTMLDivElement, ProductDescriptionProps>(
           </button>
           <button
             onClick={onClickReview}
-            className="flex-1 border-b-2 border-transparent py-2 text-center font-bold text-gray-500"
+            className="flex-1 border-b-2 border-transparent py-2 text-center font-bold text-[var(--grey-500)]"
           >
             리뷰
           </button>
@@ -42,15 +43,22 @@ const ProductDescription = forwardRef<HTMLDivElement, ProductDescriptionProps>(
                 ))}
               </div>
             ) : (
-              <div className="h-[800px] bg-gray-200" />
+              <div className="h-[800px] bg-[var(--grey-300)]" />
             )}
           </div>
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mt-5 w-5/6 rounded-xs border border-gray-300 py-3"
+            className="mt-5 w-5/6 rounded-xs border border-[var(--grey-200)] py-3"
           >
-            {expanded ? '접기' : '상품정보 더보기'}
+            {expanded ? (
+              <span>접기</span>
+            ) : (
+              <span className="flex items-center justify-center gap-1">
+                상품정보 더보기
+                <NextIcon />
+              </span>
+            )}
           </button>
         </div>
       </div>
