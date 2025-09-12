@@ -36,7 +36,7 @@ function Category({ c }: CategoryProps) {
 
   return (
     <Link href={`/categories/${c.slug}`} className="text-center">
-      <div className="flex aspect-[1/1] w-full items-center justify-center rounded-[8px] bg-gray-200">
+      <div className="flex aspect-[1/1] w-full items-center justify-center rounded-[8px] bg-gray-50">
         <img src={src} alt={c.text} className="h-3/4 w-3/4 object-contain" />
       </div>
       <span className="text-xs text-[var(--color-text-primary)]">{c.text}</span>

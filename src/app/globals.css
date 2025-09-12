@@ -19,9 +19,10 @@
   --color-green-700: #689a2d;
   --color-green-800: #517723;
   --color-green-900: #3e5b1b;
+  --Primary-Heavy-500: #7ab335;
 
   /* --- Colors (role-based) --- */
-  --color-primary: #f9c927;
+  --color-primary: #434343;
   --color-secondary: #7ab335;
   --color-background: #ffffff;
   --color-surface: #f2f4f8;
@@ -34,17 +35,16 @@
   --color-info: #3e5b1b;
 
   /* --- Green palette --- */
-  --green-50: #f0fdf4;
-  --green-100: #dcfce7;
-  --green-200: #bbf7d0;
-  --green-300: #86efac;
-  --green-400: #4ade80;
-  --green-500: #22c55e;
-  --green-600: #16a34a;
-  --green-700: #15803d;
-  --green-800: #166534;
-  --green-900: #14532d;
-  --green-950: #052e16;
+  --green-50: #f3f9eb;
+  --green-100: #d9edc2;
+  --green-200: #c7e4a4;
+  --green-300: #aed87b;
+  --green-400: #9ed161;
+  --green-500: #86c53a;
+  --green-600: #7ab335;
+  --green-700: #5f8c29;
+  --green-800: #4a6c20;
+  --green-900: #385318;
 
   /* --- Yellow palette --- */
   --yellow-50: #fefae9;
@@ -59,13 +59,13 @@
   --yellow-900: #644000;
 
   /* --- Grey palette --- */
-  --grey-100: #f9f9f9;
-  --grey-200: #ececec;
-  --grey-300: #d6d6d6;
+  --grey-100: #f2f2f2;
+  --grey-200: #d6d6d6;
+  --grey-300: #d9d9d9;
   --grey-400: #c8c8c8;
-  --grey-500: #a7a7a7;
+  --grey-500: #a6a6a6;
   --grey-600: #898989;
-  --grey-700: #696969;
+  --grey-700: #6f6f6f;
   --grey-800: #3e3e3e;
   --grey-900: #1f1f1f;
 

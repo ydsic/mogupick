@@ -11,7 +11,11 @@ export default function RatingStar({ rating = 5, maxRating = 5, className = '' }
   return (
     <div className={`flex ${className}`}>
       {Array.from({ length: maxRating }).map((_, i) =>
-        i < rating ? <StarIcon key={i} /> : <RatingStarIcon key={i} />,
+        i < rating ? (
+          <StarIcon key={i} className="" />
+        ) : (
+          <RatingStarIcon key={i} className="fill-current text-[var(--grey-200)]" />
+        ),
       )}
     </div>
   );
