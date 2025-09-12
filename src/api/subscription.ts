@@ -38,3 +38,26 @@ export interface SubscriptionOptionsResponse {
 
 export const getSubscriptionOptions = () =>
   apiFetch<SubscriptionOptionsResponse>('/subscription-options');
+
+// ===== 신규: 구독 리스트(상태별) =====
+export type SubscriptionStatus = 'ONGOING' | 'ENDED';
+export interface SubscriptionItem {
+  subscriptionId: number;
+  productName: string;
+  price: number;
+  brandName: string;
+  deliveryCycle: string;
+  firstDeliveryDate: string; // ISO date (yyyy-MM-dd)
+  nextBillingDate: string; // ISO date (yyyy-MM-dd)
+  progressRound: number;
+  status: SubscriptionStatus | string;
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
+}
+
+// 서버가 배열 또는 { data: [...] } 형태로 줄 가능성을 모두 수용
+export async function getSubscriptionsByStatus(status: SubscriptionStatus) {
+  const res = await apiFetch<any>(`/subscriptions?status=${status}`);
+  const data = Array.isArray(res) ? res : res?.data;
+  return (Array.isArray(data) ? data : []) as SubscriptionItem[];
+}
