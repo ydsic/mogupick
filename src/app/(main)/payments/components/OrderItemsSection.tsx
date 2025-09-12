@@ -63,7 +63,8 @@ function extractCartMeta(raw: any): {
   return { displayTextMap, firstDateMap };
 }
 
-export default function OrderItemsSection() {
+// onlyIds가 주어지면 해당 productId들만 표시합니다. productId가 없으면 cartItemId로 폴백합니다.
+export default function OrderItemsSection({ onlyIds }: { onlyIds?: number[] }) {
   const [items, setItems] = useState<CartItemUI[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -75,14 +76,30 @@ export default function OrderItemsSection() {
     (async () => {
       try {
         setLoading(true);
+        // 선택된 상품 ID가 없으면 전체 장바구니를 표시하지 않음
+        if (!onlyIds || onlyIds.length === 0) {
+          if (mounted) {
+            setItems([]);
+            setDisplayTextMap({});
+            setFirstDateMap({});
+          }
+          return;
+        }
+
         const raw = await getMyCart();
         console.log('[Payments] 장바구니 API 응답(raw):', raw);
         const mapped = mapCartResponseToUI(raw);
         console.log('[Payments] 장바구니 매핑 결과:', mapped);
         const meta = extractCartMeta(raw);
         console.log('[Payments] meta(displayText, firstDate):', meta);
+
+        const filtered = mapped.filter((it) => {
+          const key = typeof it.productId === 'number' ? it.productId : it.id;
+          return onlyIds.includes(key);
+        });
+
         if (mounted) {
-          setItems(mapped);
+          setItems(filtered);
           setDisplayTextMap(meta.displayTextMap);
           setFirstDateMap(meta.firstDateMap);
         }
@@ -96,7 +113,7 @@ export default function OrderItemsSection() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [onlyIds]);
 
   return (
     <section className="px-4">
@@ -106,7 +123,7 @@ export default function OrderItemsSection() {
       {error && !loading && <div className="text-sm text-red-500">{error}</div>}
 
       {!loading && !error && items.length === 0 && (
-        <div className="text-sm text-gray-500">장바구니가 비어 있습니다.</div>
+        <div className="text-sm text-gray-500">선택된 상품이 없습니다.</div>
       )}
 
       {!loading && !error && items.length > 0 && (
@@ -129,7 +146,7 @@ export default function OrderItemsSection() {
                   <div className="flex-1">
                     <p className="text-sm text-black">{it.brand}</p>
                     <h3 className="mt-1 text-base font-semibold">{it.title}</h3>
-                    <p className="mt-1 text-lg font-semibold">{it.price}원</p>
+                    <p className="mt-1 text-lg font-semibold">{it.price.toLocaleString()}원</p>
                   </div>
                 </div>
 

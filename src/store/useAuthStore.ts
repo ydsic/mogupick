@@ -13,12 +13,25 @@ interface AuthState {
   memberId?: number;
   accessToken?: string;
   refreshToken?: string;
+  // 프로필 정보 추가
+  email?: string;
+  name?: string;
+  nickname?: string | null;
+  provider?: string | null;
+
   isLoggedIn: boolean;
   loading: boolean;
   error?: string;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   hydrate: () => void; // localStorage -> state 복원
+  // 프로필 저장 액션
+  setProfile: (p: {
+    email?: string;
+    name?: string;
+    nickname?: string | null;
+    provider?: string | null;
+  }) => void;
 }
 
 const AUTH_STORAGE_KEY = 'auth.credentials';
@@ -26,12 +39,18 @@ const AUTH_STORAGE_KEY = 'auth.credentials';
 function persist(data: Partial<AuthState>) {
   if (typeof window === 'undefined') return;
   try {
-    const { memberId, accessToken, refreshToken } = data;
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ memberId, accessToken, refreshToken }));
+    const { memberId, accessToken, refreshToken, email, name, nickname, provider } = data as any;
+    localStorage.setItem(
+      AUTH_STORAGE_KEY,
+      JSON.stringify({ memberId, accessToken, refreshToken, email, name, nickname, provider }),
+    );
   } catch {}
 }
 
-function loadPersisted(): Pick<AuthState, 'memberId' | 'accessToken' | 'refreshToken'> | null {
+function loadPersisted(): Pick<
+  AuthState,
+  'memberId' | 'accessToken' | 'refreshToken' | 'email' | 'name' | 'nickname' | 'provider'
+> | null {
   if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(AUTH_STORAGE_KEY);
@@ -41,6 +60,10 @@ function loadPersisted(): Pick<AuthState, 'memberId' | 'accessToken' | 'refreshT
       memberId: parsed.memberId,
       accessToken: parsed.accessToken,
       refreshToken: parsed.refreshToken,
+      email: parsed.email,
+      name: parsed.name,
+      nickname: parsed.nickname ?? null,
+      provider: parsed.provider ?? null,
     };
   } catch {
     return null;
@@ -51,6 +74,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   memberId: undefined,
   accessToken: undefined,
   refreshToken: undefined,
+  email: undefined,
+  name: undefined,
+  nickname: null,
+  provider: null,
   isLoggedIn: false,
   loading: false,
   error: undefined,
@@ -63,8 +90,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isLoggedIn: true,
       });
       // oauthTokens 스토리지에도 저장 (authFetch 재사용 위해)
-      saveTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken });
+      saveTokens({ accessToken: data.accessToken!, refreshToken: data.refreshToken });
+    } else if (data) {
+      // 토큰은 없지만 프로필만 있는 경우에도 복원
+      set({ ...data });
     }
+  },
+
+  setProfile: (p) => {
+    const current = get();
+    const next = {
+      memberId: current.memberId,
+      accessToken: current.accessToken,
+      refreshToken: current.refreshToken,
+      email: p.email ?? current.email,
+      name: p.name ?? current.name,
+      nickname: p.nickname ?? current.nickname ?? null,
+      provider: p.provider ?? current.provider ?? null,
+    } as Partial<AuthState>;
+    set(next as AuthState);
+    persist({ ...current, ...next });
   },
 
   login: async (email: string, password: string) => {
@@ -96,6 +141,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         memberId: data.memberId,
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
+        // 로그인 시점에는 프로필을 아직 모를 수 있으므로 보존
+        email: get().email,
+        name: get().name,
+        nickname: get().nickname,
+        provider: get().provider,
       });
       // 기존 authFetch 재사용 위해 oauthTokens 포맷에도 저장
       saveTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken });
@@ -116,6 +166,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       memberId: undefined,
       accessToken: undefined,
       refreshToken: undefined,
+      email: undefined,
+      name: undefined,
+      nickname: undefined,
+      provider: undefined,
       isLoggedIn: false,
     });
     if (typeof window !== 'undefined') {

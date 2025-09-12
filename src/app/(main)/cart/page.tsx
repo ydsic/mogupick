@@ -21,6 +21,7 @@ import {
 } from '@/api/cart';
 import { useAuthStore } from '@/store/useAuthStore';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItemUI[]>([]);
@@ -36,6 +37,9 @@ export default function CartPage() {
   // 신규: 주기 선택 상태 및 로그인 사용자 id
   const { quickCycle, customUnit, customCount } = useDeliveryStore();
   const { memberId } = useAuthStore();
+  const router = useRouter();
+
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
   // 장바구니 초기 로드
   useEffect(() => {
@@ -65,6 +69,26 @@ export default function CartPage() {
   const totalPrice = useMemo(
     () => selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [selectedItems],
+  );
+
+  // 선택된 항목의 '배열 인덱스(0부터)' 목록
+  const selectedIndexes = useMemo(
+    () =>
+      cartItems.reduce<number[]>((acc, item, idx) => {
+        if (item.selected) acc.push(idx);
+        return acc;
+      }, []),
+    [cartItems],
+  );
+
+  // productId 기반 선택값
+  const selectedProductIds = useMemo(
+    () =>
+      cartItems.reduce<number[]>((acc, item) => {
+        if (item.selected && typeof item.productId === 'number') acc.push(item.productId);
+        return acc;
+      }, []),
+    [cartItems],
   );
 
   const handleSelectAll = () => {
@@ -181,6 +205,27 @@ export default function CartPage() {
     }
   };
 
+  const handleProceedToPayment = async () => {
+    if (selectedProductIds.length === 0 || isCreatingOrder) return;
+    try {
+      setIsCreatingOrder(true);
+      // 선택한 상품 ID를 로컬스토리지에도 저장하여 카드 등록 후 돌아와도 유지
+      try {
+        localStorage.setItem('payments.selectedProductIds', JSON.stringify(selectedProductIds));
+      } catch {}
+      // 주문 생성은 결제페이지에서 addressId를 포함하여 수행합니다.
+      // 여기서는 선택된 productId 목록만 쿼리로 전달합니다.
+      const query = `cartItemIds=${encodeURIComponent(selectedProductIds.join(','))}`;
+      console.log('[Cart] 결제페이지 이동 (선택 productIds):', selectedProductIds);
+      router.push(`/payments?${query}`);
+    } catch (e) {
+      console.error('[Cart] 결제 페이지 이동 실패', e);
+      alert('결제 페이지로 이동에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsCreatingOrder(false);
+    }
+  };
+
   const groupedItems = useMemo(() => {
     return cartItems.reduce(
       (groups, item) => {
@@ -211,6 +256,11 @@ export default function CartPage() {
       </div>
     );
   }
+
+  const selectedIds = selectedItems.map((i) => i.id);
+  const paymentsHref = selectedIndexes.length
+    ? `/payments?cartIndexes=${encodeURIComponent(selectedIndexes.join(','))}`
+    : '/payments';
 
   return (
     <div className="min-h-screen bg-white">
@@ -355,14 +405,24 @@ export default function CartPage() {
       {/* 하단 결제 버튼 */}
       <div className="fixed right-0 bottom-0 left-0 bg-white pt-3 md:left-1/2 md:w-[500px] md:-translate-x-1/2">
         <div className="px-8 pb-5">
-          <Link
-            href="/payments"
-            className="flex h-12 w-full items-center justify-center rounded border border-gray-300 bg-black px-4"
+          <button
+            type="button"
+            onClick={handleProceedToPayment}
+            disabled={selectedProductIds.length === 0 || isCreatingOrder}
+            className="flex h-12 w-full items-center justify-center rounded border border-gray-300 px-4 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+            style={{
+              backgroundColor: selectedProductIds.length === 0 ? '#e5e7eb' : '#000',
+              color: selectedProductIds.length === 0 ? '#4b5563' : '#fff',
+            }}
           >
-            <span className="text-base font-medium text-white">
-              {totalPrice.toLocaleString()}원 정기구독 결제하기
+            <span className="text-base font-medium">
+              {isCreatingOrder
+                ? '이동 중...'
+                : selectedProductIds.length === 0
+                  ? '상품을 선택해주세요'
+                  : `${totalPrice.toLocaleString()}원 정기구독 결제하기`}
             </span>
-          </Link>
+          </button>
         </div>
         <div className="flex h-5 justify-center py-2">
           <div className="h-[5px] w-36 rounded-full bg-black"></div>

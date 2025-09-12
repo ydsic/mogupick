@@ -1,5 +1,11 @@
 export function getApiBaseUrl(): string {
-  // 프로덕션 환경에서는 항상 프록시 사용
+  // 환경변수 우선 (예: http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1)
+  const envBase = (process.env.NEXT_PUBLIC_API_BASE || '').trim();
+  if (envBase) {
+    // 마지막 슬래시는 제거하여 일관성 유지
+    return envBase.replace(/\/$/, '');
+  }
+  // 기본값: 프록시 경로
   return '/proxy/api/v1';
 }
 

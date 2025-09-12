@@ -2,7 +2,7 @@
 import React from 'react';
 import type { Address, AddressHandlers } from '../types';
 
-type Props = Pick<Address, 'shippingName' | 'receiver' | 'postcode' | 'roadAddr' | 'detailAddr'> &
+type Props = (Pick<Address, 'shippingName' | 'receiver' | 'postcode' | 'roadAddr' | 'detailAddr'> &
   Pick<
     AddressHandlers,
     | 'onChangeShippingName'
@@ -11,7 +11,9 @@ type Props = Pick<Address, 'shippingName' | 'receiver' | 'postcode' | 'roadAddr'
     | 'onChangeRoadAddr'
     | 'onChangeDetailAddr'
     | 'onOpenPostcode'
-  >;
+  >) & {
+  postcodeDisabled?: boolean;
+};
 
 export default function AddressSection({
   shippingName,
@@ -25,6 +27,7 @@ export default function AddressSection({
   onChangeRoadAddr, // 사용은 안 하지만 타입 호환 위해 유지
   onChangeDetailAddr,
   onOpenPostcode,
+  postcodeDisabled = false,
 }: Props) {
   return (
     <section className="px-4 pt-8">
@@ -58,15 +61,17 @@ export default function AddressSection({
           <div className="min-w-0 flex-1 space-y-2">
             <div className="flex gap-2">
               <input
-                className="h-10 min-w-0 flex-1 rounded border border-gray-300 px-3 focus:border-black focus:outline-none"
+                className="h-10 min-w-0 flex-1 rounded border border-gray-300 px-3 focus:border-black focus:outline-none disabled:bg-gray-100 disabled:text-gray-500"
                 value={postcode}
                 readOnly
+                disabled={postcodeDisabled}
                 placeholder="우편번호"
               />
               <button
                 type="button"
                 onClick={onOpenPostcode}
-                className="h-10 w-28 flex-shrink-0 rounded bg-neutral-400 px-3 text-xs text-white transition-colors hover:bg-neutral-500"
+                disabled={postcodeDisabled}
+                className="h-10 w-28 flex-shrink-0 rounded bg-neutral-400 px-3 text-xs text-white transition-colors hover:bg-neutral-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 우편번호 검색
               </button>
@@ -78,6 +83,7 @@ export default function AddressSection({
               placeholder="기본주소"
             />
             <input
+              id="detailAddress"
               className="h-10 w-full rounded border border-gray-900 px-3 focus:border-black focus:outline-none"
               value={detailAddr}
               onChange={(e) => onChangeDetailAddr(e.target.value)}
