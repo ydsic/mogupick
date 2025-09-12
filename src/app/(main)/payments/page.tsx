@@ -322,6 +322,67 @@ export default function PaymentsPage() {
       try {
         const billingRes = await chargeBilling(orderId);
         console.log('[BILLING] charge 응답:', billingRes);
+
+        // 결제 성공 정보를 성공 페이지에서 표시할 수 있도록 저장
+        // 선택된 UI 항목 및 합계 계산
+        const selectedUiItems = uiCart.filter((it) => orderCartItemIds.includes(it.id));
+        const totalPrice = selectedUiItems.reduce(
+          (sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 1),
+          0,
+        );
+
+        // cart raw에서 첫 배송일 추출 (첫번째 선택 항목 기준)
+        const list: any[] = Array.isArray((rawCart as any)?.data?.items)
+          ? (rawCart as any).data.items
+          : Array.isArray((rawCart as any)?.data?.content)
+            ? (rawCart as any).data.content
+            : Array.isArray((rawCart as any)?.data)
+              ? (rawCart as any).data
+              : Array.isArray(rawCart)
+                ? (rawCart as any)
+                : [];
+        const firstCartItemId = orderCartItemIds[0];
+        let firstDeliveryDate: string | undefined = undefined;
+        for (const item of list) {
+          const id = Number(item?.cartItemId ?? item?.id ?? -1);
+          if (id === firstCartItemId) {
+            const subscription = item?.subscription ?? item?.option ?? {};
+            firstDeliveryDate =
+              subscription?.firstDeliveryDate || item?.firstDeliveryDate || subscription?.startDate;
+            break;
+          }
+        }
+        const addDays = (iso?: string, days = 0) => {
+          if (!iso) return undefined;
+          const d = new Date(iso);
+          if (isNaN(d.getTime())) return undefined;
+          d.setDate(d.getDate() + days);
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const dd = String(d.getDate()).padStart(2, '0');
+          return `${yyyy}-${mm}-${dd}`;
+        };
+        const expectedArrivalDate = addDays(firstDeliveryDate, 2);
+
+        const successPayload = {
+          orderId,
+          items: selectedUiItems.map(({ id, title, brand, price, quantity }) => ({
+            id,
+            title,
+            brand,
+            price,
+            quantity,
+          })),
+          totalPrice,
+          paymentMethod: 'Toss',
+          firstDeliveryDate,
+          expectedArrivalDate,
+          billing: billingRes,
+          createdAt: new Date().toISOString(),
+        };
+        try {
+          localStorage.setItem('payments.lastSuccess', JSON.stringify(successPayload));
+        } catch {}
       } catch (billErr) {
         console.error('[BILLING] charge 실패:', billErr);
         alert('결제 요청에 실패했습니다. 잠시 후 다시 시도해주세요.');
@@ -333,7 +394,7 @@ export default function PaymentsPage() {
       } catch {}
 
       // TODO: 성공/실패 UI 처리. 일단 성공으로 가정하고 성공 페이지로 이동
-      router.push('/success');
+      router.push(`/payments/success?orderId=${encodeURIComponent(orderId)}`);
     } catch (err) {
       console.error('[ORDER] 주문 생성 실패:', err);
       alert('주문 생성에 실패했습니다. 다시 시도해주세요.');
