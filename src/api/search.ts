@@ -130,14 +130,6 @@ export const postSearch = async (content: string) => {
     if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
   } catch {}
 
-  let headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  try {
-    const { accessToken } = useAuthStore.getState();
-    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
-  } catch {}
-
   const response = await fetch(url, {
     method: 'POST',
     headers,
