@@ -22,7 +22,7 @@
   --Primary-Heavy-500: #7ab335;
 
   /* --- Colors (role-based) --- */
-  --color-primary: #f9c927;
+  --color-primary: #434343;
   --color-secondary: #7ab335;
   --color-background: #ffffff;
   --color-surface: #f2f4f8;
@@ -59,13 +59,13 @@
   --yellow-900: #644000;
 
   /* --- Grey palette --- */
-  --grey-100: #f9f9f9;
-  --grey-200: #ececec;
-  --grey-300: #d6d6d6;
+  --grey-100: #f2f2f2;
+  --grey-200: #d6d6d6;
+  --grey-300: #d9d9d9;
   --grey-400: #c8c8c8;
-  --grey-500: #a7a7a7;
+  --grey-500: #a6a6a6;
   --grey-600: #898989;
-  --grey-700: #696969;
+  --grey-700: #6f6f6f;
   --grey-800: #3e3e3e;
   --grey-900: #1f1f1f;
 

@@ -141,7 +141,7 @@ function ProductCard({
           <div className={cn('flex items-center text-gray-500', variant.meta)}>
             <div className="flex items-center gap-1">
               <RatingStarIcon />
-              <span>{p.rating}</span>
+              <span>{p.rating.toFixed(1)}</span>
             </div>
             <div className="flex items-center gap-1">
               <ReviewIcon />
