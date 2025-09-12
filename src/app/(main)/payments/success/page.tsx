@@ -129,6 +129,7 @@ export default function PaymentSuccessPage() {
               <div className="flex flex-col text-[#242424]">
                 <p className="text-lg font-semibold">1회차 도착예정일</p>
                 <p className="text-2xl font-bold">{expectedArrivalDate}</p>
+
               </div>
               <p className="text-[13px] font-semibold text-[#a6a6a6]">
                 배송사 사정으로 1~2일 도착예정일이 다를 수 있습니다.
