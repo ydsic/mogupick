@@ -46,14 +46,19 @@ const reviews: Review[] = [
   },
 ];
 
-// 로컬 PageProps 타입 선언 제거하고 인라인 타입 사용
-export default async function Page({ params }: { params: { id: string } }) {
-  const id = Number(params.id);
+// Next 생성 타입에서는 params가 Promise로 정의될 수 있어 이를 수용하도록 변경
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const numId = Number(id);
 
   // 상세 데이터 조회
   let raw: any;
   try {
-    raw = await getProduct(id);
+    raw = await getProduct(numId);
   } catch (e) {
     console.error('[product detail] fetch failed', e);
   }
@@ -66,7 +71,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     : [];
 
   const product: UIProduct = {
-    id: data.productId ?? id,
+    id: data.productId ?? numId,
     store: data.brandName ?? '',
     title: data.productName ?? '상품',
     price: data.price ?? 0,
