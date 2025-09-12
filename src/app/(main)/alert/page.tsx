@@ -48,24 +48,15 @@ export default function AlertPage() {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4">
               {notifications.map((n, index) => (
-                <div key={n.id}>
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex flex-col gap-1.5">
-                        {n.title}
-                      </div>
-                      <div className="text-xs leading-none font-normal text-[#6f6f6f]">
-                        {n.content}
-                      </div>
-                    </div>
-                    <div className="text-right text-xs leading-none font-normal text-[#6f6f6f]">
-                      {n.createdAt}
-                    </div>
+                <div key={n.id} className="flex flex-col gap-1.5">
+                  <div className="text-sm font-medium text-black">{n.title}</div>
+                  <div className="text-xs leading-none font-normal text-[#6f6f6f]">{n.content}</div>
+                  <div className="text-right text-xs leading-none font-normal text-[#6f6f6f]">
+                    {n.createdAt}
                   </div>
 
                   {/* 구분선 (마지막 아이템 제외) */}
-                  {index < notifications.length - 1 && (
-                    <div className="mt-4 h-px bg-gray-200"></div>
-                  )}
+                  {index < notifications.length - 1 && <div className="mt-4 h-px bg-gray-200" />}
                 </div>
               ))}
 

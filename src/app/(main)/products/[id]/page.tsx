@@ -47,11 +47,7 @@ const reviews: Review[] = [
 ];
 
 // Next 생성 타입에서는 params가 Promise로 정의될 수 있어 이를 수용하도록 변경
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const numId = Number(id);
 
