@@ -43,8 +43,6 @@ export async function socialLogin(params: SocialLoginRequest): Promise<SocialLog
     socialLoginData.clientName = kakaoConfig.clientName;
   }
 
-  console.log('Sending social login data:', socialLoginData);
-
   const apiBaseUrl =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
     'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080';

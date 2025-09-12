@@ -30,7 +30,7 @@ export default function RecentSearch({ onSelect }: { onSelect: (v: string) => vo
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-end justify-between">
-        <h3 className="text-base font-semibold">최근 검색어</h3>
+        <h3 className="text-base font-semibold text-[#434343]">최근 검색어</h3>
         {recent.length > 0 && (
           <button className="text-xs text-gray-500" onClick={clearAll}>
             전체 삭제
@@ -43,7 +43,7 @@ export default function RecentSearch({ onSelect }: { onSelect: (v: string) => vo
           {recent.map((item) => (
             <div
               key={item}
-              className="inline-flex cursor-pointer items-center gap-1 rounded-full bg-gray-200 px-3 py-1 text-sm"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-[#d6d6d6] px-3 py-2 text-[13px] text-[#434343]"
               onClick={() => handleSearch(item)}
             >
               <span>{item}</span>

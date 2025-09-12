@@ -4,6 +4,7 @@ interface LikedStore {
   likedIds: Set<number>;
   toggle: (id: number) => void;
   isLiked: (id: number) => boolean;
+  setAll: (ids: number[]) => void;
 }
 
 export const useLikedStore = create<LikedStore>((set, get) => ({
@@ -16,4 +17,5 @@ export const useLikedStore = create<LikedStore>((set, get) => ({
       return { likedIds: newSet };
     }),
   isLiked: (id) => get().likedIds.has(id),
+  setAll: (ids) => set(() => ({ likedIds: new Set(ids) })),
 }));

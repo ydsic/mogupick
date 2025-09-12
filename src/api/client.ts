@@ -24,20 +24,48 @@ export async function apiFetch<T>(
       console.warn('[apiFetch] server session fetch failed (ignored)', e);
     }
   } else {
-    // 클라이언트 환경: next-auth/react 의 getSession 동적 import
+    // 클라이언트 환경: 0) useAuthStore 우선 1) oauthTokens(localStorage) 2) next-auth 세션 3) cookie
     try {
-      const { getSession } = await import('next-auth/react');
-      const session = await getSession();
-      token = (session?.user as any)?.accessToken;
+      const mod = await import('@/store/useAuthStore');
+      const state = mod.useAuthStore.getState();
+      if (state?.accessToken) token = state.accessToken;
     } catch (e) {
-      // 공개 API 요청이면 토큰 없어도 됨
-      console.warn('[apiFetch] client getSession failed (maybe not signed in)', e);
+      // ignore
+    }
+
+    if (!token) {
+      try {
+        const { getLocalAccessToken } = await import('@/utils/oauthTokens');
+        const local = getLocalAccessToken();
+        if (local) token = local;
+      } catch (e) {
+        console.warn('[apiFetch] getLocalAccessToken failed (ignored)', e);
+      }
+    }
+
+    if (!token) {
+      try {
+        const { getSession } = await import('next-auth/react');
+        const session = await getSession();
+        token = (session?.user as any)?.accessToken;
+      } catch (e) {
+        console.warn('[apiFetch] client getSession failed (maybe not signed in)', e);
+      }
+    }
+
+    // 선택: 쿠키에 accessToken이 있다면 마지막 폴백으로 사용
+    if (!token) {
+      try {
+        const m = document.cookie.match(/(?:^|; )accessToken=([^;]+)/);
+        if (m) token = decodeURIComponent(m[1]);
+      } catch {}
     }
   }
 
   const isFormData = options.body instanceof FormData;
 
   const headers: Record<string, string> = {
+    Accept: 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers,
   };
@@ -45,6 +73,17 @@ export async function apiFetch<T>(
   if (!isFormData) headers['Content-Type'] = 'application/json';
 
   const finalUrl = `${baseUrl}${url}`;
+
+  if (process.env.NODE_ENV !== 'production') {
+    const { Authorization, ...hdr } = headers;
+    console.log('[apiFetch] request', {
+      method,
+      url: finalUrl,
+      headers: hdr,
+      hasAuth: !!Authorization,
+      bodyPreview: isFormData ? '[FormData]' : options.body,
+    });
+  }
 
   const res = await fetch(finalUrl, {
     method,
@@ -59,5 +98,24 @@ export async function apiFetch<T>(
     throw new Error(errorText || 'API 요청 실패');
   }
 
-  return (await res.json()) as T;
+  // 여기서부터: 응답이 비어있거나 JSON이 아닐 수 있음(예: 204 No Content)
+  const contentType = res.headers.get('content-type') || '';
+  const text = await res.text();
+
+  if (!text) {
+    // 비어있는 응답 본문 (204 등)
+    return undefined as T;
+  }
+
+  if (contentType.includes('application/json')) {
+    try {
+      return JSON.parse(text) as T;
+    } catch (e) {
+      console.warn('[apiFetch] JSON parse 실패, 원문 반환', e);
+      return undefined as T;
+    }
+  }
+
+  // JSON 이외의 응답은 문자열로 전달 (필요 시 호출부에서 무시 가능)
+  return text as unknown as T;
 }

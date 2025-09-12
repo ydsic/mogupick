@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { Pagination } from 'swiper/modules';
+import { Autoplay, Pagination } from 'swiper/modules';
 import one from '@/assets/mainbanner/one.png';
 import two from '@/assets/mainbanner/two.png';
 import three from '@/assets/mainbanner/three.png';
@@ -21,7 +21,11 @@ export default function BannerSlider({ num = 5 }: BannerSliderProps) {
 
   return (
     <Swiper
-      modules={[Pagination]}
+      modules={[Pagination, Autoplay]}
+      autoplay={{
+        delay: 3000,
+        disableOnInteraction: false,
+      }}
       spaceBetween={20}
       slidesPerView={1.1}
       loop={true}

@@ -5,10 +5,11 @@ import { useState, forwardRef } from 'react';
 interface ProductDescriptionProps {
   onClickDescription: () => void;
   onClickReview: () => void;
+  images?: string[];
 }
 
 const ProductDescription = forwardRef<HTMLDivElement, ProductDescriptionProps>(
-  ({ onClickDescription, onClickReview }, ref) => {
+  ({ onClickDescription, onClickReview, images }, ref) => {
     const [expanded, setExpanded] = useState(false);
 
     return (
@@ -34,8 +35,15 @@ const ProductDescription = forwardRef<HTMLDivElement, ProductDescriptionProps>(
           <div
             className={`w-full overflow-hidden transition-all ${expanded ? 'max-h-none' : 'max-h-96'}`}
           >
-            {/* 이미지 or 텍스트 */}
-            <div className="h-[800px] bg-gray-200" />
+            {images && images.length > 0 ? (
+              <div className="flex flex-col items-center">
+                {images.map((src, idx) => (
+                  <img key={idx} src={src} alt={`description-${idx}`} className="w-full" />
+                ))}
+              </div>
+            ) : (
+              <div className="h-[800px] bg-gray-200" />
+            )}
           </div>
 
           <button

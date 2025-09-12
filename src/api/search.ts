@@ -30,7 +30,6 @@ export interface SearchResponse<T = any> {
 // 상품 검색
 export const createSearch = async (data: Search) => {
   const url = buildUrl('/search');
-  console.log('검색 API 요청 URL:', url);
 
   const response = await fetch(url, {
     method: 'POST',
@@ -51,7 +50,6 @@ export const createSearch = async (data: Search) => {
 // 실시간 급상승 검색어 조회
 export const getSearchTopRisingToday = async () => {
   const url = buildUrl('/search/top-rising/today');
-  console.log('급상승 검색어 API 요청 URL:', url);
 
   const response = await fetch(url);
 
@@ -66,7 +64,6 @@ export const getSearchTopRisingToday = async () => {
 // 연관 검색어 조회
 export const getSearchRelated = async (data: SearchRelated) => {
   const url = buildUrl('/search/related');
-  console.log('연관 검색어 API 요청 URL:', url);
 
   const response = await fetch(url, {
     method: 'POST',
@@ -84,11 +81,9 @@ export const getSearchRelated = async (data: SearchRelated) => {
   return response.json();
 };
 
-
 // 최근 검색어 조회 (로그인 필요: Authorization 포함)
 export const getSearchRecent = async () => {
   const url = buildUrl('/search/recent');
-  console.log('최근 검색어 API 요청 URL:', url);
 
   let headers: Record<string, string> = {};
   try {
@@ -109,7 +104,6 @@ export const getSearchRecent = async () => {
 // 최근 검색어 삭제
 export const deleteSearchRecent = async (keywordId: number) => {
   const url = buildUrl(`/search/recent/${keywordId}`);
-  console.log('최근 검색어 삭제 API 요청 URL:', url);
 
   const response = await fetch(url, {
     method: 'DELETE',
@@ -126,7 +120,6 @@ export const deleteSearchRecent = async (keywordId: number) => {
 // 검색어로 POST 요청 (body: { content: string }) - 로그인 시 토큰 포함
 export const postSearch = async (content: string) => {
   const url = buildUrl('/search');
-  console.log('검색 POST API 요청 URL:', url);
 
   let headers: Record<string, string> = {
     'Content-Type': 'application/json',

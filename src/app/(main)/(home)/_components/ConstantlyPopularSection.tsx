@@ -5,6 +5,7 @@ import { ProductCardList } from '@/components/card/Product';
 import NextIcon from '@/assets/icons/common/next-24px.svg';
 import { useProductsConstantlyPopularMapped } from '@/hooks/products/useProduct';
 import React, { useState } from 'react';
+import Tabs from '@/components/Tabs';
 
 type ModalType =
   | 'recently-viewed'
@@ -44,9 +45,11 @@ export default function ConstantlyPopularSection({ openModal }: ConstantlyPopula
     { label: '위생용품', key: 'HYGIENE' },
     { label: '반려동물', key: 'PETS' },
     { label: '육아용품', key: 'BABY' },
-  ];
+  ] as const;
 
-  const [selectedRoot, setSelectedRoot] = useState<string>(categoryTabs[0].key);
+  const [selectedRoot, setSelectedRoot] = useState<(typeof categoryTabs)[number]['key']>(
+    categoryTabs[0].key,
+  );
 
   // 한 번만 전체 상품 데이터 호출
   const { data, isLoading, isError, error } = useProductsConstantlyPopularMapped(0, 20);
@@ -65,36 +68,15 @@ export default function ConstantlyPopularSection({ openModal }: ConstantlyPopula
 
   const products = productsByCategory[selectedRoot] ?? [];
 
-  const Tabs = () => (
-    <nav className="-mt-1 mb-3 overflow-x-auto">
-      <ul className="flex gap-3 px-1">
-        {categoryTabs.map((c) => {
-          const active = c.key === selectedRoot;
-          return (
-            <li key={c.key}>
-              <button
-                type="button"
-                onClick={() => setSelectedRoot(c.key)}
-                className={`rounded-full border px-4 py-1.5 text-xs whitespace-nowrap transition-colors ${
-                  active
-                    ? 'border-green-600 bg-green-600 text-white'
-                    : 'border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50'
-                }`}
-              >
-                {c.label}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
-  );
-
   if (isLoading) {
     return (
       <div>
         <Title text="꾸준히 사랑받는 상품" />
-        <Tabs />
+        <Tabs
+          tabs={categoryTabs}
+          activeTab={selectedRoot}
+          onChange={(key) => setSelectedRoot(key)}
+        />
         <div className="mt-2 text-sm text-gray-500">로딩중...</div>
       </div>
     );
@@ -104,7 +86,11 @@ export default function ConstantlyPopularSection({ openModal }: ConstantlyPopula
     return (
       <div>
         <Title text="꾸준히 사랑받는 상품" />
-        <Tabs />
+        <Tabs
+          tabs={categoryTabs}
+          activeTab={selectedRoot}
+          onChange={(key) => setSelectedRoot(key)}
+        />
         <div className="mt-2 text-sm text-red-500">데이터를 불러올 수 없습니다.</div>
         {error && (
           <pre className="text-xs whitespace-pre-wrap text-gray-400">
@@ -118,7 +104,7 @@ export default function ConstantlyPopularSection({ openModal }: ConstantlyPopula
   return (
     <div>
       <Title text="꾸준히 사랑받는 상품" />
-      <Tabs />
+      <Tabs tabs={categoryTabs} activeTab={selectedRoot} onChange={(key) => setSelectedRoot(key)} />
       <ProductCardList
         path={`/products`}
         products={products}

@@ -31,7 +31,6 @@ export default function SearchHeader({ value = '', onChange }: SearchHeaderProps
     (async () => {
       try {
         const recent = await getSearchRecent();
-        console.log('[최근 검색어 응답]', recent);
         const { setRecentEphemeral } = useRecentSearchStore.getState();
         if (Array.isArray(recent)) {
           const keywords = recent.map((r: any) => r.content).filter(Boolean);
@@ -87,7 +86,7 @@ export default function SearchHeader({ value = '', onChange }: SearchHeaderProps
         className="flex flex-1 items-center justify-between rounded-xl bg-[#F4F4F4] px-2 font-medium text-gray-700"
       >
         <input
-          className="w-full px-4 py-2"
+          className="w-full px-4 py-2 placeholder-[#a6a6a6] ring-0 focus:border-0 focus:ring-0 focus:outline-none"
           placeholder="검색어를 입력하세요."
           onChange={handleChange}
           value={inputValue}

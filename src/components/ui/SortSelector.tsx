@@ -35,7 +35,7 @@ export default function SortSelector({ value, onChange }: Props) {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-auto appearance-none rounded-2xl border border-[#E4E6E8] py-2 pr-8 pl-4 text-sm"
+        className="w-auto appearance-none rounded-2xl border border-[#d6d6d6] py-2 pr-8 pl-4 text-sm"
       >
         {sortOptions.map((option) => (
           <option key={option.value} value={option.value}>

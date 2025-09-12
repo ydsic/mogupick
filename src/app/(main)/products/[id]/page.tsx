@@ -1,6 +1,6 @@
-import { use } from 'react';
-import { products } from '../../(home)/_components/HomePage';
+import { getProduct } from '@/api/product';
 import ProductDetail from './_components/ProductDetail';
+import { Product as UIProduct } from '@/types/product';
 
 export interface Review {
   id: number;
@@ -45,28 +45,45 @@ const reviews: Review[] = [
     date: '2주일 전',
   },
 ];
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
 
-export default async function Page({ params }: PageProps) {
+// Next 생성 타입에서는 params가 Promise로 정의될 수 있어 이를 수용하도록 변경
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const numId = Number(id);
 
-  console.log('id', id);
-
-  const product = products.find((p) => p.id === Number(id));
-
-  if (!product) {
-    return (
-      <div className="p-4">
-        <h2 className="text-lg font-bold">상품을 찾을 수 없습니다.</h2>
-      </div>
-    );
+  // 상세 데이터 조회
+  let raw: any;
+  try {
+    raw = await getProduct(numId);
+  } catch (e) {
+    console.error('[product detail] fetch failed', e);
   }
+
+  const data = raw?.data ?? raw ?? {};
+
+  const gallery: string[] = Array.isArray(data.productImageUrls) ? data.productImageUrls : [];
+  const detailImages: string[] = Array.isArray(data.productDescriptionImageUrls)
+    ? data.productDescriptionImageUrls
+    : [];
+
+  const product: UIProduct = {
+    id: data.productId ?? numId,
+    store: data.brandName ?? '',
+    title: data.productName ?? '상품',
+    price: data.price ?? 0,
+    rating: data.averageRating ?? 0,
+    reviewCount: data.reviewCount ?? 0,
+    imageUrl: gallery[0],
+  };
 
   return (
     <div className="flex flex-col space-y-4">
-      <ProductDetail reviews={reviews} product={product} />
+      <ProductDetail
+        reviews={reviews}
+        product={product}
+        gallery={gallery}
+        detailImages={detailImages}
+      />
     </div>
   );
 }

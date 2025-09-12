@@ -2,7 +2,7 @@
 interface TabsProps<T extends string> {
   activeTab: T;
   onChange: (tab: T) => void;
-  tabs: { key: T; label: string }[];
+  tabs: ReadonlyArray<{ key: T; label: string }>;
 }
 
 export default function Tabs<T extends string>({ activeTab, onChange, tabs }: TabsProps<T>) {
