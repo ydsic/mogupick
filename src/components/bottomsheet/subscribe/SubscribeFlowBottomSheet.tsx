@@ -7,6 +7,7 @@ import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { getSubscriptionOptions, SubscriptionOption } from '@/api/subscription';
 import { createCart } from '@/api/cart';
 import { useAuthStore } from '@/store/useAuthStore';
+import { toast } from 'react-hot-toast';
 
 export interface SubscribeConfirmPayload {
   firstDeliveryDate: string; // YYYY-MM-DD
@@ -112,8 +113,10 @@ export default function SubscribeFlowBottomSheet({
       // 콜백 (장바구니 페이지의 옵션 변경 시 사용)
       onConfirm?.({ firstDeliveryDate, subscriptionOptionText });
       onClose();
+      toast.success('장바구니에 담았습니다.');
     } catch (e) {
       console.error('[SubscribeFlow] 처리 실패', e);
+      toast.error('장바구니에 담기 실패.');
     } finally {
       setLoading(false);
     }
