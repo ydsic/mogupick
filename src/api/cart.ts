@@ -193,8 +193,9 @@ export const mapCartResponseToUI = (res: any): CartItemUI[] => {
     const brand = item.brand ?? {};
     const subscription = item.subscription ?? item.option ?? {};
 
+    // 최신 스키마(top-level)에 대응하는 보강
     const productName = product.productName ?? item.productName ?? '상품이름';
-    const productPrice = product.productPrice ?? item.productPrice ?? 0;
+    const productPrice = product.productPrice ?? item.productPrice ?? item.price ?? 0;
     const brandName = brand.brandName ?? item.brandName ?? '브랜드';
     const quantity = item.quantity ?? product.quantity ?? 1;
 
@@ -202,7 +203,9 @@ export const mapCartResponseToUI = (res: any): CartItemUI[] => {
       subscription.displayText ??
       subscription.subscriptionOptionText ??
       subscription.optionText ??
+      item.displayText ??
       '';
+
     const firstDate =
       subscription.firstDeliveryDate ?? item.firstDeliveryDate ?? subscription.startDate ?? '';
 

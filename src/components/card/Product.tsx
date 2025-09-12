@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -16,6 +16,7 @@ import LikeIcon from '@/assets/icons/common/empty-like-30px.svg';
 import { useLikedStore } from '@/store/useLikedStore';
 import Image from 'next/image';
 import AddToCartButton from '@/components/cart/AddToCartButton';
+import { likeProduct } from '@/api/like';
 
 /**
  * product-card
@@ -70,6 +71,7 @@ function ProductCard({
   const toggleLike = useLikedStore((state) => state.toggle);
   const isLiked = useLikedStore((state) => state.isLiked(p.id));
   const [isHovered, setIsHovered] = useState(false);
+  const likeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const queryString = query
     ? '?' +
@@ -77,6 +79,14 @@ function ProductCard({
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
         .join('&')
     : '';
+
+  useEffect(() => {
+    return () => {
+      if (likeTimerRef.current) {
+        clearTimeout(likeTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div
@@ -104,7 +114,17 @@ function ProductCard({
               type="button"
               onClick={(e) => {
                 e.preventDefault(); // 링크 이동 막음
-                toggleLike(p.id);
+                toggleLike(p.id); // 즉시 UI 반영
+
+                // 마지막 클릭 기준 2초 뒤에 좋아요 API 호출 (디바운스)
+                if (likeTimerRef.current) clearTimeout(likeTimerRef.current);
+                likeTimerRef.current = setTimeout(async () => {
+                  try {
+                    await likeProduct(p.id);
+                  } catch (err) {
+                    console.error('[like] 요청 실패', err);
+                  }
+                }, 1000);
               }}
               className="absolute right-4 bottom-3 z-10"
             >

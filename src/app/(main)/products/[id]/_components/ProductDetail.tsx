@@ -14,36 +14,27 @@ import { ProductCardList } from '@/components/card/Product';
 import { products } from '@/app/(main)/(home)/_components/HomePage';
 import ProductDescription from './ProductDescription';
 import ProductInfo from './ProductInfo';
-import React, { useEffect, useRef, useState } from 'react';
-import BottomSheet from '@/components/bottomsheet/BottomSheet';
-import CustomCycle from '@/components/cycle/CustomCycle';
-import QuickCycle from '@/components/cycle/QuickCycle';
-import SubscribeIntroBottomSheet from '@/components/bottomsheet/subscribe/SubscribeIntroBottomSheet';
+import React, { useRef, useState } from 'react';
 import SubscribeFlowBottomSheet from '@/components/bottomsheet/subscribe/SubscribeFlowBottomSheet';
-import { useLikedStore } from '@/store/useLikedStore';
 
 interface ProductDetailProps {
   reviews: Review[];
   product: Product;
+  gallery?: string[];
+  detailImages?: string[];
 }
 
-export default function ProductDetail({ reviews, product }: ProductDetailProps) {
+export default function ProductDetail({
+  reviews,
+  product,
+  gallery,
+  detailImages,
+}: ProductDetailProps) {
   const descriptionRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState(0);
-
-  // ✅ 페이지 진입 시 step1 열림
-  useEffect(() => {
-    setIsOpen(true);
-  }, []);
-
-  const nextStep = () => setStep((prev) => prev + 1);
-
-  // 좋아요 토글, 좋아요 여부
-  // const toggleLike = useLikedStore((state) => state.toggle);
-  // const isLiked = useLikedStore((state) => state.isLiked(p.id));
+  // Step2(일정/주기) BottomSheet 제어만 유지
+  const [isFlowOpen, setFlowOpen] = useState(false);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     if (ref.current) {
@@ -75,6 +66,7 @@ export default function ProductDetail({ reviews, product }: ProductDetailProps) 
           ref={descriptionRef}
           onClickDescription={() => scrollToSection(descriptionRef)}
           onClickReview={() => scrollToSection(reviewRef)}
+          images={detailImages}
         />
 
         <div className="px-4" ref={reviewRef}>
@@ -130,24 +122,27 @@ export default function ProductDetail({ reviews, product }: ProductDetailProps) 
           <ProductCardList products={products} path="/products" layout="horizontal" />
         </div>
       </div>
-      <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        {step === 0 && (
-          <SubscribeIntroBottomSheet
-            isOpen={isOpen}
-            // onLike={() => toggleLike(product.id)}
-            // isLiked={isLiked}
-            onSubscribe={() => setStep(1)}
-          />
-        )}
-        {step === 1 && (
-          <SubscribeFlowBottomSheet
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            pricePerItem={12000}
-            productName={'핫 바베큐 소시지'}
-          />
-        )}
-      </BottomSheet>
+
+      {/* 하단 고정 바 (구입/구독 버튼처럼 항상 노출) */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white px-4 py-3">
+        <div className="mx-auto flex max-w-md items-center justify-between gap-3">
+          <button
+            className="flex-1 rounded bg-black py-3 text-center text-white"
+            onClick={() => setFlowOpen(true)}
+          >
+            구독하기
+          </button>
+        </div>
+      </div>
+
+      {/* Step2(일정/주기 선택) 용 BottomSheet */}
+      <SubscribeFlowBottomSheet
+        isOpen={isFlowOpen}
+        onClose={() => setFlowOpen(false)}
+        pricePerItem={product.price}
+        productName={product.title}
+        productId={product.id}
+      />
     </>
   );
 }

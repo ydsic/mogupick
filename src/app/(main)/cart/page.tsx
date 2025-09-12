@@ -7,12 +7,9 @@ import { ProductCardList } from '@/components/card/Product';
 import CloseIcon from '@/assets/icons/common/close-24px.svg';
 import CheckBoxIcon from '@/assets/icons/cart/checkbox.svg';
 import CheckedIcon from '@/assets/icons/cart/checkbox-checked.svg';
-import AddItemIcon from '@/assets/icons/cart/add.svg';
-import MinusItemIcon from '@/assets/icons/cart/minus.svg';
 import SubscribeFlowBottomSheet, {
   SubscribeConfirmPayload,
 } from '@/components/bottomsheet/subscribe/SubscribeFlowBottomSheet';
-// 신규: 옵션 id 매칭 및 패치 호출을 위한 스토어/API
 import { useDeliveryStore } from '@/store/useDeliveryStore';
 import { getSubscriptionOptions } from '@/api/subscription';
 import {
@@ -23,6 +20,7 @@ import {
   mapCartResponseToUI,
 } from '@/api/cart';
 import { useAuthStore } from '@/store/useAuthStore';
+import Image from 'next/image';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItemUI[]>([]);
@@ -81,16 +79,20 @@ export default function CartPage() {
     );
   };
 
-  const handleQuantityChange = (id: number, delta: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item,
-      ),
-    );
-  };
-
-  const handleDeleteSelected = () => {
-    setCartItems((items) => items.filter((item) => !item.selected));
+  // 선택 삭제: 서버 삭제 API 호출 후 재조회
+  const handleDeleteSelected = async () => {
+    const ids = cartItems.filter((it) => it.selected).map((it) => it.id);
+    if (ids.length === 0) return;
+    try {
+      await Promise.all(ids.map((id) => deleteCartItem(id)));
+      const raw = await getMyCart();
+      console.log('선택삭제 후 장바구니 API 응답(raw):', raw);
+      const mapped = mapCartResponseToUI(raw);
+      setCartItems(mapped);
+    } catch (e) {
+      console.error('[Cart] 선택삭제 실패', e);
+      alert('선택한 상품 삭제에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   // 단건 삭제(닫기 X 버튼): 서버 API 호출 후 UI 반영
@@ -117,7 +119,6 @@ export default function CartPage() {
     let optionId: number | undefined;
 
     if (quickCycle) {
-      // 예: "1주 마다", "2주 마다", "1달", "3일마다" 등 공백 제거 후 파싱
       const cleaned = quickCycle.replace(/\s/g, '');
       const num = parseInt(cleaned);
       if (cleaned.includes('달')) {
@@ -272,35 +273,28 @@ export default function CartPage() {
                     {/* 상품 정보 */}
                     <div className="flex flex-col gap-3">
                       <div className="flex gap-3">
-                        <div className="h-24 w-24 rounded bg-gray-300"></div>
-                        <div className="flex flex-1 flex-col gap-3">
+                        {/* 썸네일 이미지 */}
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            width={96}
+                            height={96}
+                            className="h-24 w-24 rounded object-cover"
+                          />
+                        ) : (
+                          <div className="h-24 w-24 rounded bg-gray-300" />
+                        )}
+                        <div className="flex flex-1 flex-col justify-between">
                           <div className="flex flex-col gap-1">
                             <div className="text-base font-semibold">{item.title}</div>
                             <div className="text-sm font-medium text-green-700">
                               {item.subscriptionType}
                             </div>
                           </div>
-                          <div className="flex items-center justify-between">
-                            {/* 수량 조절 */}
-                            <div className="flex h-8 rounded-lg bg-gray-100">
-                              <button
-                                onClick={() => handleQuantityChange(item.id, -1)}
-                                className="flex h-8 w-8 items-center justify-center rounded-l-lg border-r border-gray-100"
-                              >
-                                <MinusItemIcon className="h-4 w-4" />
-                              </button>
-                              <div className="flex h-8 w-8 items-center justify-center">
-                                <span className="text-xs font-medium">{item.quantity}</span>
-                              </div>
-                              <button
-                                onClick={() => handleQuantityChange(item.id, 1)}
-                                className="flex h-8 w-8 items-center justify-center rounded-r-lg border-l border-gray-100"
-                              >
-                                <AddItemIcon className="h-4 w-4" />
-                              </button>
-                            </div>
+                          <div className="flex items-end justify-end">
                             <div className="text-lg font-semibold">
-                              {(item.price * item.quantity).toLocaleString()}원
+                              {item.price.toLocaleString()}원
                             </div>
                           </div>
                         </div>
@@ -330,10 +324,6 @@ export default function CartPage() {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">주문 상품 수</span>
               <span className="text-sm font-semibold">총 {selectedItems.length}개</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">총 주문금액</span>
-              <span className="text-sm font-semibold">{totalPrice.toLocaleString()}원</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-lg font-bold">총 결제금액</span>

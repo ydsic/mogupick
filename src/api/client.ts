@@ -98,5 +98,24 @@ export async function apiFetch<T>(
     throw new Error(errorText || 'API 요청 실패');
   }
 
-  return (await res.json()) as T;
+  // 여기서부터: 응답이 비어있거나 JSON이 아닐 수 있음(예: 204 No Content)
+  const contentType = res.headers.get('content-type') || '';
+  const text = await res.text();
+
+  if (!text) {
+    // 비어있는 응답 본문 (204 등)
+    return undefined as T;
+  }
+
+  if (contentType.includes('application/json')) {
+    try {
+      return JSON.parse(text) as T;
+    } catch (e) {
+      console.warn('[apiFetch] JSON parse 실패, 원문 반환', e);
+      return undefined as T;
+    }
+  }
+
+  // JSON 이외의 응답은 문자열로 전달 (필요 시 호출부에서 무시 가능)
+  return text as unknown as T;
 }
