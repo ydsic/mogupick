@@ -46,11 +46,8 @@ const reviews: Review[] = [
   },
 ];
 
-interface PageProps {
-  params: { id: string };
-}
-
-export default async function Page({ params }: PageProps) {
+// 로컬 PageProps 타입 선언 제거하고 인라인 타입 사용
+export default async function Page({ params }: { params: { id: string } }) {
   const id = Number(params.id);
 
   // 상세 데이터 조회
