@@ -77,6 +77,7 @@ export default function Page() {
               type="email"
               placeholder="이메일 입력"
               className="rounded-[4px] border border-[#d6d6d6] px-2 py-3.5 text-sm text-[#434343] placeholder-[#d6d6d6] focus:border-[var(--color-secondary)] focus:ring-1 focus:ring-[var(--color-secondary)] focus:outline-none"
+
               {...register('email')}
             />
             {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
@@ -116,7 +117,6 @@ export default function Page() {
             {loading ? '로그인 중...' : '로그인'}
           </button>
         </form>
-
         <div className="mt-8 flex items-center justify-center space-x-3 text-sm text-[#434343]">
           <Link href={'/auth/signup'} className="text-[var(--color-secondary)]">
             회원가입

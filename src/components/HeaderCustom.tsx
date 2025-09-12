@@ -77,6 +77,9 @@ export default function HeaderCustom({
 
         {/* 오른쪽 */}
         <div className="flex items-center gap-3">
+          <button onClick={goMyPage} aria-label="마이페이지" className="flex items-center">
+            <HomeIcon />
+          </button>
           {showHome && (
             <Link href="/">
               <HomeIcon />

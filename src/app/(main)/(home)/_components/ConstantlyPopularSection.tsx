@@ -69,6 +69,7 @@ export default function ConstantlyPopularSection({ openModal }: ConstantlyPopula
     return (
       <div>
         <Title text="꾸준히 사랑받는 상품" />
+        <Tabs />
         <div className="mt-2 text-sm text-gray-500">로딩중...</div>
       </div>
     );
@@ -78,6 +79,7 @@ export default function ConstantlyPopularSection({ openModal }: ConstantlyPopula
     return (
       <div>
         <Title text="꾸준히 사랑받는 상품" />
+        <Tabs />
         <div className="mt-2 text-sm text-red-500">데이터를 불러올 수 없습니다.</div>
         {error && (
           <pre className="text-xs whitespace-pre-wrap text-gray-400">
@@ -91,6 +93,7 @@ export default function ConstantlyPopularSection({ openModal }: ConstantlyPopula
   return (
     <div>
       <Title text="꾸준히 사랑받는 상품" />
+      <Tabs />
       <ProductCardList
         path={`/products`}
         products={products}

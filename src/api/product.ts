@@ -169,7 +169,6 @@ export const getProductsConstantlyPopularMapped = async (
     }
 
     const res = await apiFetch<ConstantlyPopularResponse>(url);
-
     const mapped: MappedProductCardItem[] = res.data.content.map(
       (item: ConstantlyPopularItemRaw) => {
         const mappedItem = {

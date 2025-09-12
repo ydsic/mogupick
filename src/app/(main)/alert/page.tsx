@@ -51,7 +51,6 @@ export default function AlertPage() {
                 <div key={n.id}>
                   <div className="flex flex-col gap-1.5">
                     <div className="flex flex-col gap-1.5">
-                      <div className="text-sm leading-snug font-medium text-[#434343]">
                         {n.title}
                       </div>
                       <div className="text-xs leading-none font-normal text-[#6f6f6f]">
