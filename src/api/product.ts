@@ -4,11 +4,26 @@ export interface Product {
   rootCategory: string;
   subCategory: string;
   brandId: number;
-  name: string;
+  productName: string;
   price: number;
   options: object;
-  productImages: string[]; // 대표 이미지들
-  productDescriptionImages: string[]; // 상세 이미지들
+  productImageUrls: string[]; // 대표 이미지들
+  productDescriptionImageUrls: string[]; // 상세 이미지들
+}
+export interface ProductDetailResponse {
+  status: number;
+  message: string;
+  data: {
+    productId: number;
+    productName: string;
+    productImageUrls: string[];
+    productDescriptionImageUrls: string[];
+    price: number;
+    brandId: number;
+    brandName: string;
+    averageRating: number;
+    reviewCount: number;
+  };
 }
 
 // 꾸준히 사랑받는 상품 API 관련 타입
@@ -76,12 +91,12 @@ export const createProduct = async (data: Product) => {
   formData.append('rootCategory', data.rootCategory);
   formData.append('subCategory', data.subCategory);
   formData.append('brandId', data.brandId.toString());
-  formData.append('name', data.name);
+  formData.append('name', data.productName);
   formData.append('price', data.price.toString());
   formData.append('options', JSON.stringify(data.options));
 
-  data.productImages.forEach((file) => formData.append('productImages', file));
-  data.productDescriptionImages.forEach((file) =>
+  data.productImageUrls.forEach((file) => formData.append('productImages', file));
+  data.productDescriptionImageUrls.forEach((file) =>
     formData.append('productDescriptionImages', file),
   );
 
@@ -89,7 +104,8 @@ export const createProduct = async (data: Product) => {
 };
 
 // 상품 상세조회
-export const getProduct = (productId: number) => apiFetch<Product>(`/products/${productId}/detail`);
+export const getProduct = (productId: number) =>
+  apiFetch<ProductDetailResponse>(`/products/${productId}/detail`);
 // 유사상품 목록조회
 export const getProductsSimilar = () => apiFetch<Product[]>('/products/similar');
 

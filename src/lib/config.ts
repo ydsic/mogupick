@@ -5,6 +5,12 @@ export function getApiBaseUrl(): string {
     // 마지막 슬래시는 제거하여 일관성 유지
     return envBase.replace(/\/$/, '');
   }
+
+  if (typeof window === 'undefined') {
+    // 서버 환경에서는 절대 URL 필요
+    return `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/proxy/api/v1`;
+  }
+
   // 기본값: 프록시 경로
   return '/proxy/api/v1';
 }

@@ -56,10 +56,16 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   try {
     raw = await getProduct(numId);
   } catch (e) {
-    console.error('[product detail] fetch failed', e);
+    if (e instanceof Error) {
+      console.error('[product detail] fetch failed', e.message, e);
+    } else {
+      console.error('[product detail] fetch failed', e);
+    }
   }
 
   const data = raw?.data ?? raw ?? {};
+
+  console.log('detail data', data, raw);
 
   const gallery: string[] = Array.isArray(data.productImageUrls) ? data.productImageUrls : [];
   const detailImages: string[] = Array.isArray(data.productDescriptionImageUrls)
