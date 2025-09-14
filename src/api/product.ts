@@ -663,12 +663,7 @@ export const getProductsSimilarMapped = async (
       options: item.option?.options ?? null,
     }));
 
-    return {
-      items: mapped,
-      page: res.data.page,
-      size: res.data.size,
-      totalPages: res.data.totalPages,
-    };
+    return { items, page: res.data.page, size: res.data.size, totalPages: res.data.totalPages };
   } catch (e: any) {
     console.error('[getProductsSimilarMapped] error', e?.message || e);
     return {
