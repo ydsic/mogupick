@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useParams, notFound } from 'next/navigation';
 import FilterIcon from '@/assets/icons/filter.svg';
 import DownIcon from '@/assets/icons/down.svg';
@@ -41,11 +41,6 @@ export default function CategoryPage() {
     };
     return mapping[slug] || 'FRESH_FOOD';
   };
-
-  // 카테고리에 맞는 필터 옵션을 가져옵니다
-  const { isLoading: isLoadingFilters, filterGroups } = useFilterOptions(
-    getApiCategory(categoryName),
-  );
 
   // 루트 카테고리 데이터를 가져와서 서브카테고리 탭 생성
   const { data: rootCategoriesData } = useQuery({
@@ -95,8 +90,19 @@ export default function CategoryPage() {
     </nav>
   );
 
-  // 선택된 API 카테고리
+  // 선택된 API 카테고리 및 탭 상태
   const apiCategory = getApiCategory(categoryName);
+  const [category, setCategory] = useState<CategoryTab>('전체');
+
+  // 선택된 서브카테고리 key (필터 옵션 스코프에 사용)
+  const selectedSubKey =
+    category !== '전체' ? subCategories.find((s) => s.name === category)?.key : undefined;
+
+  // 카테고리에 맞는 필터 옵션을 가져옵니다 (선택된 서브카테고리 key를 전달하여 해당 서브 전용 필터만 노출)
+  const { isLoading: isLoadingFilters, filterGroups } = useFilterOptions(
+    apiCategory,
+    selectedSubKey,
+  );
 
   // 실제 상품 데이터 가져오기
   const { data: productData, isLoading: isLoadingProducts } = useProductsConstantlyPopularMapped(
@@ -108,40 +114,161 @@ export default function CategoryPage() {
   // 실제 상품 목록
   const products = productData?.items || [];
 
-  // 선택된 탭과 필터 기반 상품 목록 계산
-  const [category, setCategory] = useState<CategoryTab>('전체');
-  const filtered = useMemo(() => {
-    let result = products;
+  // 보조: 범위 표현 파서 (예: (0,10000), [10000,20000), [4,))
+  const parseRange = (expr: string) => {
+    const m = expr.match(/^[\[(]\s*([\d.]+)?\s*,\s*([\d.]*)\s*[)\]]$/);
+    if (!m) return null as null | { min?: number; minInc: boolean; max?: number; maxInc: boolean };
+    const min = m[1] ? Number(m[1]) : undefined;
+    const max = m[2] ? Number(m[2]) : undefined;
+    return {
+      min,
+      max,
+      minInc: expr.startsWith('['),
+      maxInc: expr.endsWith(']'),
+    };
+  };
 
-    // 서브카테고리 필터링
+  // 선택된 탭과 필터 기반 + 정렬까지 적용한 상품 목록 계산
+  const finalList = useMemo(() => {
+    let result = products.slice();
+
+    // 0) 루트카테고리 1차 필터링 (백엔드 파라미터 외에 클라이언트에서도 보정)
+    result = result.filter((p: any) => p.rootCategory === apiCategory);
+
+    // 1) 서브카테고리 필터링 (탭)
     if (category !== '전체') {
-      // 서브카테고리 이름으로 필터링
-      result = result.filter((p) => p.subCategory === category);
+      result = result.filter(
+        (p: any) => p.subCategory === category || p.subCategory === selectedSubKey,
+      );
     }
 
-    // API 기반 필터링
+    // 2) API 기반 필터링 (필터 시트)
     Object.entries(filters).forEach(([key, values]) => {
-      if (values && (values as unknown[]).length > 0) {
-        result = result.filter((product) => {
-          // 가격 필터
-          if (key === 'PRICE') {
-            return (values as string[]).some((expression: string) => {
-              const price = product.price;
-              if (expression.includes('(0,10000)')) return price < 10000;
-              if (expression.includes('[10000,20000)')) return price >= 10000 && price < 20000;
-              if (expression.includes('[20000,30000)')) return price >= 20000 && price < 30000;
-              if (expression.includes('[30000,40000)')) return price >= 30000 && price < 40000;
-              if (expression.includes('[40000,)')) return price >= 40000;
-              return true;
+      const selected = values as string[];
+      if (!selected || selected.length === 0) return;
+
+      result = result.filter((product: any) => {
+        // PRICE: 가격 범위 처리 (기존 로직 보완)
+        if (key === 'PRICE') {
+          return selected.some((expression) => {
+            const range = parseRange(expression);
+            const price = product.price as number;
+            if (range) {
+              const ge =
+                range.min == null ? true : range.minInc ? price >= range.min : price > range.min;
+              const le =
+                range.max == null ? true : range.maxInc ? price <= range.max : price < range.max;
+              return ge && le;
+            }
+            // 백업: 하드코딩된 구간 문자열 지원
+            if (expression.includes('(0,10000)')) return price < 10000;
+            if (expression.includes('[10000,20000)')) return price >= 10000 && price < 20000;
+            if (expression.includes('[20000,30000)')) return price >= 20000 && price < 30000;
+            if (expression.includes('[30000,40000)')) return price >= 30000 && price < 40000;
+            if (expression.includes('[40000,)')) return price >= 40000;
+            return true;
+          });
+        }
+
+        // 그 외 키는 우선 product.options 값과의 일치로 필터링
+        const optVal = (product as any).options?.[key] as string | undefined;
+        if (optVal) {
+          if (selected.includes(optVal)) return true; // 정확히 같은 값
+
+          // 숫자 형태면 숫자 비교(예: WEIGHT 등)
+          const num = Number(optVal);
+          if (!Number.isNaN(num)) {
+            return selected.some((expression) => {
+              const r = parseRange(expression);
+              if (r) {
+                const ge = r.min == null ? true : r.minInc ? num >= r.min : num > r.min;
+                const le = r.max == null ? true : r.maxInc ? num <= r.max : num < r.max;
+                return ge && le;
+              }
+              // 숫자 문자열과 동일 비교도 지원
+              if (!Number.isNaN(Number(expression))) return Number(expression) === num;
+              return false;
             });
           }
-          return true; // 다른 필터들은 임시로 통과
-        });
-      }
+
+          // 기타 텍스트(예: SINGLE_ITEM, TASTE, ORGANIC)는 포함 여부로 필터링
+          return selected.some((s) => s === optVal);
+        }
+
+        // 옵션값이 없지만 RATING 같은 경우 rating 필드로 백업 비교
+        if (key === 'RATING') {
+          const rating = Number(product.rating) || 0;
+          return selected.some((expression) => {
+            const r = parseRange(expression);
+            if (r) {
+              const ge = r.min == null ? true : r.minInc ? rating >= r.min : rating > r.min;
+              const le = r.max == null ? true : r.maxInc ? rating <= r.max : rating < r.max;
+              return ge && le;
+            }
+            const n = Number(expression);
+            if (!Number.isNaN(n)) return Math.floor(rating) === Math.floor(n);
+            // 예: '4+', '4 이상'
+            if (/^\s*([\d.]+)\s*\+\s*$/.test(expression)) {
+              const n2 = Number(RegExp.$1);
+              return rating >= n2;
+            }
+            return true;
+          });
+        }
+
+        // 기본 통과
+        return true;
+      });
     });
 
-    return result;
-  }, [products, category, filters]);
+    // 3) 정렬 적용
+    const sorted = result.slice();
+    switch (sort) {
+      case 'new': {
+        sorted.sort((a: any, b: any) => {
+          const ta = a.createdAt ? Date.parse(a.createdAt) : 0;
+          const tb = b.createdAt ? Date.parse(b.createdAt) : 0;
+          return tb - ta;
+        });
+        break;
+      }
+      case 'popular': {
+        // 인기순: 리뷰수 우선, 동률 시 평점
+        sorted.sort((a: any, b: any) => {
+          const r1 = (b.reviewCount ?? 0) - (a.reviewCount ?? 0);
+          if (r1 !== 0) return r1;
+          return (b.rating ?? 0) - (a.rating ?? 0);
+        });
+        break;
+      }
+      case 'review': {
+        // 리뷰많은순
+        sorted.sort((a: any, b: any) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0));
+        break;
+      }
+      case 'priceLow': {
+        sorted.sort((a: any, b: any) => (a.price ?? 0) - (b.price ?? 0));
+        break;
+      }
+      default:
+        // recommended: 원본 순서 유지
+        break;
+    }
+
+    return sorted;
+  }, [products, category, selectedSubKey, filters, sort, apiCategory]);
+
+  // 디버깅: 현재 페이지에서 필터링된 리스트 콘솔 출력
+  useEffect(() => {
+    // 페이지 진입/필터 변경/탭 변경/데이터 로딩 후 업데이트 시 모두 출력
+    console.log('[CategoryPage] filtered list', {
+      rootCategory: apiCategory,
+      subCategoryTab: category,
+      subCategoryKey: selectedSubKey,
+      count: finalList.length,
+      items: finalList,
+    });
+  }, [apiCategory, category, selectedSubKey, finalList]);
 
   const Toolbar = ({ total }: { total: number }) => (
     <div className="flex items-center justify-between px-4 py-3">
@@ -171,7 +298,7 @@ export default function CategoryPage() {
             filterGroups={filterGroups}
             filters={filters}
             onChange={setFilters}
-            productCount={filtered.length}
+            productCount={finalList.length}
           />
         )}
       </div>
@@ -181,7 +308,7 @@ export default function CategoryPage() {
   const ProductGrid = ({ items }: { items: any[] }) => (
     <div className="px-4 pb-12">
       <ProductCardList
-        products={items}
+        products={items as unknown as Product[]}
         path="/products"
         size="m"
         layout="grid"
@@ -196,14 +323,14 @@ export default function CategoryPage() {
     <div className="min-h-dvh bg-white text-neutral-900">
       <HeaderCustom title={categoryMap[categoryName]} showBack showHome showSearch showCart />
       <CategoryTabs value={category} onChange={setCategory} />
-      <Toolbar total={filtered.length} />
+      <Toolbar total={finalList.length} />
       <main className="mb-15">
         {isLoadingProducts ? (
           <div className="flex items-center justify-center py-20">
             <div className="text-neutral-500">상품을 불러오는 중...</div>
           </div>
         ) : (
-          <ProductGrid items={filtered} />
+          <ProductGrid items={finalList} />
         )}
       </main>
     </div>
