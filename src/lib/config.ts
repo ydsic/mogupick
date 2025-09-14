@@ -6,6 +6,14 @@ export function getApiBaseUrl(): string {
     return envBase.replace(/\/$/, '');
   }
 
+  if (typeof window === 'undefined') {
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(
+      /\/$/,
+      '',
+    );
+    return `${siteUrl}/proxy/api/v1`;
+  }
+
   // 기본값: 프록시 경로
   return '/proxy/api/v1';
 }
