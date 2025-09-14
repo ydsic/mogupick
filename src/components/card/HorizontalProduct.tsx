@@ -70,7 +70,7 @@ export function HorizontalProductCard({ product, className }: HorizontalProductC
                 </svg>
               </div>
               <div className="justify-start text-xs leading-none font-normal text-gray-500">
-                {product.rating}
+                {product.rating.toFixed()}
               </div>
             </div>
             <div className="flex items-center justify-start gap-0.5">
