@@ -7,7 +7,7 @@ export function getApiBaseUrl(): string {
   }
 
   if (typeof window === 'undefined') {
-    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(
+    const siteUrl = (process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000').replace(
       /\/$/,
       '',
     );
