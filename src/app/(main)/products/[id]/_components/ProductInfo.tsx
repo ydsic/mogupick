@@ -11,6 +11,7 @@ import { getProduct } from '@/api/product';
 import { getApiBaseUrl } from '@/lib/config';
 import { likeProduct } from '@/api/like';
 import { useLikedStore } from '@/store/useLikedStore';
+import { toast } from 'react-hot-toast';
 
 interface Props {
   product: Product;
@@ -69,6 +70,7 @@ export default function ProductInfo({ product }: Props) {
     try {
       await likeProduct(detail.id);
       console.log('[ProductInfo] 좋아요 토글 성공', { productId: detail.id, liked: !liked });
+      liked ? toast.success('좋아요 취소') : toast.success('좋아요');
     } catch (e) {
       console.error('[ProductInfo] 좋아요 토글 실패, 롤백', e);
       // 롤백
@@ -126,13 +128,13 @@ export default function ProductInfo({ product }: Props) {
             </button>
           </div>
         </div>
-        <div className="flex justify-start gap-7 border-b border-[var(--grey-100)] p-4 text-[13px] text-[var(--color-text-primary)]">
+        <div className="flex justify-around border-b border-[var(--grey-100)] p-4 text-[13px] text-[var(--color-text-primary)]">
           <span>배송</span>
           <div>
             <div className="flex items-center gap-2">
-              <p className="flex items-center gap-2">
+              <p className="flex items-center gap-1">
                 <span>당일출발 11:00 마감</span>
-                <div className="h-1 w-1 rounded-full bg-[#d6d6d6]" />
+                <span className="h-1 w-1 rounded-full bg-[#d6d6d6]" />
                 <span>평균 2일 이내 도착 확률 80%</span>
               </p>
               <NextMoreIcon className="text-[#a6a6a6]" />

@@ -33,7 +33,7 @@ export interface ConstantlyPopularItemRaw {
     productId: number;
     rootCategory: string;
     subCategory: string;
-    options: null;
+    options: any; // 서버 응답에 옵션 상세가 포함될 수 있으므로 any 허용
   };
 }
 
@@ -58,6 +58,9 @@ export interface MappedProductCardItem {
   imageUrl?: string;
   rootCategory?: string;
   subCategory?: string;
+  // ...추가 필드(카테고리 페이지 내부 정렬/필터용)
+  createdAt?: string;
+  options?: Record<string, string> | null;
 }
 
 export interface ConstantlyPopularMappedResult {
@@ -181,7 +184,10 @@ export const getProductsConstantlyPopularMapped = async (
           imageUrl: item.product.productImageUrl,
           rootCategory: item.option?.rootCategory,
           subCategory: item.option?.subCategory,
-        };
+          // ...추가 매핑
+          createdAt: item.product?.createdAt,
+          options: (item as any)?.option?.options ?? null,
+        } as MappedProductCardItem;
         return mappedItem;
       },
     );
@@ -267,9 +273,11 @@ export const getProductsBeginnerFriendlyMapped = async (
           rating: item.review?.rating ?? 0,
           reviewCount: item.review?.reviewCount ?? 0,
           imageUrl: item.product.productImageUrl,
-          rootCategory: item.option?.rootCategory,
-          subCategory: item.option?.subCategory,
-        };
+          rootCategory: (item as any)?.option?.rootCategory,
+          subCategory: (item as any)?.option?.subCategory,
+          createdAt: item.product?.createdAt,
+          options: (item as any)?.option?.options ?? null,
+        } as MappedProductCardItem;
         return mappedItem;
       },
     );
@@ -408,7 +416,6 @@ export const getProductsRecentlyViewedMapped = async (): Promise<MappedProductCa
 
     // 기본 Product[] 타입이므로 안전하게 변환
     const mapped: MappedProductCardItem[] = rawData.map((item: any, idx: number) => ({
-
       id: item.productId ?? item.id ?? idx,
       store: item.brandName ?? item.store ?? '',
       title: item.productName ?? item.title ?? item.name ?? '상품',
@@ -518,42 +525,28 @@ export const getProductsMostViewedMapped = async (
   rootCategory?: string,
 ): Promise<MostViewedMappedResult> => {
   try {
-    let url = `/products/view-count/most-daily-view-stat-change?page=${page}&size=${size}`;
-    if (rootCategory) {
-      url += `&rootCategory=${rootCategory}`;
-    }
+    let url = `/products/most-viewed?page=${page}&size=${size}`;
+    if (rootCategory) url += `&rootCategory=${rootCategory}`;
 
     const res = await apiFetch<MostViewedResponse>(url);
 
-    const mapped: MappedProductCardItem[] = res.data.content.map((item: MostViewedItemRaw) => {
-      const mappedItem = {
-        id: item.product.productId,
-        store: item.brand?.brandName ?? '',
-        title: item.product.productName,
-        price: item.product.productPrice,
-        rating: item.review?.rating ?? 0,
-        reviewCount: item.review?.reviewCount ?? 0,
-        imageUrl: item.product.productImageUrl,
-        rootCategory: item.option?.rootCategory,
-        subCategory: item.option?.subCategory,
-      };
-      return mappedItem;
-    });
+    const items: MappedProductCardItem[] = res.data.content.map((item) => ({
+      id: item.product.productId,
+      store: item.brand?.brandName ?? '',
+      title: item.product.productName,
+      price: item.product.productPrice,
+      rating: item.review?.rating ?? 0,
+      reviewCount: item.review?.reviewCount ?? 0,
+      imageUrl: item.product.productImageUrl,
+      rootCategory: (item as any)?.option?.rootCategory,
+      subCategory: (item as any)?.option?.subCategory,
+      createdAt: item.product?.createdAt,
+      options: (item as any)?.option?.options ?? null,
+    }));
 
-    return {
-      items: mapped,
-      page: res.data.page,
-      size: res.data.size,
-      totalPages: res.data.totalPages,
-    };
+    return { items, page: res.data.page, size: res.data.size, totalPages: res.data.totalPages };
   } catch (e: any) {
     console.error('[getProductsMostViewedMapped] error', e?.message || e);
-
-    return {
-      items: [],
-      page,
-      size,
-      totalPages: 1,
-    };
+    return { items: [], page, size, totalPages: 1 };
   }
 };

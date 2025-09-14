@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getFilterOptions, FilterOptionsResponse, FilterGroup, ApiCategory } from '@/api/filters';
 
-export function useFilterOptions(rootCategory: ApiCategory, subCategory?: string) {
+export function useFilterOptions(rootCategory: ApiCategory, currentSubCategoryKey?: string) {
   const query = useQuery<FilterOptionsResponse>({
     queryKey: ['filterOptions', rootCategory],
     queryFn: () => getFilterOptions(rootCategory),
@@ -16,9 +16,21 @@ export function useFilterOptions(rootCategory: ApiCategory, subCategory?: string
     const { common, subCategories } = query.data.data;
     let filterGroups = [...common];
 
-    // 모든 서브카테고리 필터를 추가 (중복 제거)
+    // 공통 키 집합 (중복 제거용)
     const commonKeys = new Set(common.map((group) => group.option.key));
 
+    // 현재 선택된 서브카테고리가 있으면 해당 서브카테고리의 필터만 추가
+    if (currentSubCategoryKey && subCategories[currentSubCategoryKey]) {
+      const target = subCategories[currentSubCategoryKey];
+      const unique = target.filter(
+        (group) =>
+          !commonKeys.has(group.option.key) &&
+          !filterGroups.some((existing) => existing.option.key === group.option.key),
+      );
+      return [...filterGroups, ...unique];
+    }
+
+    // 선택된 서브카테고리가 없으면 모든 서브카테고리 필터를 합집합으로 추가 (기존 동작)
     Object.values(subCategories).forEach((subCategoryFilters) => {
       const uniqueFilters = subCategoryFilters.filter(
         (group) =>

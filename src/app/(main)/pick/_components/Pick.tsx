@@ -11,7 +11,7 @@ import { useLikedStore } from '@/store/useLikedStore';
 
 export default function Pick() {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['likedProducts'],
+    queryKey: ['myLikeProducts'],
     queryFn: getMyLikedProducts,
     staleTime: 60 * 1000,
   });
@@ -55,7 +55,7 @@ export default function Pick() {
           )}
         </div>
         <ProductCardList
-          path={`/pick`}
+          path={`/products/`}
           products={mappedProducts}
           cols={2}
           query={{ from: 'pick' }}
