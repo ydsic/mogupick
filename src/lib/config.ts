@@ -7,10 +7,7 @@ export function getApiBaseUrl(): string {
   }
 
   if (typeof window === 'undefined') {
-    const siteUrl = (process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000').replace(
-      /\/$/,
-      '',
-    );
+    const siteUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/$/, '');
     return `${siteUrl}/proxy/api/v1`;
   }
 
