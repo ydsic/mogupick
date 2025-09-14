@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import NextIcon from '@/assets/icons/common/next-24px.svg';
+import { incrementProductViewCount } from '@/api/product';
 
 interface Product {
   id: number;
@@ -22,7 +23,20 @@ interface HorizontalProductCardProps {
 
 export function HorizontalProductCard({ product, className }: HorizontalProductCardProps) {
   return (
-    <Link href={`/products/${product.id}`} className={cn('w-36 flex-shrink-0', className)}>
+    <Link
+      href={`/products/${product.id}`}
+      className={cn('w-36 flex-shrink-0', className)}
+      onClick={() => {
+        try {
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem(`pv:${product.id}`, String(Date.now()));
+          }
+          void incrementProductViewCount(product.id);
+        } catch (e) {
+          // 실패는 무시
+        }
+      }}
+    >
       <div className="flex w-full flex-col items-start justify-start">
         <div className="relative h-36 w-36 overflow-hidden rounded bg-zinc-300">
           {product.image ? (

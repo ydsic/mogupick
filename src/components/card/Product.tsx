@@ -17,6 +17,7 @@ import { useLikedStore } from '@/store/useLikedStore';
 import Image from 'next/image';
 import AddToCartButton from '@/components/cart/AddToCartButton';
 import { likeProduct } from '@/api/like';
+import { incrementProductViewCount } from '@/api/product';
 
 /**
  * product-card
@@ -94,7 +95,19 @@ function ProductCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link href={`${path}/${p.id}${queryString}`}>
+      <Link
+        href={`${path}/${p.id}${queryString}`}
+        onClick={() => {
+          try {
+            if (typeof window !== 'undefined') {
+              sessionStorage.setItem(`pv:${p.id}`, String(Date.now()));
+            }
+            void incrementProductViewCount(p.id);
+          } catch (e) {
+            // 조회수 API 실패는 탐색을 막지 않음
+          }
+        }}
+      >
         {/* 이미지 영역 */}
         <div
           className={cn('relative mb-2 w-full overflow-hidden rounded bg-[#d9d9d9]', variant.image)}

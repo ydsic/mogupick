@@ -6,6 +6,7 @@ import { useProductsRecentlyViewedMapped } from '@/hooks/products/useProduct';
 import BeginnerFriendlySection from './BeginnerFriendlySection';
 import PeerBestReviewSection from './PeerBestReviewSection';
 import ConstantlyPopularSection from './ConstantlyPopularSection';
+import SimilarProductSection from './SimilarProductSection';
 import useMoreModal from '@/hooks/useMoreModal';
 import MoreModal from '@/components/modal/MoreModal';
 
@@ -19,7 +20,6 @@ export default function ConditionalSections() {
   // 로딩 중이면 스켈레톤 UI 표시
   if (authLoading || (isLoggedIn && recentLoading)) {
     return (
-
       <div className="mb-10">
         <div className="h-6 w-48 animate-pulse rounded bg-gray-200"></div>
         <div className="overflow-x-auto">
@@ -46,12 +46,10 @@ export default function ConditionalSections() {
         {/* 로그인 상태에 따른 조건부 렌더링 */}
         {isLoggedIn ? (
           <>
-            {/* 로그인된 상태: 최근 본 상품과 유사한 상품 */}
-            <HorizontalProductList
-              products={(recentViewedData || []).slice(0, 4)}
-              title="최근 본 상품과 유사한 상품"
-              onMoreClick={() => openModal('recently-viewed')}
-            />
+            {/* 로그인된 상태: 최근 본 상품 */}
+
+            {/* 유사한 상품 섹션 */}
+            <SimilarProductSection openModal={openModal} />
             {/* 내 또래 베스트 리뷰 PICK */}
             <PeerBestReviewSection openModal={openModal} />
           </>

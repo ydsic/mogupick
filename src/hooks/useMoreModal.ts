@@ -7,6 +7,7 @@ import {
   useProductsBeginnerFriendlyMapped,
   useProductsNewMapped,
   useProductsConstantlyPopularMapped,
+  useProductsSimilarMapped,
 } from '@/hooks/products/useProduct';
 
 type ModalType =
@@ -15,6 +16,7 @@ type ModalType =
   | 'beginner-friendly'
   | 'new-products'
   | 'constantly-popular'
+  | 'similar-products'
   | null;
 
 export default function useMoreModal() {
@@ -33,6 +35,7 @@ export default function useMoreModal() {
   const { data: newProductsData, isLoading: newLoading } = useProductsNewMapped(0, 20);
   const { data: constantlyPopularData, isLoading: constantlyPopularLoading } =
     useProductsConstantlyPopularMapped(0, 20);
+  const { data: similarProductsData, isLoading: similarLoading } = useProductsSimilarMapped(0, 20);
 
   // 모달 데이터 및 설정
   const getModalData = () => {
@@ -71,6 +74,13 @@ export default function useMoreModal() {
           type: 'product' as const,
           data: constantlyPopularData?.items || [],
           isLoading: constantlyPopularLoading,
+        };
+      case 'similar-products':
+        return {
+          title: '최근 본 상품과 유사한 상품',
+          type: 'product' as const,
+          data: similarProductsData?.items || [],
+          isLoading: similarLoading,
         };
       default:
         return {

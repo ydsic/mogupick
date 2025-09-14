@@ -11,12 +11,14 @@ import {
   getProductsPeerBestReviews,
   getProductsRecentlyViewed,
   getProductsSimilar,
+  getProductsSimilarMapped,
   ConstantlyPopularMappedResult,
   PeerBestReviewsMappedResult,
   BeginnerFriendlyMappedResult,
   NewProductMappedResult,
   MostViewedMappedResult,
   MappedProductCardItem,
+  SimilarProductMappedResult,
   getProductsPeerBestReviewsMapped,
   getProductsRecentlyViewedMapped,
   getProductsNewMapped,
@@ -166,6 +168,17 @@ export function useProductsMostViewedMapped(page = 0, size = 20, rootCategory?: 
     queryFn: () => getProductsMostViewedMapped(page, size, rootCategory),
     placeholderData: (prev) => prev,
     staleTime: 1000 * 60,
+  });
+}
 
+// 유사한 상품 목록 조회 (매핑 포함)
+export function useProductsSimilarMapped(page = 0, size = 20) {
+  const { isLoggedIn } = useAuth();
+  return useQuery<SimilarProductMappedResult>({
+    queryKey: ['products-similar-mapped', page, size],
+    queryFn: () => getProductsSimilarMapped(page, size),
+    enabled: isLoggedIn, // 로그인된 경우에만 API 호출
+    placeholderData: (prev) => prev,
+    staleTime: 1000 * 60,
   });
 }
