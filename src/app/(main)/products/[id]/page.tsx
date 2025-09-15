@@ -65,6 +65,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
   const data = raw?.data ?? raw ?? {};
 
+  console.log('detail data', data, raw);
+
   const gallery: string[] = Array.isArray(data.productImageUrls) ? data.productImageUrls : [];
   const detailImages: string[] = Array.isArray(data.productDescriptionImageUrls)
     ? data.productDescriptionImageUrls

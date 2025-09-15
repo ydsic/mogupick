@@ -33,6 +33,8 @@ export default function ProductDetail({
   gallery,
   detailImages,
 }: ProductDetailProps) {
+  console.log('product', product);
+
   const descriptionRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
 
