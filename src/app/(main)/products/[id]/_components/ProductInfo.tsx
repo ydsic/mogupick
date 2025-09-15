@@ -17,6 +17,16 @@ interface Props {
   product: Product;
 }
 
+// http 이미지를 https로 보정(혼합 콘텐츠 방지)
+function toHttps(url?: string) {
+  if (!url) return undefined;
+  try {
+    return url.replace(/^http:\/\//i, 'https://');
+  } catch {
+    return url;
+  }
+}
+
 export default function ProductInfo({ product }: Props) {
   // 서버에서 받은 초기 값 기반으로 로컬 상태 유지 (클라이언트에서 상세 응답으로 보강)
   const [detail, setDetail] = useState<Product>(product);
@@ -28,9 +38,7 @@ export default function ProductInfo({ product }: Props) {
     (async () => {
       try {
         const url = `${getApiBaseUrl()}/products/${product.id}/detail`;
-        console.log('[ProductInfo] will fetch detail', { id: product.id, url });
         const res = await getProduct(product.id);
-        console.log('[ProductInfo] client detail response', res);
 
         // 응답 래퍼 처리 (status/message/data)
         const data: any = (res as any)?.data ?? res ?? {};
@@ -69,7 +77,6 @@ export default function ProductInfo({ product }: Props) {
     toggleLike(detail.id);
     try {
       await likeProduct(detail.id);
-      console.log('[ProductInfo] 좋아요 토글 성공', { productId: detail.id, liked: !liked });
       liked ? toast.success('좋아요 취소') : toast.success('좋아요');
     } catch (e) {
       console.error('[ProductInfo] 좋아요 토글 실패, 롤백', e);
@@ -79,17 +86,13 @@ export default function ProductInfo({ product }: Props) {
     }
   };
 
+  const imgSrc = toHttps(detail.imageUrl);
+
   return (
     <div>
       <div className="relative aspect-[1/1] bg-gray-200">
-        {detail.imageUrl && (
-          <Image
-            src={detail.imageUrl}
-            alt={detail.title}
-            fill
-            className="object-cover"
-            unoptimized
-          />
+        {imgSrc && (
+          <Image src={imgSrc} alt={detail.title} fill className="object-cover" unoptimized />
         )}
       </div>
 

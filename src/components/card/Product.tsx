@@ -19,6 +19,16 @@ import AddToCartButton from '@/components/cart/AddToCartButton';
 import { likeProduct } from '@/api/like';
 import { incrementProductViewCount } from '@/api/product';
 
+// http 이미지를 https로 보정(혼합 콘텐츠 방지)
+function toHttps(url?: string) {
+  if (!url) return undefined;
+  try {
+    return url.replace(/^http:\/\//i, 'https://');
+  } catch {
+    return url;
+  }
+}
+
 /**
  * product-card
  */
@@ -89,6 +99,8 @@ function ProductCard({
     };
   }, []);
 
+  const imgSrc = toHttps(p.imageUrl);
+
   return (
     <div
       className={cn('flex flex-col rounded bg-white', className)}
@@ -112,9 +124,9 @@ function ProductCard({
         <div
           className={cn('relative mb-2 w-full overflow-hidden rounded bg-[#d9d9d9]', variant.image)}
         >
-          {p.imageUrl && (
+          {imgSrc && (
             <Image
-              src={p.imageUrl}
+              src={imgSrc}
               alt={p.title}
               fill
               sizes="(max-width:768px) 33vw, 200px"

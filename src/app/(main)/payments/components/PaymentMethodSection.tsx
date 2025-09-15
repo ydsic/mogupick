@@ -31,7 +31,6 @@ export default function PaymentMethodSection({ savePayment, onChangeSavePayment 
       try {
         await registerPaymentMethod(authKey);
         if (!mounted) return;
-        console.log('[PAYMENTS] registerPaymentMethod OK');
       } catch (e) {
         console.error('[PAYMENTS] registerPaymentMethod 실패:', e);
       }

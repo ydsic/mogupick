@@ -95,19 +95,6 @@ export default function AddToCartButton({
         firstDeliveryDate,
       };
 
-      if (process.env.NODE_ENV !== 'production') {
-        // 디버그: 토큰은 출력하지 않음
-        console.log('[AddToCartButton] request', {
-          productId,
-          memberId,
-          ...requestBody,
-        });
-        console.log('[AddToCartButton] auth store state:', {
-          hasMemberId: !!memberId,
-          hasAccessToken: !!useAuthStore.getState().accessToken,
-        });
-      }
-
       // 5) 호출
       await createCart(memberId, productId, requestBody);
 

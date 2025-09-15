@@ -17,7 +17,6 @@ export async function chargeBilling(orderId: string) {
 
     const url = `${getApiBaseUrl()}/billing/charge`;
     const body: ChargeBillingBody = { orderId };
-    console.log('[BILLING][charge][request]', { url, method: 'POST', body });
 
     const res = await fetch(url, {
       method: 'POST',
@@ -36,10 +35,8 @@ export async function chargeBilling(orderId: string) {
 
     try {
       const json = (await res.json()) as ChargeBillingResponse;
-      console.log('[BILLING][charge][response:json]', json);
       return json;
     } catch {
-      console.log('[BILLING][charge][response:empty]');
       return true as unknown as ChargeBillingResponse;
     }
   } catch (e) {
@@ -67,7 +64,6 @@ export async function registerPaymentMethod(authKey: string) {
 
     const url = `${getApiBaseUrl()}/billing/payment-methods`;
     const body: RegisterPaymentMethodBody = { authKey };
-    console.log('[BILLING][register][request]', { url, method: 'POST', body });
 
     const res = await fetch(url, {
       method: 'POST',
@@ -86,10 +82,8 @@ export async function registerPaymentMethod(authKey: string) {
 
     try {
       const json = (await res.json()) as RegisterPaymentMethodResponse;
-      console.log('[BILLING][register][response:json]', json);
       return json;
     } catch {
-      console.log('[BILLING][register][response:empty]');
       return true as unknown as RegisterPaymentMethodResponse;
     }
   } catch (e) {

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import SubscribeIcon from '@/assets/icons/common/subscription-16px.svg';
 import type { SubscriptionItem } from '@/api/subscription';
+import Image from 'next/image';
 
 function formatWon(n: number) {
   try {
@@ -19,16 +20,32 @@ function formatKoreanDate(iso?: string) {
   return `${m}월 ${day}일`;
 }
 
+// http 이미지를 https로 보정(혼합 콘텐츠 방지)
+function toHttps(url?: string) {
+  if (!url) return undefined;
+  try {
+    return url.replace(/^http:\/\//i, 'https://');
+  } catch {
+    return url;
+  }
+}
+
 export default function SubscribeListItem({ item }: { item: SubscriptionItem }) {
   const progressLabel = `${item.progressRound}회차 구독중`;
   const price = formatWon(item.price);
   const nextBilling = formatKoreanDate(item.nextBillingDate);
   // deliveryCycle 예: "1달" / "2주" 등 서버 포맷을 그대로 표시
 
+  const imgSrc = toHttps(item.productThumbnailUrl || item.productImageUrl || item.imageUrl);
+
   return (
     <li className="flex flex-col gap-3 rounded-sm bg-white p-4">
       <div className="flex gap-3">
-        <div className="aspect-[square] w-28 rounded-[4px] bg-[var(--grey-300)]" />
+        <div className="relative aspect-[1/1] w-28 overflow-hidden rounded-[4px] bg-[var(--grey-300)]">
+          {imgSrc && (
+            <Image src={imgSrc} alt={item.productName} fill className="object-cover" unoptimized />
+          )}
+        </div>
         <div className="flex-1">
           <span className="mb-1 block text-sm text-[#a6a6a6]">{progressLabel}</span>
           <div className="flex items-center justify-between">

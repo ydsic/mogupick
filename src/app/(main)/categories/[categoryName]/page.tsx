@@ -261,13 +261,6 @@ export default function CategoryPage() {
   // 디버깅: 현재 페이지에서 필터링된 리스트 콘솔 출력
   useEffect(() => {
     // 페이지 진입/필터 변경/탭 변경/데이터 로딩 후 업데이트 시 모두 출력
-    console.log('[CategoryPage] filtered list', {
-      rootCategory: apiCategory,
-      subCategoryTab: category,
-      subCategoryKey: selectedSubKey,
-      count: finalList.length,
-      items: finalList,
-    });
   }, [apiCategory, category, selectedSubKey, finalList]);
 
   const Toolbar = ({ total }: { total: number }) => (

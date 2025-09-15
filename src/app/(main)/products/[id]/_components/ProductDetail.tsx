@@ -145,7 +145,7 @@ export default function ProductDetail({
           setIntroOpen(false);
           setFlowOpen(true); // Step2 BottomSheet 열기
         }}
-        onLike={() => console.log('좋아요 클릭')}
+        onLike={() => {}}
         isLiked={false}
       /> */}
 
@@ -157,7 +157,6 @@ export default function ProductDetail({
         pricePerItem={product.price}
         productId={product.id}
         onConfirm={({ firstDeliveryDate, subscriptionOptionText }) => {
-          console.log('확정 완료:', firstDeliveryDate, subscriptionOptionText);
           // TODO: 장바구니 페이지로 이동 등 처리
         }}
       /> */}

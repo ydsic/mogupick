@@ -17,7 +17,6 @@ export async function createOrder(body: CreateOrderBody) {
     }
 
     const url = `${getApiBaseUrl()}/orders`;
-    console.log('[ORDER][request]', { url, method: 'POST', body });
 
     const res = await fetch(url, {
       method: 'POST',
@@ -37,10 +36,8 @@ export async function createOrder(body: CreateOrderBody) {
     // 서버가 본문을 반환하지 않을 수도 있으므로 안전 처리
     try {
       const json = (await res.json()) as CreateOrderResponse;
-      console.log('[ORDER][response:json]', json);
       return json;
     } catch {
-      console.log('[ORDER][response:empty]');
       return true as unknown as CreateOrderResponse;
     }
   } catch (e) {

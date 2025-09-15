@@ -20,8 +20,6 @@ export default function SuccessPage() {
 
   useEffect(() => {
     // 성공 리다이렉트로 전달된 파라미터 확인
-    console.log('[SUCCESS PAGE] customerKey:', customerKey, 'authKey:', authKey);
-
     if (!authKey) {
       setError('authKey가 없습니다. 결제가 정상적으로 완료되지 않았습니다.');
       return;
@@ -46,10 +44,7 @@ export default function SuccessPage() {
         const text = await res.text();
         try {
           const json = text ? JSON.parse(text) : null;
-          console.log('[POST billing/payment-methods] status:', res.status, 'json:', json);
-        } catch {
-          console.log('[POST billing/payment-methods] status:', res.status, 'text:', text);
-        }
+        } catch {}
 
         setStatus('done');
       } catch (e) {

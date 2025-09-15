@@ -144,7 +144,6 @@ export default function PaymentsPage() {
     const timer = window.setTimeout(async () => {
       try {
         const res = await createDeliveryAddress(body);
-        console.log('[DELIVERY][auto] 요청 body:', body, '응답:', res);
         // 서버가 id를 반환하면 최신 addressId로 갱신
         const newId = Number((res as any)?.id ?? (res as any)?.addressId);
         if (Number.isFinite(newId)) setAddressId(newId);
@@ -236,7 +235,6 @@ export default function PaymentsPage() {
           const { body, signature } = buildAddressPayload();
           if (lastPostedSignatureRef.current !== signature) {
             const res = await createDeliveryAddress(body);
-            console.log('[DELIVERY][submit] 요청 body:', body, '응답:', res);
             const newId = Number((res as any)?.id ?? (res as any)?.addressId);
             if (Number.isFinite(newId)) {
               setAddressId(newId);
@@ -305,10 +303,8 @@ export default function PaymentsPage() {
         cartItemIds: orderCartItemIds,
         addressId: Number(resolvedAddressId),
       };
-      console.log('[ORDER] createOrder 요청:', orderBody);
 
       const orderRes = await createOrder(orderBody);
-      console.log('[ORDER] createOrder 응답:', orderRes);
 
       // 주문 응답에서 orderId 추출 후 최종 결제 청구
       const orderId: string | undefined =
@@ -321,8 +317,6 @@ export default function PaymentsPage() {
 
       try {
         const billingRes = await chargeBilling(orderId);
-        console.log('[BILLING] charge 응답:', billingRes);
-
         // 결제 성공 정보를 성공 페이지에서 표시할 수 있도록 저장
         // 선택된 UI 항목 및 합계 계산
         const selectedUiItems = uiCart.filter((it) => orderCartItemIds.includes(it.id));

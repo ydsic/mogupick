@@ -105,12 +105,6 @@ export default function SubscribeFlowBottomSheet({
           subscriptionOptionId: optionId,
           firstDeliveryDate,
         });
-        console.log('[SubscribeFlow] 장바구니 담기 완료', {
-          productId,
-          subscriptionOptionText,
-          firstDeliveryDate,
-          subscriptionOptionId: optionId,
-        });
       }
 
       // 콜백 (장바구니 페이지의 옵션 변경 시 사용)

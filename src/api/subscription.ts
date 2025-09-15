@@ -53,6 +53,11 @@ export interface SubscriptionItem {
   status: SubscriptionStatus | string;
   createdAt: string; // ISO datetime
   updatedAt: string; // ISO datetime
+  // 선택: 서버가 함께 내려줄 수 있는 필드들(이미지/상품 식별자 등)
+  productId?: number;
+  productImageUrl?: string;
+  productThumbnailUrl?: string;
+  imageUrl?: string;
 }
 
 // 서버가 배열 또는 { data: [...] } 형태로 줄 가능성을 모두 수용

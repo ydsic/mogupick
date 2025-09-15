@@ -65,8 +65,6 @@ export default function PaymentSuccessPage() {
 
         const url = (id: number) => buildUrl(`/carts/items/${id}`);
 
-        console.log('[CART][DELETE][request] ids=', targetIds);
-
         const results = await Promise.allSettled(
           targetIds.map((id) =>
             authFetch(url(id), {
@@ -87,8 +85,6 @@ export default function PaymentSuccessPage() {
             }),
           ),
         );
-
-        console.log('[CART][DELETE][response]', results);
 
         // 필요 시 성공 이후 localStorage 정리 옵션
         // localStorage.removeItem('payments.lastSuccess');
@@ -129,7 +125,6 @@ export default function PaymentSuccessPage() {
               <div className="flex flex-col text-[#242424]">
                 <p className="text-lg font-semibold">1회차 도착예정일</p>
                 <p className="text-2xl font-bold">{expectedArrivalDate}</p>
-
               </div>
               <p className="text-[13px] font-semibold text-[#a6a6a6]">
                 배송사 사정으로 1~2일 도착예정일이 다를 수 있습니다.
