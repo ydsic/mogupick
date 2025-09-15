@@ -42,7 +42,6 @@ export default function CartApiTestPage() {
         firstDeliveryDate: payload.firstDeliveryDate,
       };
 
-      console.log('[Test] 로그인식 요청 시작:', { url, body });
       const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -58,7 +57,6 @@ export default function CartApiTestPage() {
       }
 
       const data = await res.json();
-      console.log('[Test] 로그인식 성공:', data);
       setResult(data);
     } catch (e: any) {
       console.error('[Test] 로그인식 실패:', e);
@@ -87,9 +85,7 @@ export default function CartApiTestPage() {
         firstDeliveryDate: payload.firstDeliveryDate,
       };
 
-      console.log('[Test] apiFetch 요청 시작:', body);
       const data = await apiFetch('/carts', 'POST', { body });
-      console.log('[Test] apiFetch 성공:', data);
       setResult(data);
     } catch (e: any) {
       console.error('[Test] apiFetch 실패:', e);

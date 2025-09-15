@@ -74,17 +74,6 @@ export async function apiFetch<T>(
 
   const finalUrl = `${baseUrl}${url}`;
 
-  if (process.env.NODE_ENV !== 'production') {
-    const { Authorization, ...hdr } = headers;
-    console.log('[apiFetch] request', {
-      method,
-      url: finalUrl,
-      headers: hdr,
-      hasAuth: !!Authorization,
-      bodyPreview: isFormData ? '[FormData]' : options.body,
-    });
-  }
-
   const res = await fetch(finalUrl, {
     method,
     headers,

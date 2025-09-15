@@ -48,7 +48,6 @@ export default function CartPage() {
       try {
         setLoading(true);
         const raw = await getMyCart();
-        console.log('장바구니 API 응답(raw):', raw);
         const mapped = mapCartResponseToUI(raw);
         if (mounted) {
           setCartItems(mapped);
@@ -110,7 +109,6 @@ export default function CartPage() {
     try {
       await Promise.all(ids.map((id) => deleteCartItem(id)));
       const raw = await getMyCart();
-      console.log('선택삭제 후 장바구니 API 응답(raw):', raw);
       const mapped = mapCartResponseToUI(raw);
       setCartItems(mapped);
     } catch (e) {
@@ -168,9 +166,6 @@ export default function CartPage() {
 
   // 모달 적용 처리: 서버 patchCart 연동
   const handleApplySubscribeOption = async (payload: SubscribeConfirmPayload) => {
-    // 확인 시 어떤 값이 넘어오는지 출력
-    console.log('옵션 변경 확인 payload:', payload);
-
     if (!activeItem) return;
     if (!memberId) {
       alert('로그인이 필요합니다.');
@@ -193,7 +188,6 @@ export default function CartPage() {
 
       // 4) 서버에서 장바구니 재조회하여 동기화
       const raw = await getMyCart();
-      console.log('옵션 변경 후 장바구니 API 응답(raw):', raw);
       const mapped = mapCartResponseToUI(raw);
       setCartItems(mapped);
 
@@ -216,7 +210,6 @@ export default function CartPage() {
       // 주문 생성은 결제페이지에서 addressId를 포함하여 수행합니다.
       // 여기서는 선택된 productId 목록만 쿼리로 전달합니다.
       const query = `cartItemIds=${encodeURIComponent(selectedProductIds.join(','))}`;
-      console.log('[Cart] 결제페이지 이동 (선택 productIds):', selectedProductIds);
       router.push(`/payments?${query}`);
     } catch (e) {
       console.error('[Cart] 결제 페이지 이동 실패', e);

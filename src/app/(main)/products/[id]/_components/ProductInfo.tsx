@@ -28,9 +28,7 @@ export default function ProductInfo({ product }: Props) {
     (async () => {
       try {
         const url = `${getApiBaseUrl()}/products/${product.id}/detail`;
-        console.log('[ProductInfo] will fetch detail', { id: product.id, url });
         const res = await getProduct(product.id);
-        console.log('[ProductInfo] client detail response', res);
 
         // 응답 래퍼 처리 (status/message/data)
         const data: any = (res as any)?.data ?? res ?? {};
@@ -69,7 +67,6 @@ export default function ProductInfo({ product }: Props) {
     toggleLike(detail.id);
     try {
       await likeProduct(detail.id);
-      console.log('[ProductInfo] 좋아요 토글 성공', { productId: detail.id, liked: !liked });
       liked ? toast.success('좋아요 취소') : toast.success('좋아요');
     } catch (e) {
       console.error('[ProductInfo] 좋아요 토글 실패, 롤백', e);

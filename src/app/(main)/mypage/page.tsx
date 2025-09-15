@@ -39,12 +39,9 @@ export default function MyPagePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('Mypage session', session);
-
   // API 요청 함수
   const fetchUserData = async () => {
     if (!session?.user?.accessToken) {
-      console.log('No access token available');
       return;
     }
 
@@ -54,7 +51,6 @@ export default function MyPagePage() {
     try {
       // 소셜 로그인 API 함수 사용
       const data = await kakaoSocialLogin(session.user.accessToken);
-      console.log('User data from API:', data);
       setUserData(data);
     } catch (err) {
       console.error('Fetch error:', err);
@@ -74,7 +70,6 @@ export default function MyPagePage() {
   // 추가: 마이페이지 진입 시 /members/me 호출하여 콘솔 출력 + 프로필 저장
   useEffect(() => {
     if (!accessToken) {
-      console.log('[MY PAGE] No access token. Skip calling /members/me');
       return;
     }
 
@@ -82,7 +77,6 @@ export default function MyPagePage() {
 
     (async () => {
       try {
-        console.log('[MY PAGE] calling /members/me ...');
         const res = await fetch(
           'http://ec2-3-37-125-93.ap-northeast-2.compute.amazonaws.com:8080/api/v1/members/me',
           {
@@ -102,7 +96,6 @@ export default function MyPagePage() {
         }
 
         const json = await res.json();
-        console.log('[MY PAGE] /members/me response:', json);
         const d = json?.data || json; // 응답 포맷 유연 처리
         if (d?.email || d?.name) {
           setProfile({

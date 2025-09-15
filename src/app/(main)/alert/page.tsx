@@ -12,7 +12,6 @@ export default function AlertPage() {
     (async () => {
       try {
         const res = await getNotifications();
-        console.log('[GET /api/v1/notifications] 응답:', res);
         const list = Array.isArray(res) ? res : (res as any)?.data;
         setNotifications(Array.isArray(list) ? list : []);
       } catch (e) {
@@ -23,7 +22,7 @@ export default function AlertPage() {
   }, []);
 
   const handleMarkAllAsRead = () => {
-    console.log('모든 알림을 읽음 처리');
+    // 모든 알림을 읽음 처리
   };
 
   return (

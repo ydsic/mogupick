@@ -87,11 +87,8 @@ export default function OrderItemsSection({ onlyIds }: { onlyIds?: number[] }) {
         }
 
         const raw = await getMyCart();
-        console.log('[Payments] 장바구니 API 응답(raw):', raw);
         const mapped = mapCartResponseToUI(raw);
-        console.log('[Payments] 장바구니 매핑 결과:', mapped);
         const meta = extractCartMeta(raw);
-        console.log('[Payments] meta(displayText, firstDate):', meta);
 
         const filtered = mapped.filter((it) => {
           const key = typeof it.productId === 'number' ? it.productId : it.id;

@@ -50,7 +50,6 @@ export default function HomePage() {
     (async () => {
       try {
         const res = await getProductsSimilarPaged(0, 20);
-        console.log('[GET /api/v1/products/similar] 응답:', res);
       } catch (e) {
         console.error('[GET /api/v1/products/similar] 실패:', e);
       }
