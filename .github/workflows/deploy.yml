@@ -21,6 +21,8 @@ jobs:
 
           timestamp=$(TZ='Asia/Seoul' date -d "${{ github.event.head_commit.timestamp }}" +"%m월 %d일 %H:%M")
           echo "formatted-time=${timestamp} (KST)" >> $GITHUB_OUTPUT
+          commit_title=$(echo "${{ github.event.head_commit.message }}" | head -n1)
+          echo "commit-title=${commit_title}" >> $GITHUB_OUTPUT
 
       - name: Send Discord notification
         uses: Ilshidur/action-discord@master
@@ -28,17 +30,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: |
-            ## 🎉 사이트가 업데이트 되었어요! PM, PD분들은 테스트 해보시고 말씀해주세요!
+            ## 🎉 최종 배포를 위한 메인 브런치 푸쉬
+            
+            ** https://mogupick.vercel.app **
 
-            **👤 Developer:** `${{ steps.dev-name.outputs.name }}`
-            **⏰ Time:** `${{ steps.dev-name.outputs.formatted-time }}`
-
-            **💭 Commit Message:**
-            ```
-            ${{ github.event.head_commit.message }}
-            ```
-            **🔗 GitHub Link:** <${{ github.event.head_commit.url }}>
-
-            **🔗 Prototype Link:** https://mogupick-prototype.vercel.app
-
-            **🔗 Update Link:** https://www.notion.so/goormkdx/Prototype-255c0ff4ce31805facf6c8fbfe7ddc12

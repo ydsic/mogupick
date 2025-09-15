@@ -1,26 +1,195 @@
 @import 'tailwindcss';
 
+/* ---------- Design Tokens ---------- */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
+  --foreground: #000;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* --- main Color --- */
+  --main-color: #7ab335;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* --- Green Color Palette --- */
+  --color-green-50: #f3f9eb;
+  --color-green-100: #def3c4;
+  --color-green-200: #cdeea7;
+  --color-green-300: #b7e67f;
+  --color-green-400: #a9e166;
+  --color-green-500: #93d940;
+  --color-green-600: #86c53a;
+  --color-green-700: #689a2d;
+  --color-green-800: #517723;
+  --color-green-900: #3e5b1b;
+  --Primary-Heavy-500: #7ab335;
+
+  /* --- Colors (role-based) --- */
+  --color-primary: #434343;
+  --color-secondary: #7ab335;
+  --color-background: #ffffff;
+  --color-surface: #f2f4f8;
+  --color-text-primary: #242424;
+  --color-text-secondary: #5f6368;
+  --color-text-disabled: #80868b;
+  --color-danger: #d98d00;
+  --color-success: #7ab335;
+  --color-warning: #eeae00;
+  --color-info: #3e5b1b;
+
+  /* --- Green palette --- */
+  --green-50: #f3f9eb;
+  --green-100: #d9edc2;
+  --green-200: #c7e4a4;
+  --green-300: #aed87b;
+  --green-400: #9ed161;
+  --green-500: #86c53a;
+  --green-600: #7ab335;
+  --green-700: #5f8c29;
+  --green-800: #4a6c20;
+  --green-900: #385318;
+
+  /* --- Yellow palette --- */
+  --yellow-50: #fefae9;
+  --yellow-100: #fdeebc;
+  --yellow-200: #fce69c;
+  --yellow-300: #fbdb6e;
+  --yellow-400: #fad452;
+  --yellow-500: #f9c927;
+  --yellow-600: #eeae00;
+  --yellow-700: #d98d00;
+  --yellow-800: #8e5d00;
+  --yellow-900: #644000;
+
+  /* --- Grey palette --- */
+  --grey-100: #f2f2f2;
+  --grey-200: #d6d6d6;
+  --grey-300: #d9d9d9;
+  --grey-400: #c8c8c8;
+  --grey-500: #a6a6a6;
+  --grey-600: #898989;
+  --grey-700: #6f6f6f;
+  --grey-800: #3e3e3e;
+  --grey-900: #1f1f1f;
+
+  /* --- Radius --- */
+  --radius-none: 0px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-3xl: 36px;
+  --radius-4xl: 40px;
+  --radius-5xl: 48px;
+
+  /* --- Spacing --- */
+  --unit-0: 0px;
+  --unit-1: 1px;
+  --unit-2: 2px;
+  --unit-4: 4px;
+  --unit-8: 8px;
+  --unit-12: 12px;
+  --unit-16: 16px;
+  --unit-20: 20px;
+  --unit-24: 24px;
+  --unit-32: 32px;
+  --unit-36: 36px;
+  --unit-40: 40px;
+  --unit-48: 48px;
+
+  /* --- Fonts --- */
+  --font-sans: 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Fira Code', monospace;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+
+  /* Focus outline */
+  --focus-outline: 2px solid var(--color-text-primary);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  /* 모바일 최적화 */
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  cursor: pointer;
+}
+
+li,
+ol,
+dl,
+ul {
+  list-style: none;
+}
+
+/* 모바일 전용 최적화 */
+* {
+  box-sizing: border-box;
+}
+
+/* 모바일에서 300ms 탭 지연 제거 */
+a,
+button,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* 모바일 뷰포트 높이 문제 해결 */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* 안전 영역 패딩 (노치 대응) */
+.safe-area {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* 스크롤바 숨기기 (모든 브라우저) */
+/* Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* IE/Edge */
+body {
+  -ms-overflow-style: none;
+}
+
+/* 가로 스크롤을 위한 스타일 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 가로 스크롤 컨테이너 스타일링 */
+.horizontal-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
 }
