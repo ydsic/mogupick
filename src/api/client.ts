@@ -72,7 +72,23 @@ export async function apiFetch<T>(
 
   if (!isFormData) headers['Content-Type'] = 'application/json';
 
-  const finalUrl = `${baseUrl}${url}`;
+  // 서버에서는 절대 URL이 필요함. baseUrl이 상대경로('/proxy...')이면 origin과 결합
+  let finalUrl: string;
+  const path = url.startsWith('/') ? url : `/${url}`;
+  if (typeof window === 'undefined') {
+    if (/^https?:\/\//i.test(baseUrl)) {
+      finalUrl = `${baseUrl}${path}`;
+    } else {
+      const originEnv = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_ORIGIN;
+      const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
+      const origin = originEnv || vercelUrl || 'http://localhost:3000';
+      const base = baseUrl.replace(/\/$/, '');
+      finalUrl = `${origin}${base}${path}`;
+    }
+  } else {
+    // 브라우저에서는 상대경로 허용
+    finalUrl = `${baseUrl}${path}`;
+  }
 
   const res = await fetch(finalUrl, {
     method,

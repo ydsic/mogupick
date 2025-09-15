@@ -9,6 +9,16 @@ interface ProductDescriptionProps {
   images?: string[];
 }
 
+// http 이미지를 https로 보정(혼합 콘텐츠 방지)
+function toHttps(url?: string) {
+  if (!url) return undefined;
+  try {
+    return url.replace(/^http:\/\//i, 'https://');
+  } catch {
+    return url;
+  }
+}
+
 const ProductDescription = forwardRef<HTMLDivElement, ProductDescriptionProps>(
   ({ onClickDescription, onClickReview, images }, ref) => {
     const [expanded, setExpanded] = useState(false);
@@ -38,9 +48,18 @@ const ProductDescription = forwardRef<HTMLDivElement, ProductDescriptionProps>(
           >
             {images && images.length > 0 ? (
               <div className="flex flex-col items-center">
-                {images.map((src, idx) => (
-                  <img key={idx} src={src} alt={`description-${idx}`} className="w-full" />
-                ))}
+                {images.map((src, idx) => {
+                  const safeSrc = toHttps(src);
+                  return (
+                    <img
+                      key={idx}
+                      src={safeSrc}
+                      alt={`description-${idx}`}
+                      className="w-full"
+                      loading="lazy"
+                    />
+                  );
+                })}
               </div>
             ) : (
               <div className="h-[800px] bg-[var(--grey-300)]" />
