@@ -97,7 +97,10 @@ export default function SubscribeFlowBottomSheet({
 
       // productId가 주어진 경우에만 장바구니 담기 (상품 상세에서 사용)
       if (productId) {
-        if (!memberId) throw new Error('로그인이 필요합니다.');
+        if (!memberId) {
+          toast.error('로그인 후 이용해주세요.');
+          throw new Error('로그인이 필요합니다.');
+        }
         await createCart(memberId, productId, {
           subscriptionOptionId: optionId,
           firstDeliveryDate,

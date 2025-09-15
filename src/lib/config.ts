@@ -5,6 +5,7 @@ export function getApiBaseUrl(): string {
     // 마지막 슬래시는 제거하여 일관성 유지
     return envBase.replace(/\/$/, '');
   }
+
   // 기본값: 프록시 경로
   return '/proxy/api/v1';
 }

@@ -17,6 +17,8 @@ import ProductInfo from './ProductInfo';
 import React, { useRef, useState } from 'react';
 import SubscribeFlowBottomSheet from '@/components/bottomsheet/subscribe/SubscribeFlowBottomSheet';
 import SubscribeIntroBottomSheet from '@/components/bottomsheet/subscribe/SubscribeIntroBottomSheet';
+import { incrementProductViewCount } from '@/api/product';
+import { useEffect } from 'react';
 
 interface ProductDetailProps {
   reviews: Review[];
@@ -31,12 +33,20 @@ export default function ProductDetail({
   gallery,
   detailImages,
 }: ProductDetailProps) {
+  console.log('product', product);
+
   const descriptionRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
 
   const [isIntroOpen, setIntroOpen] = useState(true);
   // Step2(일정/주기) BottomSheet 제어만 유지
   const [isFlowOpen, setFlowOpen] = useState(false);
+
+  useEffect(() => {
+    if (product?.id) {
+      void incrementProductViewCount(product.id);
+    }
+  }, [product?.id]);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     if (ref.current) {
@@ -77,7 +87,9 @@ export default function ProductDetail({
           <div>
             <div className="flex items-center gap-1">
               <RatingStar rating={product.rating} />
-              <strong className="text-base font-semibold text-black">{product.rating}</strong>
+              <strong className="text-base font-semibold text-black">
+                {product.rating.toFixed()}
+              </strong>
               <span className="text-[13px] text-[var(--frey-700)]">({product.reviewCount})</span>
             </div>
 
@@ -157,7 +169,7 @@ export default function ProductDetail({
             className="flex-1 rounded bg-black py-3 text-center text-white"
             onClick={() => setFlowOpen(true)}
           >
-            구독하기
+            장바구니 담기
           </button>
         </div>
       </div>

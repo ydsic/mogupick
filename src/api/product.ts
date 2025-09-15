@@ -1,14 +1,30 @@
 import { apiFetch } from './client';
+import { getApiBaseUrl } from '@/lib/config';
 
 export interface Product {
   rootCategory: string;
   subCategory: string;
   brandId: number;
-  name: string;
+  productName: string;
   price: number;
   options: object;
-  productImages: string[]; // 대표 이미지들
-  productDescriptionImages: string[]; // 상세 이미지들
+  productImageUrls: string[]; // 대표 이미지들
+  productDescriptionImageUrls: string[]; // 상세 이미지들
+}
+export interface ProductDetailResponse {
+  status: number;
+  message: string;
+  data: {
+    productId: number;
+    productName: string;
+    productImageUrls: string[];
+    productDescriptionImageUrls: string[];
+    price: number;
+    brandId: number;
+    brandName: string;
+    averageRating: number;
+    reviewCount: number;
+  };
 }
 
 // 꾸준히 사랑받는 상품 API 관련 타입
@@ -76,12 +92,12 @@ export const createProduct = async (data: Product) => {
   formData.append('rootCategory', data.rootCategory);
   formData.append('subCategory', data.subCategory);
   formData.append('brandId', data.brandId.toString());
-  formData.append('name', data.name);
+  formData.append('name', data.productName);
   formData.append('price', data.price.toString());
   formData.append('options', JSON.stringify(data.options));
 
-  data.productImages.forEach((file) => formData.append('productImages', file));
-  data.productDescriptionImages.forEach((file) =>
+  data.productImageUrls.forEach((file) => formData.append('productImages', file));
+  data.productDescriptionImageUrls.forEach((file) =>
     formData.append('productDescriptionImages', file),
   );
 
@@ -89,7 +105,8 @@ export const createProduct = async (data: Product) => {
 };
 
 // 상품 상세조회
-export const getProduct = (productId: number) => apiFetch<Product>(`/products/${productId}/detail`);
+export const getProduct = (productId: number) =>
+  apiFetch<ProductDetailResponse>(`/products/${productId}/detail`);
 // 유사상품 목록조회
 export const getProductsSimilar = () => apiFetch<Product[]>('/products/similar');
 
@@ -548,5 +565,117 @@ export const getProductsMostViewedMapped = async (
   } catch (e: any) {
     console.error('[getProductsMostViewedMapped] error', e?.message || e);
     return { items: [], page, size, totalPages: 1 };
+  }
+};
+
+// 상품 조회수 증가 (상세 진입 시 호출)
+export const incrementProductViewCount = async (productId: number): Promise<void> => {
+  try {
+    // accessToken 가져오기 (store → localStorage 순)
+    let accessToken: string | undefined;
+    try {
+      const mod = await import('@/store/useAuthStore');
+      const state = mod.useAuthStore.getState();
+      if (state?.accessToken) accessToken = state.accessToken;
+    } catch {}
+
+    if (!accessToken) {
+      try {
+        const { getLocalAccessToken } = await import('@/utils/oauthTokens');
+        const local = getLocalAccessToken();
+        if (local) accessToken = local;
+      } catch {}
+    }
+
+    const url = `${getApiBaseUrl()}/products/view-count/${productId}/increment`;
+    await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  } catch (e) {
+    // 실패해도 UX를 막지 않음
+    console.warn('[incrementProductViewCount] failed', e);
+  }
+};
+
+// 유사한 상품 API 관련 타입
+export interface SimilarProductItemRaw {
+  product: {
+    productId: number;
+    productImageUrl: string;
+    productName: string;
+    productPrice: number;
+    createdAt: string;
+  };
+  brand: { brandId: number; brandName: string };
+  review: { rating: number; reviewCount: number };
+  option?: {
+    id: string;
+    productId: number;
+    rootCategory: string;
+    subCategory: string;
+    options: any;
+  };
+}
+
+export interface SimilarProductResponse {
+  status: number;
+  message: string;
+  data: {
+    content: SimilarProductItemRaw[];
+    size: number;
+    page: number;
+    totalPages: number;
+  };
+}
+
+export interface SimilarProductMappedResult {
+  items: MappedProductCardItem[];
+  page: number;
+  size: number;
+  totalPages: number;
+}
+
+// 유사한 상품 목록 조회 (매핑 포함)
+export const getProductsSimilarMapped = async (
+  page = 0,
+  size = 20,
+): Promise<SimilarProductMappedResult> => {
+  try {
+    const res = await apiFetch<SimilarProductResponse>(
+      `/products/similar?page=${page}&size=${size}`,
+    );
+
+    const mapped: MappedProductCardItem[] = res.data.content.map((item: SimilarProductItemRaw) => ({
+      id: item.product.productId,
+      store: item.brand?.brandName ?? '',
+      title: item.product.productName,
+      price: item.product.productPrice,
+      rating: item.review?.rating ?? 0,
+      reviewCount: item.review?.reviewCount ?? 0,
+      imageUrl: item.product.productImageUrl,
+      rootCategory: item.option?.rootCategory,
+      subCategory: item.option?.subCategory,
+      createdAt: item.product?.createdAt,
+      options: item.option?.options ?? null,
+    }));
+
+    return {
+      items: mapped,
+      page: res.data.page,
+      size: res.data.size,
+      totalPages: res.data.totalPages,
+    };
+  } catch (e: any) {
+    console.error('[getProductsSimilarMapped] error', e?.message || e);
+    return {
+      items: [],
+      page,
+      size,
+      totalPages: 1,
+    };
   }
 };
