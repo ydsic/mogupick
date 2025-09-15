@@ -30,18 +30,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: |
-            ## 🎉 사이트가 업데이트 되었어요! PM, PD분들은 테스트 해보시고 말씀해주세요!
+            ## 🎉 최종 배포를 위한 메인 브런치 푸쉬
+            
+            ** https://mogupick.vercel.app **
 
-            **👤 Deployer:** `${{ steps.dev-name.outputs.name }}`
-            **⏰ Time:** `${{ steps.dev-name.outputs.formatted-time }}`
-
-            **💭 Commit Message(Title):**
-            ```
-            ${{ steps.dev-name.outputs.commit-title }}
-
-            ```
-            **🔗 GitHub Link:** <${{ github.event.head_commit.url }}>
-
-            **🔗 Prototype Link:** https://mogupick-prototype.vercel.app
-
-            **🔗 Update Note:** https://www.notion.so/goormkdx/Prototype-255c0ff4ce31805facf6c8fbfe7ddc12
