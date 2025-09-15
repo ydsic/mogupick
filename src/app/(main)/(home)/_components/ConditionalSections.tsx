@@ -47,7 +47,19 @@ export default function ConditionalSections() {
         {isLoggedIn ? (
           <>
             {/* 로그인된 상태: 최근 본 상품 */}
-
+            <HorizontalProductList
+              products={(recentViewedData || []).slice(0, 4).map((p) => ({
+                id: p.id,
+                store: p.store,
+                title: p.title,
+                price: p.price,
+                rating: p.rating,
+                reviewCount: p.reviewCount,
+                image: p.imageUrl,
+              }))}
+              title="최근 본 상품"
+              onMoreClick={() => openModal('recently-viewed')}
+            />
             {/* 유사한 상품 섹션 */}
             <SimilarProductSection openModal={openModal} />
             {/* 내 또래 베스트 리뷰 PICK */}
